@@ -4,7 +4,7 @@ import (
 	// "errors"
 	// "fmt"
 	// "stepoutsite/backend/domain/entities"
-	"stepoutsite/backend/domain/repositories"
+	"stepoutsite/domain/repositories"
 
 )
 

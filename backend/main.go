@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 	"os"
-	"stepoutsite/backend/configuration"
-	"stepoutsite/backend/domain/datasources"
-	"stepoutsite/backend/domain/repositories"
-	"stepoutsite/backend/src/gateways"
-	"stepoutsite/backend/src/middlewares"
-	"stepoutsite/backend/src/services"
+	"stepoutsite/configuration"
+	"stepoutsite/domain/datasources"
+	"stepoutsite/domain/repositories"
+	"stepoutsite/src/gateways"
+	"stepoutsite/src/middlewares"
+	"stepoutsite/src/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

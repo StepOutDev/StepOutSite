@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"stepoutsite/backend/domain/entities"
+	"stepoutsite/domain/entities"
 	"time"
 
 	jwtware "github.com/gofiber/contrib/jwt"

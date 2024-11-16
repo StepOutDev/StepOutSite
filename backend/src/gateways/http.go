@@ -1,7 +1,7 @@
 package gateways
 
 import (
-	"stepoutsite/backend/src/services"
+	"stepoutsite/src/services"
 
 	"github.com/gofiber/fiber/v2"
 )
