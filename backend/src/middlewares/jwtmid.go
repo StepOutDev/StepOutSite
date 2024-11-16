@@ -27,8 +27,7 @@ func SetJWtHeaderHandler() fiber.Handler {
 
 type TokenDetails struct {
 	Token     *string `json:"token"`
-	UserID    string  `json:"user_id"`
-	UID       string  `json:"uid"`
+	StudentID    string  `json:"student_id"`
 	ExpiresIn *int64  `json:"exp"`
 }
 
@@ -50,17 +49,17 @@ func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
 
 	for key, value := range claims {
 		if key == "user_id" || key == "sub" {
-			td.UserID = value.(string)
+			td.StudentID = value.(string)
 		}
 		if key == "uid" {
-			td.UID = value.(string)
+			td.StudentID = value.(string)
 		}
 	}
 	*td.Token = token.Raw
 	return td, nil
 }
 
-func GenerateJWTToken(userID string, uuID string) (*TokenDetails, error) {
+func GenerateJWTToken(studentID string) (*TokenDetails, error) {
 	now := time.Now().UTC()
 
 	td := &TokenDetails{
@@ -68,14 +67,12 @@ func GenerateJWTToken(userID string, uuID string) (*TokenDetails, error) {
 		Token:     new(string),
 	}
 	*td.ExpiresIn = now.Add(time.Hour * 6).Unix()
-	td.UserID = userID
-	td.UID = uuID
+	td.StudentID = studentID
 
 	SigningKey := []byte(os.Getenv("JWT_SECRET_KEY"))
 
 	atClaims := make(jwt.MapClaims)
-	atClaims["user_id"] = userID
-	atClaims["uid"] = uuID
+	atClaims["student_id"] = studentID
 	atClaims["exp"] = time.Now().Add(time.Hour * 6).Unix()
 	atClaims["iat"] = time.Now().Unix()
 	atClaims["nbf"] = time.Now().Unix()
