@@ -5,14 +5,16 @@ import (
 	"errors"
 	"fmt"
 
+
 	"os"
 	. "stepoutsite/domain/datasources"
 	"stepoutsite/domain/entities"
+	"stepoutsite/src/middlewares"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"golang.org/x/crypto/bcrypt"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userRepository struct {
@@ -23,6 +25,8 @@ type userRepository struct {
 type IUserRepository interface {
 	GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error)
 	CreateUser(user entities.UserDataFormat) error
+	Login(req *entities.UserDataFormat) (string,error)
+	GetOneUser(studentID string) (entities.UserDataFormat, error)
 }
 
 func NewUserRepository(db *MongoDB) IUserRepository {
@@ -80,13 +84,20 @@ func hashAndSalt(pwd string) (string,error) {
     return string(hash),nil
 }
 
-func checkPasswords(hashedPwd string, plainPwd string) error {
-    byteHash := []byte(hashedPwd)
-	pwd := []byte(plainPwd)
-    err := bcrypt.CompareHashAndPassword(byteHash, pwd)
-    if err != nil {
-        return errors.New("passwords do not match")
-    }
-    
-    return nil
+func (repo userRepository) GetOneUser(studentID string) (entities.UserDataFormat, error){
+	var result entities.UserDataFormat
+	filter := bson.M{"student_id": studentID}
+	user := repo.Collection.FindOne(repo.Context, filter).Decode(&result)
+	if user == mongo.ErrNoDocuments {
+		return result, errors.New("user not found")
+	}
+	return result,nil
+}
+
+func (repo userRepository) Login(req *entities.UserDataFormat) (string,error) {
+	tokenDetails, err := middlewares.GenerateJWTToken(req.StudentID)
+	if err != nil {
+		return "", err
+	}
+	return *tokenDetails.Token, nil
 }

@@ -1,8 +1,10 @@
 package gateways
 
 import (
-	// "fmt"
+	"fmt"
 	"stepoutsite/domain/entities"
+	"stepoutsite/src/middlewares"
+
 	// "stepoutsite/src/middlewares"
 
 	"github.com/gofiber/fiber/v2"
@@ -38,4 +40,35 @@ func (h *HTTPGateway) GetAllUsers(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get all users", Data: users})
 
+}
+
+func (h *HTTPGateway) GetMe(ctx *fiber.Ctx) error {
+	token,err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+	user, err := h.userService.GetOneUser(token.StudentID)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get user", Data: user})
+}
+
+func (h *HTTPGateway) Login(ctx *fiber.Ctx) error {
+	user := entities.UserDataFormat{}
+
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	token, err := h.userService.Login(&user)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login", Data: token})
 }

@@ -1,13 +1,13 @@
 package services
 
 import (
-	// "errors"
-	// "fmt"
 	"errors"
+
 	"stepoutsite/domain/entities"
 	"stepoutsite/domain/repositories"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -17,6 +17,8 @@ type userService struct {
 type IUserService interface {
 	GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error)
 	CreateUser(user entities.UserDataFormat) error
+	GetOneUser(studentID string) (entities.UserDataFormat, error)
+	Login(req *entities.UserDataFormat) (string,error)
 }
 
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
@@ -47,4 +49,39 @@ func (sv userService) GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, er
 	}
 
 	return users,nil
+}
+
+func checkPasswords(hashedPwd string, plainPwd string) error {
+    byteHash := []byte(hashedPwd)
+	pwd := []byte(plainPwd)
+    err := bcrypt.CompareHashAndPassword(byteHash, pwd)
+    if err != nil {
+        return errors.New("passwords do not match")
+    }
+    
+    return nil
+}
+
+func (sv userService) GetOneUser(studentID string) (entities.UserDataFormat, error) {
+	user,err := sv.UserRepository.GetOneUser(studentID)
+	
+	if err != nil {
+		return entities.UserDataFormat{},err
+	}
+
+	return user,nil
+}
+
+func (sv userService) Login(req *entities.UserDataFormat) (string,error) {
+	user,err := sv.UserRepository.GetOneUser(req.StudentID)
+
+	if err != nil {
+		return "",errors.New("user not found")
+	}
+
+	if err := checkPasswords(user.Password, req.Password); err != nil {
+		return "", errors.New("passwords do not match")
+	}
+
+	return sv.UserRepository.Login(req)
 }

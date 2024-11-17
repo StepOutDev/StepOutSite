@@ -36,8 +36,9 @@ func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
 	td := &TokenDetails{
 		Token: new(string),
 	}
-
+	
 	token, status := ctx.Locals("user").(*jwt.Token)
+	fmt.Println(token)
 	if !status {
 		return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
 	}
@@ -48,7 +49,7 @@ func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
 	}
 
 	for key, value := range claims {
-		if key == "user_id" || key == "sub" {
+		if key == "student_id" || key == "sub" {
 			td.StudentID = value.(string)
 		}
 		if key == "uid" {
