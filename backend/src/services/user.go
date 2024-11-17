@@ -6,6 +6,8 @@ import (
 	"errors"
 	"stepoutsite/domain/entities"
 	"stepoutsite/domain/repositories"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type userService struct {
@@ -13,6 +15,7 @@ type userService struct {
 }
 
 type IUserService interface {
+	GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error)
 	CreateUser(user entities.UserDataFormat) error
 }
 
@@ -34,4 +37,14 @@ func (sv userService) CreateUser(user entities.UserDataFormat) error {
 	}
 
 	return nil
+}
+
+func (sv userService) GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error){	
+	users,err := sv.UserRepository.GetAllUsers(filter)
+
+	if err != nil {
+		return nil,err
+	}
+
+	return users,nil
 }

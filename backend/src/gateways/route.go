@@ -6,4 +6,5 @@ func GatewayUser(gateway HTTPGateway, app *fiber.App) {
 	apiUser := app.Group("/api/v1/user")
 
 	apiUser.Post("/register", gateway.CreateUser)
+	apiUser.Get("/users", gateway.GetAllUsers)
 }

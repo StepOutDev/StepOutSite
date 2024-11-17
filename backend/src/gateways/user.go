@@ -6,6 +6,7 @@ import (
 	// "stepoutsite/src/middlewares"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
@@ -20,4 +21,21 @@ func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully create user"})
+}
+
+func (h *HTTPGateway) GetAllUsers(ctx *fiber.Ctx) error {
+	filter := bson.M{}
+
+	if err := ctx.BodyParser(&filter); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	users, err := h.userService.GetAllUsers(filter)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get all users", Data: users})
+
 }
