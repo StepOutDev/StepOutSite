@@ -12,4 +12,5 @@ type UserDataFormat struct {
 	Image    		string `json:"image" bson:"image"`
 	Telephone 		string `json:"telephone" bson:"telephone"`
 	Instagram       string `json:"instagram" bson:"instagram"`
+	Line          string `json:"line" bson:"line"`
 }
