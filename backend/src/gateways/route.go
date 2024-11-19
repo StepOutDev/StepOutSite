@@ -19,4 +19,5 @@ func GatewayUser(gateway HTTPGateway, app *fiber.App) {
 	apiUserJWT.Get("/me", gateway.GetMe)
 	apiUserJWT.Post("/logout", gateway.Logout)
 	apiUserJWT.Put("/update", gateway.UpdateUser)
+	apiUserJWT.Delete("/delete", gateway.DeleteUser)
 }

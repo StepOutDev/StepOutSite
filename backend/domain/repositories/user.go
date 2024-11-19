@@ -26,6 +26,8 @@ type IUserRepository interface {
 	Login(req *entities.UserDataFormat) (string,error)
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
 	UpdateUser(studentID string,user entities.UserDataFormat) error
+	DeleteUser(studentID string) error
+	GetMe(studentID string) (entities.UserResponseFormat, error)
 }
 
 func NewUserRepository(db *MongoDB) IUserRepository {
@@ -109,4 +111,23 @@ func (repo userRepository) UpdateUser(studentID string,user entities.UserDataFor
 		return err
 	}
 	return nil
+}
+
+func (repo userRepository) DeleteUser(studentID string) error {
+	filter := bson.M{"student_id": studentID}
+	_,err := repo.Collection.DeleteOne(repo.Context, filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo userRepository) GetMe(studentID string) (entities.UserResponseFormat, error){
+	var result entities.UserResponseFormat
+	filter := bson.M{"student_id": studentID}
+	user := repo.Collection.FindOne(repo.Context, filter).Decode(&result)
+	if user == mongo.ErrNoDocuments {
+		return result, errors.New("user not found")
+	}
+	return result,nil
 }

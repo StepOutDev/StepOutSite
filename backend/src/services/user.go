@@ -21,6 +21,8 @@ type IUserService interface {
 	Login(req *entities.UserDataFormat) (string,error)
 	CheckPermissionCoreAndAdmin(studentID string) error
 	UpdateUser(userID string,targetID string,user entities.UserDataFormat) error
+	DeleteUser(userID string,targetID string) error
+	GetMe(studentID string) (entities.UserResponseFormat, error)
 }
 
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
@@ -140,4 +142,24 @@ func (sv userService) UpdateUser(userID string,targetID string,user entities.Use
 	}
 
 	return nil
+}
+
+func (sv userService) DeleteUser(userID string,targetID string) error {
+	err := sv.CheckPermissionCoreAndAdmin(userID)
+	if err != nil {
+		targetID = userID
+	}
+	if err := sv.UserRepository.DeleteUser(targetID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv userService) GetMe(studentID string) (entities.UserResponseFormat, error) {
+	user,err := sv.UserRepository.GetMe(studentID)
+	if err != nil {
+		return entities.UserResponseFormat{},err
+	}
+	return user,nil
 }
