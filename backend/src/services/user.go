@@ -15,11 +15,12 @@ type userService struct {
 }
 
 type IUserService interface {
-	GetAllUsers(filter bson.M , studentID string) (*[]entities.UserDataFormat, error)
+	GetAllUsers(filter bson.M , studentID string) (*[]entities.UserResponseFormat, error)
 	CreateUser(user entities.UserDataFormat) error
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
 	Login(req *entities.UserDataFormat) (string,error)
 	CheckPermissionCoreAndAdmin(studentID string) error
+	UpdateUser(userID string,targetID string,user entities.UserDataFormat) error
 }
 
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
@@ -33,7 +34,12 @@ func (sv userService) CreateUser(user entities.UserDataFormat) error {
 		return errors.New("please fill in student id")
 	}
 
-	err := sv.UserRepository.CreateUser(user)
+	check,err := sv.UserRepository.GetOneUser(user.StudentID)
+	if err == nil && check != (entities.UserDataFormat{}) {
+		return errors.New("user already exist")
+	}
+
+	err = sv.UserRepository.CreateUser(user)
 
 	if err != nil {
 		return err
@@ -42,7 +48,7 @@ func (sv userService) CreateUser(user entities.UserDataFormat) error {
 	return nil
 }
 
-func (sv userService) GetAllUsers(filter bson.M, studentID string) (*[]entities.UserDataFormat, error){	
+func (sv userService) GetAllUsers(filter bson.M, studentID string) (*[]entities.UserResponseFormat, error){	
 	err := sv.CheckPermissionCoreAndAdmin(studentID)
 	if err != nil {
 		return nil,err
@@ -100,5 +106,38 @@ func (sv userService) CheckPermissionCoreAndAdmin(studentID string) error {
 	if !(admin.Role == "core" || admin.Role == "admin") {
 		return errors.New("unauthorized")
 	}
+	return nil
+}
+func (sv userService) CheckPermissionAdmin(studentID string) error {
+	admin, err := sv.UserRepository.GetOneUser(studentID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !(admin.Role == "admin") {
+		return errors.New("unauthorized")
+	}
+	return nil
+}
+
+func (sv userService) UpdateUser(userID string,targetID string,user entities.UserDataFormat) error {
+	check,err := sv.UserRepository.GetOneUser(targetID)
+
+	if err != nil && check == (entities.UserDataFormat{}) {
+		return errors.New("user not found")
+	}
+
+	err = sv.CheckPermissionCoreAndAdmin(userID)
+	if err != nil {
+		targetID = userID
+	}
+	err = sv.CheckPermissionAdmin(userID)
+	if err != nil {
+		user.Role = check.Role
+	}
+
+	if err := sv.UserRepository.UpdateUser(targetID,user); err != nil {
+		return err
+	}
+
 	return nil
 }

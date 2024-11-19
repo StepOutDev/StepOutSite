@@ -98,3 +98,24 @@ func (h *HTTPGateway) Logout(ctx *fiber.Ctx) error {
 	ctx.Cookie(&cookie)
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully logout"})
 }
+
+func (h *HTTPGateway) UpdateUser(ctx *fiber.Ctx) error {
+	token,err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+
+	params := ctx.Queries()
+	targetID := params["student_id"]
+
+	var user entities.UserDataFormat
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+	if err := h.userService.UpdateUser(token.StudentID,targetID,user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully update user"})
+}

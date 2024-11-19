@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
-
 	"os"
 	. "stepoutsite/domain/datasources"
 	"stepoutsite/domain/entities"
@@ -23,10 +21,11 @@ type userRepository struct {
 }
 
 type IUserRepository interface {
-	GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error)
+	GetAllUsers(filter bson.M) (*[]entities.UserResponseFormat, error)
 	CreateUser(user entities.UserDataFormat) error
 	Login(req *entities.UserDataFormat) (string,error)
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
+	UpdateUser(studentID string,user entities.UserDataFormat) error
 }
 
 func NewUserRepository(db *MongoDB) IUserRepository {
@@ -36,8 +35,8 @@ func NewUserRepository(db *MongoDB) IUserRepository {
 	}
 }
 
-func (repo userRepository) GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error){
-	result := []entities.UserDataFormat{}
+func (repo userRepository) GetAllUsers(filter bson.M) (*[]entities.UserResponseFormat, error){
+	result := []entities.UserResponseFormat{}
 
 	cursor ,err := repo.Collection.Find(repo.Context, filter,options.Find())
 
@@ -47,7 +46,7 @@ func (repo userRepository) GetAllUsers(filter bson.M) (*[]entities.UserDataForma
 	defer cursor.Close(repo.Context)
 
 	for cursor.Next(repo.Context) {
-		var user entities.UserDataFormat
+		var user entities.UserResponseFormat
 
 		err = cursor.Decode(&user)
 		if err != nil {
@@ -100,4 +99,14 @@ func (repo userRepository) Login(req *entities.UserDataFormat) (string,error) {
 		return "", err
 	}
 	return *tokenDetails.Token, nil
+}
+
+func (repo userRepository) UpdateUser(studentID string,user entities.UserDataFormat) error {
+	filter := bson.M{"student_id": studentID}
+	update := bson.M{"$set": user}
+	_,err := repo.Collection.UpdateOne(repo.Context, filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
 }
