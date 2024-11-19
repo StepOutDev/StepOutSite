@@ -15,10 +15,11 @@ type userService struct {
 }
 
 type IUserService interface {
-	GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error)
+	GetAllUsers(filter bson.M , studentID string) (*[]entities.UserDataFormat, error)
 	CreateUser(user entities.UserDataFormat) error
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
 	Login(req *entities.UserDataFormat) (string,error)
+	CheckPermissionCoreAndAdmin(studentID string) error
 }
 
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
@@ -41,7 +42,12 @@ func (sv userService) CreateUser(user entities.UserDataFormat) error {
 	return nil
 }
 
-func (sv userService) GetAllUsers(filter bson.M) (*[]entities.UserDataFormat, error){	
+func (sv userService) GetAllUsers(filter bson.M, studentID string) (*[]entities.UserDataFormat, error){	
+	err := sv.CheckPermissionCoreAndAdmin(studentID)
+	if err != nil {
+		return nil,err
+	}
+
 	users,err := sv.UserRepository.GetAllUsers(filter)
 
 	if err != nil {
@@ -84,4 +90,15 @@ func (sv userService) Login(req *entities.UserDataFormat) (string,error) {
 	}
 
 	return sv.UserRepository.Login(req)
+}
+
+func (sv userService) CheckPermissionCoreAndAdmin(studentID string) error {
+	admin, err := sv.UserRepository.GetOneUser(studentID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !(admin.Role == "core" || admin.Role == "admin") {
+		return errors.New("unauthorized")
+	}
+	return nil
 }

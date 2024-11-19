@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"stepoutsite/domain/entities"
 	"stepoutsite/src/middlewares"
+	"time"
 
 	// "stepoutsite/src/middlewares"
 
@@ -26,13 +27,19 @@ func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
 }
 
 func (h *HTTPGateway) GetAllUsers(ctx *fiber.Ctx) error {
+	token,err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+
 	filter := bson.M{}
 
 	if err := ctx.BodyParser(&filter); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	}
 
-	users, err := h.userService.GetAllUsers(filter)
+	users, err := h.userService.GetAllUsers(filter,token.StudentID)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
@@ -70,5 +77,24 @@ func (h *HTTPGateway) Login(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	}
 
+	cookie := fiber.Cookie{
+		Name: "jwt", 
+		Value: token, 
+		Expires: time.Now().Add(time.Hour * 6),
+		HTTPOnly: true,
+	}
+	ctx.Cookie(&cookie)
+
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login", Data: token})
+}
+
+func (h *HTTPGateway) Logout(ctx *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name: "jwt", 
+		Value: "", 
+		Expires: time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+	ctx.Cookie(&cookie)
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully logout"})
 }
