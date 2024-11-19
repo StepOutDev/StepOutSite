@@ -11,6 +11,7 @@ module.exports = {
         barlow: ['"Barlow"', "sans-serif"],
       }
     },
+
   },
   plugins: [],
 }
