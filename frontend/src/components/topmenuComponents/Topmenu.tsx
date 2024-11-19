@@ -57,7 +57,7 @@ export default function Topmenu () {
                     Member
                     </Link>
                 <a
-                    href="#contact"
+                    href="/#contact"
                     className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
                     >
                     Contact
@@ -104,13 +104,13 @@ export default function Topmenu () {
                 >
                     Member
                 </Link>
-                <a
-                    href="#contact"
+                <Link
+                    href="/#contact"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
                     Contact
-                </a>
+                </Link>
                 </div>
             )}
         </nav>
