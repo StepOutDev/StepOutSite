@@ -21,7 +21,7 @@ type IUserService interface {
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
 	Login(req *entities.UserDataFormat) (string,error)
 	CheckPermissionCoreAndAdmin(studentID string) error
-	UpdateUser(userID string,targetID string,user entities.UserDataFormat) error
+	UpdateUser(userID string,targetID string,user entities.UserDataFormat, imageByte []byte) error
 	DeleteUser(userID string,targetID string) error
 	GetMe(studentID string) (entities.UserResponseFormat, error)
 }
@@ -133,7 +133,7 @@ func (sv userService) CheckPermissionAdmin(studentID string) error {
 	return nil
 }
 
-func (sv userService) UpdateUser(userID string,targetID string,user entities.UserDataFormat) error {
+func (sv userService) UpdateUser(userID string,targetID string,user entities.UserDataFormat, imageByte []byte) error {
 	check,err := sv.UserRepository.GetOneUser(targetID)
 
 	if err != nil && check == (entities.UserDataFormat{}) {
@@ -147,6 +147,17 @@ func (sv userService) UpdateUser(userID string,targetID string,user entities.Use
 	err = sv.CheckPermissionAdmin(userID)
 	if err != nil {
 		user.Role = check.Role
+	}
+	
+	if imageByte != nil {
+		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+
+		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
+
+		if err != nil {
+			return err
+		}
+		user.Image = imageURL
 	}
 
 	if err := sv.UserRepository.UpdateUser(targetID,user); err != nil {
