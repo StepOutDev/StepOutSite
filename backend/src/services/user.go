@@ -5,6 +5,7 @@ import (
 
 	"stepoutsite/domain/entities"
 	"stepoutsite/domain/repositories"
+	"stepoutsite/src/utils"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -16,7 +17,7 @@ type userService struct {
 
 type IUserService interface {
 	GetAllUsers(filter bson.M , studentID string) (*[]entities.UserResponseFormat, error)
-	CreateUser(user entities.UserDataFormat) error
+	CreateUser(user entities.UserDataFormat,imageByte []byte) error
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
 	Login(req *entities.UserDataFormat) (string,error)
 	CheckPermissionCoreAndAdmin(studentID string) error
@@ -31,7 +32,7 @@ func NewUserService(userRepository repositories.IUserRepository) IUserService {
 	}
 }
 
-func (sv userService) CreateUser(user entities.UserDataFormat) error {
+func (sv userService) CreateUser(user entities.UserDataFormat, imageByte []byte) error {
 	if user.StudentID == ""{
 		return errors.New("please fill in student id")
 	}
@@ -39,6 +40,17 @@ func (sv userService) CreateUser(user entities.UserDataFormat) error {
 	check,err := sv.UserRepository.GetOneUser(user.StudentID)
 	if err == nil && check != (entities.UserDataFormat{}) {
 		return errors.New("user already exist")
+	}
+
+	if imageByte != nil {
+		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+
+		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
+
+		if err != nil {
+			return err
+		}
+		user.Image = imageURL
 	}
 
 	err = sv.UserRepository.CreateUser(user)

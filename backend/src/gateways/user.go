@@ -2,6 +2,7 @@ package gateways
 
 import (
 	"fmt"
+	"io/ioutil"
 	"stepoutsite/domain/entities"
 	"stepoutsite/src/middlewares"
 	"time"
@@ -15,11 +16,56 @@ import (
 func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
 	user := entities.UserDataFormat{}
 
-	if err := ctx.BodyParser(&user); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	// if err := ctx.BodyParser(&user); err != nil {
+	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	// }
+
+	studentID := ctx.FormValue("student_id")
+	firstName := ctx.FormValue("first_name")
+	lastName := ctx.FormValue("last_name")
+	phone := ctx.FormValue("telephone")
+	password := ctx.FormValue("password")
+	year := ctx.FormValue("year")
+	major := ctx.FormValue("major")
+	role := ctx.FormValue("role")
+	nickName := ctx.FormValue("nick_name")
+	instagram := ctx.FormValue("instagram")
+	line := ctx.FormValue("line")
+
+	imagefile, err := ctx.FormFile("image")
+	var imageByte []byte
+	if imagefile != nil {
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		image, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		defer image.Close()
+		imageByte, err = ioutil.ReadAll(image)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+	} else {
+		imageByte = nil
 	}
 
-	if err := h.userService.CreateUser(user); err != nil {
+	user = entities.UserDataFormat{
+		StudentID:       studentID,
+		FirstName:       firstName,
+		LastName:        lastName,
+		NickName:        nickName,
+		Year:            year,
+		Major:           major,
+		Role:            role,
+		Password:        password,
+		Telephone:       phone,
+		Instagram:       instagram,
+		Line:            line,
+	}
+
+	if err := h.userService.CreateUser(user,imageByte); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	}
 
