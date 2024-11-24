@@ -134,11 +134,13 @@ func (sv userService) CheckPermissionAdmin(studentID string) error {
 }
 
 func (sv userService) UpdateUser(userID string,targetID string,user entities.UserDataFormat, imageByte []byte) error {
-	check,err := sv.UserRepository.GetOneUser(targetID)
+	checkTarget,err := sv.UserRepository.GetOneUser(targetID)
 
-	if err != nil && check == (entities.UserDataFormat{}) {
+	if err != nil && checkTarget == (entities.UserDataFormat{}) {
 		return errors.New("user not found")
 	}
+
+	checkUser,_ := sv.UserRepository.GetOneUser(userID)
 
 	err = sv.CheckPermissionCoreAndAdmin(userID)
 	if err != nil {
@@ -146,7 +148,7 @@ func (sv userService) UpdateUser(userID string,targetID string,user entities.Use
 	}
 	err = sv.CheckPermissionAdmin(userID)
 	if err != nil {
-		user.Role = check.Role
+		user.Role = checkUser.Role
 	}
 	
 	if imageByte != nil {

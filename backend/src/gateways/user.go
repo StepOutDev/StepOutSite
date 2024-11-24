@@ -161,7 +161,6 @@ func (h *HTTPGateway) UpdateUser(ctx *fiber.Ctx) error {
 	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	// }
 
-	studentID := ctx.FormValue("student_id")
 	firstName := ctx.FormValue("first_name")
 	lastName := ctx.FormValue("last_name")
 	phone := ctx.FormValue("telephone")
@@ -193,7 +192,6 @@ func (h *HTTPGateway) UpdateUser(ctx *fiber.Ctx) error {
 	}
 
 	user = entities.UserDataFormat{
-		StudentID:       studentID,
 		FirstName:       firstName,
 		LastName:        lastName,
 		NickName:        nickName,

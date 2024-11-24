@@ -15,7 +15,7 @@ func GatewayUser(gateway HTTPGateway, app *fiber.App) {
 
 	apiUserJWT := apiUser.Group("")
 	apiUserJWT.Use(middlewares.SetJWtHeaderHandler())
-	apiUserJWT.Get("/users", gateway.GetAllUsers)
+	apiUserJWT.Post("/get_users", gateway.GetAllUsers)
 	apiUserJWT.Get("/me", gateway.GetMe)
 	apiUserJWT.Post("/logout", gateway.Logout)
 	apiUserJWT.Put("/update", gateway.UpdateUser)
