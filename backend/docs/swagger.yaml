@@ -295,7 +295,7 @@ paths:
           schema:
             type: string
           required: true
-      description: if user role is lower than core, sent own student_id.
+      description: if user role is lower than core, sent parameter to their own student_id.
           if user role is greater than core , student_id is use to delete that user.
       responses:
         "200":
