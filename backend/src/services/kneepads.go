@@ -13,6 +13,7 @@ type kneepadsService struct{
 
 type IKneepadsService interface {
 	CreateKneepads(studentID string,kneepads entities.KneepadsDataFormat) error
+	GetOneKneepads(studentID string,number string) (entities.KneepadsDataFormat,error)
 }
 
 func NewKneepadsService(kneepadsRepository repositories.IKneepadsRepository,userService IUserService) IKneepadsService {
@@ -27,6 +28,10 @@ func(sv kneepadsService) CreateKneepads(studentID string,kneepads entities.Kneep
 		return errors.New("please complete the data")
 	}
 
+	if _,err := sv.KneepadsRepository.GetOneKneepads(kneepads.Number); err == nil {
+		return errors.New("kneepads already exists")
+	}
+
 	if err := sv.UserService.CheckPermissionCoreAndAdmin(studentID); err!=nil{
 		return errors.New("unauthorized")
 	}
@@ -36,4 +41,21 @@ func(sv kneepadsService) CreateKneepads(studentID string,kneepads entities.Kneep
 	}
 
 	return nil
+}
+
+func(sv kneepadsService) GetOneKneepads(studentID string,number string) (entities.KneepadsDataFormat,error){
+	if number == "" {
+		return entities.KneepadsDataFormat{},errors.New("please provide number")
+	}
+
+	if err := sv.UserService.CheckPermissionMember(studentID); err!=nil{
+		return entities.KneepadsDataFormat{},errors.New("unauthorized")
+	}
+
+	kneepads,err := sv.KneepadsRepository.GetOneKneepads(number);
+	if err!=nil	{
+		return entities.KneepadsDataFormat{},err
+	}
+
+	return kneepads,nil
 }

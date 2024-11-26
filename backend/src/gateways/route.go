@@ -28,4 +28,5 @@ func GatewayKneepads(gateway HTTPGateway, app *fiber.App){
 	apiJWT := api.Group("")
 	apiJWT.Use(middlewares.SetJWtHeaderHandler())
 	apiJWT.Post("/create",gateway.CreateKneepads)
+	apiJWT.Get("/get_one",gateway.GetOneKneepads)
 }
