@@ -1,0 +1,428 @@
+openapi: 3.0.0
+info:
+  title: stepout api
+  version: "1.0"
+servers:
+  - url: /api/v1
+paths:
+  /user/register:
+      post:
+        tags:
+          - user
+        description: input with form-data 
+        consumes:
+          - multipart/form-data
+        produces:
+          - multipart/form-data
+        requestBody:
+          required: true
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                required:
+                  - student_id
+                properties:
+                  student_id:
+                    type: string
+                    example: 6630000021
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  nick_name:
+                    type: string
+                    example: Joe
+                  year:
+                    type: string
+                    example: "1"
+                    enum:
+                      - "1"
+                      - "2"
+                      - "3"
+                      - "4"
+                      - "graduated"
+                  major:
+                    type: string
+                    example: "CEDT"
+                  role:
+                    type: string
+                    example: "admin"
+                    enum:
+                      - admin
+                      - user
+                      - pending
+                      - member
+                      - core
+                  password:
+                    type: string
+                    example: "666"
+                  image:
+                    type: file
+                    example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp"
+                  telephone:
+                    type: string
+                    example: "0123456789"
+                  instagram:
+                    type: string
+                    example: "stepout_intania"
+                  line:
+                    type: string
+                    example: "@stepoutintania"
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                example:
+                  message: successfully create user
+          "400":
+            description: Bad Request
+            content:
+              application/json:
+                example:
+                  message: user already exist
+  /user/login:
+      post:
+        tags:
+          - user
+        description: input with student_id and password
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        requestBody:
+          required: true
+          content:
+            application/json:
+              example:
+                student_id: "6630000021"
+                password: "666"
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                example:
+                  message: successfully login
+                  data: eyJhuadhiaiwudhuhsiudu
+          "400":
+            description: Bad Request
+            content:
+              application/json:
+                example:
+                  message: user not found
+  /user/logout:
+      post:
+        tags:
+          - user
+        description: log out
+        security:
+        - bearerAuth: []
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                example:
+                  message: successfully logout
+          "401":
+            description: Unauthorized
+            content:
+              application/json:
+                example:
+                  message: Unauthorization Token.
+  /user/get_users:
+    post:
+      tags:
+        - user
+      description: required a body. The body use to filter. 
+        If you want don't want to filter just send {}
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      requestBody:
+          required: true
+          content:
+            application/json:
+              example:
+                role: admin
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: successfully get all users
+                data: []
+        "401":
+            description: Unauthorized
+            content:
+              application/json:
+                example:
+                  message: Unauthorization Token.
+  /user/me:
+    get:
+      tags:
+        - user
+      description: get me
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: successfully get user
+                data: {}
+        "401":
+            description: Unauthorized
+            content:
+              application/json:
+                example:
+                  message: Unauthorization Token.
+  /user/update:
+    put:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      consumes:
+        - multipart/form-data
+      produces:
+        - multipart/form-data
+      parameters:
+        - in: query
+          name: student_id
+          schema:
+            type: string
+          required: false
+      description: if user role is lower than core, no student_id required it will update own student_id.
+          if user role is greater than core , student_id is use to update that user.
+          student_id can't be updated.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                nick_name:
+                  type: string
+                  example: Joe
+                year:
+                  type: string
+                  example: "1"
+                  enum:
+                    - "1"
+                    - "2"
+                    - "3"
+                    - "4"
+                    - "graduated"
+                major:
+                  type: string
+                  example: "CEDT"
+                role:
+                  type: string
+                  example: "admin"
+                  enum:
+                    - admin
+                    - user
+                    - pending
+                    - member
+                    - core
+                password:
+                  type: string
+                  example: "666"
+                image:
+                  type: file
+                  example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp"
+                telephone:
+                  type: string
+                  example: "0123456789"
+                instagram:
+                  type: string
+                  example: "stepout_intania"
+                line:
+                  type: string
+                  example: "@stepoutintania"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: successfully update user
+        "401":
+            description: Unauthorized
+            content:
+              application/json:
+                example:
+                  message: Unauthorization Token.
+  /user/delete:
+    delete:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: student_id
+          schema:
+            type: string
+          required: true
+      description: if user role is lower than core, sent parameter to their own student_id.
+          if user role is greater than core , student_id is use to delete that user.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: successfully delete user
+        "401":
+            description: Unauthorized
+            content:
+              application/json:
+                example:
+                  message: Unauthorization Token.
+components:
+  schemas:
+      UserInput:
+        type: object
+        properties:
+          student_id:
+            type: string
+            example: "6630000021"
+          first_name:
+            type: string
+            example: John
+          last_name:
+            type: string
+            example: Doe
+          nick_name:
+            type: string
+            example: Joe
+          year:
+            type: string
+            example: "1"
+            enum:
+              - "1"
+              - "2"
+              - "3"
+              - "4"
+              - "graduated"
+          major:
+            type: string
+            example: "CEDT"
+          role:
+            type: string
+            example: "admin"
+            enum:
+              - admin
+              - user
+              - pending
+              - member
+              - core
+          password:
+            type: string
+            example: "666"
+          image:
+            type: file
+            example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp"
+          telephone:
+            type: string
+            example: "0123456789"
+          instagram:
+            type: string
+            example: "stepout_intania"
+          line:
+            type: string
+            example: "@stepoutintania"
+        xml:
+          name: user
+      UserOutput:
+        type: object
+        properties:
+          student_id:
+            type: string
+            exmaple: "6630000021"
+          first_name:
+            type: string
+            example: John
+          last_name:
+            type: string
+            example: Doe
+          nick_name:
+            type: string
+            example: Joe
+          year:
+            type: string
+            example: "1"
+            enum:
+              - "1"
+              - "2"
+              - "3"
+              - "4"
+              - "graduated"
+          major:
+            type: string
+            example: "CEDT"
+          role:
+            type: string
+            example: "admin"
+            enum:
+              - admin
+              - user
+              - pending
+              - member
+              - core
+          image:
+            type: string
+            example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp"
+          telephone:
+            type: string
+            example: "0123456789"
+          instagram:
+            type: string
+            example: "stepout_intania"
+          line:
+            type: string
+            example: "@stepoutintania"
+        xml:
+          name: user
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Token
+      in: header
+      name: Authorization
+
+tags:
+  - name: user
