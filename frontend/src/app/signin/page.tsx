@@ -1,37 +1,9 @@
 "use client"
 import SigninForm from "@/components/signinForm";
 import { useState } from "react";
-import userSignin from "@/libs/userSignin";
+import userSignin from "@/libs/user/userSignin";
 
 export default function Signin() {
-
-  const [formData, setFormData] = useState({ studentID: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  
-  const handleChange = (name: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Call API with formData
-      const data = await userSignin(formData.studentID, formData.password);
-      alert("Login successful!");
-      console.log("User data:", data);
-    } catch (err: any) {
-      setError(err.message || "An unknown error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
     return (
       <div className="min-h-screen bg-pink-50 flex items-center justify-center py-20">
@@ -42,13 +14,7 @@ export default function Signin() {
           </div>
           <div className="flex justify-center w-[95%]">
             <SigninForm
-              formData={formData}
-              loading={loading}
-              error={error}
-              onChange={handleChange}
-              onSubmit={handleSubmit}
             ></SigninForm>
-            {error && <div className="text-red-500 text-center mt-4">{error}</div>}
           </div>
         </div>
         
