@@ -1,9 +1,16 @@
 "use client"
 import { useState, useEffect } from "react"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { useSession } from "next-auth/react";
+import { User } from "../../../interface";
 import Link from "next/link"
+import getUserMe from "@/libs/user/getUserMe";
 
 export default function Topmenu () {
-    // const session = await getServerSession(authOptions);
+    const { data: session, status } = useSession();
+    console.log(session)
+    // const [user, setUser] = useState<User>(); 
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -13,15 +20,23 @@ export default function Topmenu () {
             setMenuOpen(false);
           }
         };
-    
         // Add event listener
         window.addEventListener("resize", handleResize);
-    
         // Clean up the event listener
         return () => {
           window.removeEventListener("resize", handleResize);
         };
       }, []);
+
+    //   useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         if(session){
+    //             const userA:User = (await getUserMe(session?.user?.data)).data;
+    //             setUser(userA)
+    //         } 
+    //     };
+    //     fetchUserData();
+    //   }, [session, user])
     
     return(
         <nav className="h-[75px] grid grid-cols-2 backdrop-blur-lg  bg-slate-100/70 fixed top-0 left-0 right-0 z-30 border-gray-200 shadow-lg px-5">
@@ -43,25 +58,63 @@ export default function Topmenu () {
             </div>
 
             {/* navigation links */}
-            <div className="flex items-center justify-end space-x-[5%] h-full hidden md:flex">
+            <div className="flex items-center justify-end space-x-6 h-full hidden md:flex">
                 <Link
                     href="/"
                     className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
                     >
                     Home
                 </Link>
-                <Link
-                    href="/"
-                    className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
-                    >
-                    Member
-                    </Link>
+                { session? 
+                    (
+                        <Link
+                        href="/"
+                        className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
+                        >
+                        Member
+                        </Link>
+                    ): null
+                }
                 <a
                     href="/#contact"
                     className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
                     >
                     Contact
                 </a>
+                {session? 
+                    (
+                        <Link
+                        href="/api/auth/signout"
+                        className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+                        >
+                            SignOut
+                        </Link>
+                    ):(
+                        <div className="flex space-x-6">
+                            <Link
+                                href="/signin"
+                                className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+                                >
+                                    Sign in
+                            </Link>
+                            <Link
+                                href="/signup"
+                                className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+                                >
+                                    Sign up
+                            </Link>
+                        </div>
+                    )
+                }
+                {/* {session?(
+                    <Link
+                        href="/myprofile"
+                        className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+                        >
+                           
+                    </Link>
+                    ):null
+                } */}
             </div>
 
             {/* hamburger menu */}
