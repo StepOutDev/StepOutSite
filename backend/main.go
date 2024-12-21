@@ -10,6 +10,7 @@ import (
 	"stepoutsite/src/middlewares"
 	"stepoutsite/src/services"
 
+	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -27,6 +28,11 @@ func main() {
 
 	app := fiber.New(configuration.NewFiberConfiguration())
 	middlewares.Logger(app)
+	app.Use(swagger.New(swagger.Config{
+		BasePath: "/api/",
+		FilePath: "./docs/swagger.yaml",
+		Path:     "docs",
+	}))
 	app.Use(recover.New())
 	app.Use(cors.New())
 
