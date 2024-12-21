@@ -105,6 +105,13 @@ func (repo userRepository) Login(req *entities.UserDataFormat) (string,error) {
 
 func (repo userRepository) UpdateUser(studentID string,user entities.UserDataFormat) error {
 	filter := bson.M{"student_id": studentID}
+	if user.Password != "" {
+		password,err := hashAndSalt(user.Password)
+		if err != nil {
+			return err
+		}
+		user.Password = password
+	}
 	update := bson.M{"$set": user}
 	_,err := repo.Collection.UpdateOne(repo.Context, filter, update)
 	if err != nil {
