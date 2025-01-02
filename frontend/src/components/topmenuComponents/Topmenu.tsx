@@ -8,19 +8,7 @@ import Link from "next/link";
 import Cookies from 'js-cookie';
 
 // Define user data interface
-interface UserData {
-  student_id: string;
-  first_name: string;
-  last_name: string;
-  nick_name: string;
-  year: string;
-  major: string;
-  role: string;
-  image: string;
-  telephone: string;
-  instagram: string;
-  line: string;
-}
+
 
 export default function Topmenu() {
   const { data: session, status } = useSession();

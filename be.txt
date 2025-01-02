@@ -1,0 +1,753 @@
+main
+package main
+
+import (
+	"log"
+	"os"
+	"stepoutsite/configuration"
+	"stepoutsite/domain/datasources"
+	"stepoutsite/domain/repositories"
+	"stepoutsite/src/gateways"
+	"stepoutsite/src/middlewares"
+	"stepoutsite/src/services"
+
+	"github.com/gofiber/contrib/swagger"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/joho/godotenv"
+)
+
+func main() {
+
+	// // // remove this before deploy ###################
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	// /// ############################################
+
+	app := fiber.New(configuration.NewFiberConfiguration())
+	middlewares.Logger(app)
+	app.Use(swagger.New(swagger.Config{
+		BasePath: "/api/",
+		FilePath: "./docs/swagger.yaml",
+		Path:     "docs",
+	}))
+	app.Use(recover.New())
+	// Apply CORS middleware
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:3000",                       // Frontend URL
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",             // Allowed HTTP methods
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization", // Allowed headers
+		AllowCredentials: true,                                          // Allow credentials (cookies)
+		ExposeHeaders:    "Authorization",                               // Expose the Authorization header to frontend
+		MaxAge:           3600,                                          // Cache preflight response for 1 hour
+	}))
+	app.Options("*", func(c *fiber.Ctx) error {
+		c.Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization")
+		c.Set("Access-Control-Allow-Credentials", "true")
+		return c.SendStatus(fiber.StatusOK)
+	})
+
+	mongodb := datasources.NewMongoDB(10)
+
+	userMongo := repositories.NewUserRepository(mongodb)
+
+	userService := services.NewUserService(userMongo)
+
+	gateways.NewHTTPGateway(app, userService)
+
+	PORT := os.Getenv("DB_PORT_LOGIN")
+
+	if PORT == "" {
+		PORT = "5000"
+	}
+
+	app.Listen(":" + PORT)
+}
+
+-------------------------------------------------------------------------------------
+repo.user
+package repositories
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"os"
+	. "stepoutsite/domain/datasources"
+	"stepoutsite/domain/entities"
+	"stepoutsite/src/middlewares"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
+)
+
+type userRepository struct {
+	Context    context.Context
+	Collection *mongo.Collection
+}
+
+type IUserRepository interface {
+	GetAllUsers(filter bson.M) (*[]entities.UserResponseFormat, error)
+	CreateUser(user entities.UserDataFormat) error
+	Login(req *entities.UserDataFormat) (string, error)
+	GetOneUser(studentID string) (entities.UserDataFormat, error)
+	UpdateUser(studentID string, user entities.UserDataFormat) error
+	DeleteUser(studentID string) error
+	GetMe(studentID string) (entities.UserResponseFormat, error)
+}
+
+func NewUserRepository(db *MongoDB) IUserRepository {
+	return &userRepository{
+		Context:    db.Context,
+		Collection: db.MongoDB.Database(os.Getenv("DATABASE_NAME")).Collection("user"),
+	}
+}
+
+func (repo userRepository) GetAllUsers(filter bson.M) (*[]entities.UserResponseFormat, error) {
+	result := []entities.UserResponseFormat{}
+
+	cursor, err := repo.Collection.Find(repo.Context, filter, options.Find())
+
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(repo.Context)
+
+	for cursor.Next(repo.Context) {
+		var user entities.UserResponseFormat
+
+		err = cursor.Decode(&user)
+		if err != nil {
+			fmt.Println("cannot get user repo")
+			return nil, err
+		}
+		result = append(result, user)
+	}
+
+	return &result, nil
+}
+
+func (repo userRepository) CreateUser(user entities.UserDataFormat) error {
+	password, err := hashAndSalt(user.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = password
+
+	_, err = repo.Collection.InsertOne(repo.Context, user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func hashAndSalt(pwd string) (string, error) {
+	pwdByte := []byte(pwd)
+	hash, err := bcrypt.GenerateFromPassword(pwdByte, bcrypt.MinCost)
+	if err != nil {
+		return "", errors.New("failed to hash password")
+	}
+	return string(hash), nil
+}
+
+func (repo userRepository) GetOneUser(studentID string) (entities.UserDataFormat, error) {
+	var result entities.UserDataFormat
+	filter := bson.M{"student_id": studentID}
+	user := repo.Collection.FindOne(repo.Context, filter).Decode(&result)
+	if user == mongo.ErrNoDocuments {
+		return result, errors.New("user not found")
+	}
+	return result, nil
+}
+
+func (repo userRepository) Login(req *entities.UserDataFormat) (string, error) {
+	tokenDetails, err := middlewares.GenerateJWTToken(req.StudentID)
+	fmt.Print("repoUserLoginTokenndetails ", tokenDetails)
+	fmt.Println("Generated Token:", tokenDetails.Token)
+
+	if err != nil {
+		fmt.Print("repoUserLoginerror ", err)
+		return "", err
+	}
+	return *tokenDetails.Token, nil
+}
+
+func (repo userRepository) UpdateUser(studentID string, user entities.UserDataFormat) error {
+	filter := bson.M{"student_id": studentID}
+	update := bson.M{"$set": user}
+	_, err := repo.Collection.UpdateOne(repo.Context, filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo userRepository) DeleteUser(studentID string) error {
+	filter := bson.M{"student_id": studentID}
+	_, err := repo.Collection.DeleteOne(repo.Context, filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo userRepository) GetMe(studentID string) (entities.UserResponseFormat, error) {
+	var result entities.UserResponseFormat
+	filter := bson.M{"student_id": studentID}
+	user := repo.Collection.FindOne(repo.Context, filter).Decode(&result)
+	if user == mongo.ErrNoDocuments {
+		return result, errors.New("user not found")
+	}
+	return result, nil
+}
+
+-------------------------------------------------------------------------------------
+gateway.user
+package gateways
+
+import (
+	"fmt"
+	"io/ioutil"
+	"reflect"
+	"stepoutsite/domain/entities"
+	"stepoutsite/src/middlewares"
+	"time"
+
+	// "stepoutsite/src/middlewares"
+
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+)
+
+func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
+	user := entities.UserDataFormat{}
+
+	// if err := ctx.BodyParser(&user); err != nil {
+	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	// }
+
+	studentID := ctx.FormValue("student_id")
+	firstName := ctx.FormValue("first_name")
+	lastName := ctx.FormValue("last_name")
+	phone := ctx.FormValue("telephone")
+	password := ctx.FormValue("password")
+	year := ctx.FormValue("year")
+	major := ctx.FormValue("major")
+	role := ctx.FormValue("role")
+	nickName := ctx.FormValue("nick_name")
+	instagram := ctx.FormValue("instagram")
+	line := ctx.FormValue("line")
+
+	imagefile, err := ctx.FormFile("image")
+	var imageByte []byte
+	if imagefile != nil {
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		image, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		defer image.Close()
+		imageByte, err = ioutil.ReadAll(image)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+	} else {
+		imageByte = nil
+	}
+
+	user = entities.UserDataFormat{
+		StudentID: studentID,
+		FirstName: firstName,
+		LastName:  lastName,
+		NickName:  nickName,
+		Year:      year,
+		Major:     major,
+		Role:      role,
+		Password:  password,
+		Telephone: phone,
+		Instagram: instagram,
+		Line:      line,
+	}
+
+	if err := h.userService.CreateUser(user, imageByte); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully create user"})
+}
+
+func (h *HTTPGateway) GetAllUsers(ctx *fiber.Ctx) error {
+	token, err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+
+	filter := bson.M{}
+
+	if err := ctx.BodyParser(&filter); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	users, err := h.userService.GetAllUsers(filter, token.StudentID)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get all users", Data: users})
+
+}
+
+func (h *HTTPGateway) GetMe(ctx *fiber.Ctx) error {
+	fmt.Print("gatewayGetmeCookie ", ctx.Cookies("jwt"))
+	token, err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println("err getme1", err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+	user, err := h.userService.GetMe(token.StudentID)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get user", Data: user})
+}
+
+func (h *HTTPGateway) Login(ctx *fiber.Ctx) error {
+	user := entities.UserDataFormat{}
+
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	token, err := h.userService.Login(&user)
+	fmt.Printf("Type of token: %s\n", reflect.TypeOf(token))
+
+	fmt.Print("gatewayUserLoginToken ", token)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    string(token),
+		Expires:  time.Now().Add(time.Hour * 6),
+		HTTPOnly: true,
+		SameSite: "None", // Allow cross-origin cookies                       // Ensure this is set to "None" for cross-site cookies
+		Secure:   true,   // Set to true when in production (if using HTTPS)
+	}
+	ctx.Cookie(&cookie)
+	fmt.Print("gatewayLoginCookie ", ctx.Cookies("jwt"))
+	fmt.Print("gatewayUserLoginCookie ", cookie.Value)
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login", Data: token})
+}
+
+func (h *HTTPGateway) Logout(ctx *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+	ctx.Cookie(&cookie)
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully logout"})
+}
+
+func (h *HTTPGateway) UpdateUser(ctx *fiber.Ctx) error {
+	token, err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+
+	params := ctx.Queries()
+	targetID := params["student_id"]
+
+	user := entities.UserDataFormat{}
+
+	// if err := ctx.BodyParser(&user); err != nil {
+	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	// }
+
+	firstName := ctx.FormValue("first_name")
+	lastName := ctx.FormValue("last_name")
+	phone := ctx.FormValue("telephone")
+	password := ctx.FormValue("password")
+	year := ctx.FormValue("year")
+	major := ctx.FormValue("major")
+	role := ctx.FormValue("role")
+	nickName := ctx.FormValue("nick_name")
+	instagram := ctx.FormValue("instagram")
+	line := ctx.FormValue("line")
+
+	imagefile, err := ctx.FormFile("image")
+	var imageByte []byte
+	if imagefile != nil {
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		image, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		defer image.Close()
+		imageByte, err = ioutil.ReadAll(image)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+	} else {
+		imageByte = nil
+	}
+
+	user = entities.UserDataFormat{
+		FirstName: firstName,
+		LastName:  lastName,
+		NickName:  nickName,
+		Year:      year,
+		Major:     major,
+		Role:      role,
+		Password:  password,
+		Telephone: phone,
+		Instagram: instagram,
+		Line:      line,
+	}
+
+	if err := h.userService.UpdateUser(token.StudentID, targetID, user, imageByte); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully update user"})
+}
+
+func (h *HTTPGateway) DeleteUser(ctx *fiber.Ctx) error {
+	token, err := middlewares.DecodeJWTToken(ctx)
+	if err != nil || token == nil {
+		fmt.Println(err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+
+	params := ctx.Queries()
+	targetID := params["student_id"]
+
+	if err := h.userService.DeleteUser(token.StudentID, targetID); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully delete user"})
+}
+
+-------------------------------------------------------------------------------------
+jwtmid
+package middlewares
+
+import (
+	"fmt"
+	// "log"
+	"net/http"
+	"os"
+	"stepoutsite/domain/entities"
+	"time"
+
+	jwtware "github.com/gofiber/contrib/jwt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+func SetJWtHeaderHandler() fiber.Handler {
+	return jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{
+			Key:    []byte(os.Getenv("JWT_SECRET_KEY")),
+			JWTAlg: jwtware.HS256,
+		},
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			fmt.Println("Received Token:", c.Get("Authorization")) // Log the token for debugging
+			fmt.Print("SetJWtHeaderHandler error", err)
+			return c.Status(fiber.StatusUnauthorized).JSON(entities.ResponseMessage{Message: "Unauthorization Token."})
+		},
+	})
+}
+
+type TokenDetails struct {
+	Token     *string `json:"token"`
+	StudentID string  `json:"student_id"`
+	ExpiresIn *int64  `json:"exp"`
+}
+
+func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
+
+	td := &TokenDetails{
+		Token: new(string),
+	}
+
+	// if ctx.Cookies("jwt") == "" {
+	// 	fmt.Print("error0")
+	// 	fmt.Println("Token from Cookie:", ctx.Cookies("jwt"))
+	// 	return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
+	// }
+
+	token, status := ctx.Locals("user").(*jwt.Token)
+
+	if !status {
+		fmt.Print("error1")
+		return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		fmt.Print("error2")
+		return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
+	}
+
+	for key, value := range claims {
+		if key == "student_id" || key == "sub" {
+			td.StudentID = value.(string)
+		}
+		if key == "uid" {
+			td.StudentID = value.(string)
+		}
+	}
+	*td.Token = token.Raw
+	return td, nil
+}
+
+func GenerateJWTToken(studentID string) (*TokenDetails, error) {
+	now := time.Now().UTC()
+
+	td := &TokenDetails{
+		ExpiresIn: new(int64),
+		Token:     new(string),
+	}
+	*td.ExpiresIn = now.Add(time.Hour * 6).Unix()
+	td.StudentID = studentID
+
+	SigningKey := []byte(os.Getenv("JWT_SECRET_KEY"))
+
+	atClaims := make(jwt.MapClaims)
+	atClaims["student_id"] = studentID
+	atClaims["exp"] = time.Now().Add(time.Hour * 6).Unix()
+	atClaims["iat"] = time.Now().Unix()
+	atClaims["nbf"] = time.Now().Unix()
+
+	// log.Println("New claims: ", atClaims)
+
+	fmt.Println("StudentID:", studentID)
+	fmt.Println("JWT_SECRET_KEY:", os.Getenv("JWT_SECRET_KEY"))
+
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims).SignedString(SigningKey)
+	if err != nil {
+		return nil, fmt.Errorf("create: sign token: %w", err)
+	}
+	*td.Token = token
+
+	return td, nil
+}
+
+-------------------------------------------------------------------------------------
+service.user
+package services
+
+import (
+	"errors"
+	"fmt"
+
+	"stepoutsite/domain/entities"
+	"stepoutsite/domain/repositories"
+	"stepoutsite/src/utils"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
+)
+
+type userService struct {
+	UserRepository repositories.IUserRepository
+}
+
+type IUserService interface {
+	GetAllUsers(filter bson.M, studentID string) (*[]entities.UserResponseFormat, error)
+	CreateUser(user entities.UserDataFormat, imageByte []byte) error
+	GetOneUser(studentID string) (entities.UserDataFormat, error)
+	Login(req *entities.UserDataFormat) (string, error)
+	CheckPermissionCoreAndAdmin(studentID string) error
+	UpdateUser(userID string, targetID string, user entities.UserDataFormat, imageByte []byte) error
+	DeleteUser(userID string, targetID string) error
+	GetMe(studentID string) (entities.UserResponseFormat, error)
+}
+
+func NewUserService(userRepository repositories.IUserRepository) IUserService {
+	return &userService{
+		UserRepository: userRepository,
+	}
+}
+
+func (sv userService) CreateUser(user entities.UserDataFormat, imageByte []byte) error {
+	if user.StudentID == "" {
+		return errors.New("please fill in student id")
+	}
+
+	check, err := sv.UserRepository.GetOneUser(user.StudentID)
+	if err == nil && check != (entities.UserDataFormat{}) {
+		return errors.New("user already exist")
+	}
+
+	if imageByte != nil {
+		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+
+		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
+
+		if err != nil {
+			return err
+		}
+		user.Image = imageURL
+	}
+
+	err = sv.UserRepository.CreateUser(user)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv userService) GetAllUsers(filter bson.M, studentID string) (*[]entities.UserResponseFormat, error) {
+	err := sv.CheckPermissionCoreAndAdmin(studentID)
+	if err != nil {
+		return nil, err
+	}
+
+	users, err := sv.UserRepository.GetAllUsers(filter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func checkPasswords(hashedPwd string, plainPwd string) error {
+	byteHash := []byte(hashedPwd)
+	pwd := []byte(plainPwd)
+	err := bcrypt.CompareHashAndPassword(byteHash, pwd)
+	if err != nil {
+		return errors.New("passwords do not match")
+	}
+
+	return nil
+}
+
+func (sv userService) GetOneUser(studentID string) (entities.UserDataFormat, error) {
+	user, err := sv.UserRepository.GetOneUser(studentID)
+
+	if err != nil {
+		return entities.UserDataFormat{}, err
+	}
+
+	return user, nil
+}
+
+func (sv userService) Login(req *entities.UserDataFormat) (string, error) {
+	user, err := sv.UserRepository.GetOneUser(req.StudentID)
+
+	if err != nil {
+		return "", errors.New("user not found")
+	}
+
+	if err := checkPasswords(user.Password, req.Password); err != nil {
+		return "", errors.New("passwords do not match")
+	}
+	fmt.Print("  |  ")
+	fmt.Print(sv.UserRepository.Login(req))
+	fmt.Print("  |  ")
+
+	return sv.UserRepository.Login(req)
+}
+
+func (sv userService) CheckPermissionCoreAndAdmin(studentID string) error {
+	admin, err := sv.UserRepository.GetOneUser(studentID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !(admin.Role == "core" || admin.Role == "admin") {
+		return errors.New("unauthorized")
+	}
+	return nil
+}
+func (sv userService) CheckPermissionAdmin(studentID string) error {
+	admin, err := sv.UserRepository.GetOneUser(studentID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !(admin.Role == "admin") {
+		return errors.New("unauthorized")
+	}
+	return nil
+}
+
+func (sv userService) UpdateUser(userID string, targetID string, user entities.UserDataFormat, imageByte []byte) error {
+	checkTarget, err := sv.UserRepository.GetOneUser(targetID)
+
+	if err != nil && checkTarget == (entities.UserDataFormat{}) {
+		return errors.New("user not found")
+	}
+
+	checkUser, _ := sv.UserRepository.GetOneUser(userID)
+
+	err = sv.CheckPermissionCoreAndAdmin(userID)
+	if err != nil {
+		targetID = userID
+	}
+	err = sv.CheckPermissionAdmin(userID)
+	if err != nil {
+		user.Role = checkUser.Role
+	}
+
+	if imageByte != nil {
+		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+
+		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
+
+		if err != nil {
+			return err
+		}
+		user.Image = imageURL
+	}
+
+	if err := sv.UserRepository.UpdateUser(targetID, user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv userService) DeleteUser(userID string, targetID string) error {
+	err := sv.CheckPermissionCoreAndAdmin(userID)
+	if err != nil {
+		targetID = userID
+	}
+	if err := sv.UserRepository.DeleteUser(targetID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv userService) GetMe(studentID string) (entities.UserResponseFormat, error) {
+	user, err := sv.UserRepository.GetMe(studentID)
+	if err != nil {
+		return entities.UserResponseFormat{}, err
+	}
+	return user, nil
+}
