@@ -8,6 +8,7 @@ export default function SigninForm() {
   const [student_id, setStudent_id] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ export default function SigninForm() {
       setError("Invalid credentials");
     }else{
       console.log("Sign-in successful", result);
+      document.cookie = `jwt=${result}; path=/; Secure; SameSite=Strict`;
     }
 
   };
