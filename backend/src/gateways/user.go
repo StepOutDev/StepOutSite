@@ -122,7 +122,7 @@ func (h *HTTPGateway) Login(ctx *fiber.Ctx) error {
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	}
-
+	fmt.Println(token)
 	cookie := fiber.Cookie{
 		Name: "jwt", 
 		Value: token, 

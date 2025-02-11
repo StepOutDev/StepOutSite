@@ -6,11 +6,28 @@ import { useSession } from "next-auth/react";
 import { User } from "../../../interface";
 import Link from "next/link"
 import getUserMe from "@/libs/user/getUserMe";
+import { GetCookie } from "../signinForm";
 
 export default function Topmenu () {
-    const { data: session, status } = useSession();
-    console.log(session)
-    // const [user, setUser] = useState<User>(); 
+    // const { data: session, status } = useSession();
+    // console.log(session)
+    const [cookie, setCookie] = useState<string | undefined>();
+    useEffect(() => {
+        function fetchCookie() {
+            const ck = GetCookie("jwt");
+            setCookie(ck);
+        }
+        fetchCookie();
+
+        const interval = setInterval(() => {
+            const currentCookie = GetCookie("jwt");
+            if (currentCookie !== cookie) {
+              setCookie(currentCookie);
+            }
+        }, 500);
+        return () => clearInterval(interval);
+    }, [cookie])
+    const [user, setUser] = useState<User>(); 
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -28,15 +45,17 @@ export default function Topmenu () {
         };
       }, []);
 
-    //   useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         if(session){
-    //             const userA:User = (await getUserMe(session?.user?.data)).data;
-    //             setUser(userA)
-    //         } 
-    //     };
-    //     fetchUserData();
-    //   }, [session, user])
+      useEffect(() => {
+        const fetchUserData = async () => {
+            if(cookie){
+                const userA:User = (await getUserMe(cookie)).data;
+                setUser(userA)
+            } 
+        };
+        if(user === undefined){
+            fetchUserData();
+        }
+      }, [cookie, user])
     
     return(
         <nav className="h-[75px] grid grid-cols-2 backdrop-blur-lg  bg-slate-100/70 fixed top-0 left-0 right-0 z-30 border-gray-200 shadow-lg px-5">
@@ -65,7 +84,7 @@ export default function Topmenu () {
                     >
                     Home
                 </Link>
-                { session? 
+                { cookie? 
                     (
                         <Link
                         href="/"
@@ -81,7 +100,7 @@ export default function Topmenu () {
                     >
                     Contact
                 </a>
-                {session? 
+                {cookie? 
                     (
                         <Link
                         href="/api/auth/signout"
@@ -106,15 +125,15 @@ export default function Topmenu () {
                         </div>
                     )
                 }
-                {/* {session?(
+                {cookie?(
                     <Link
                         href="/myprofile"
                         className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
                         >
-                           
+                    {user?.student_id}
                     </Link>
                     ):null
-                } */}
+                }
             </div>
 
             {/* hamburger menu */}
