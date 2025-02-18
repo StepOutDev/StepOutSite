@@ -13,7 +13,7 @@ export default function SigninForm() {
     e.preventDefault();
     // const result = await signIn("credentials", { student_id, password, redirect: false, callbackUrl: "/" });
     const result = await userSignin(student_id, password);
-    console.log("result",result);
+    // console.log("result",result);
     SetCookie("jwt", result?.data);
     if(result?.error) {
       setError("Invalid credentials");
