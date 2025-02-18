@@ -37,9 +37,9 @@ func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
 		Token: new(string),
 	}
 
-	if ctx.Cookies("jwt") == "" {
-		return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
-	}
+	// if ctx.Cookies("jwt") == "" {
+	// 	return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
+	// }
 	
 	token, status := ctx.Locals("user").(*jwt.Token)
 
