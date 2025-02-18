@@ -14,6 +14,7 @@ type kneepadsService struct{
 type IKneepadsService interface {
 	CreateKneepads(studentID string,kneepads entities.KneepadsDataFormat) error
 	GetOneKneepads(studentID string,number string) (entities.KneepadsDataFormat,error)
+	GetAllKneepads(studentID string) (*[]entities.KneepadsDataFormat,error)
 }
 
 func NewKneepadsService(kneepadsRepository repositories.IKneepadsRepository,userService IUserService) IKneepadsService {
@@ -55,6 +56,19 @@ func(sv kneepadsService) GetOneKneepads(studentID string,number string) (entitie
 	kneepads,err := sv.KneepadsRepository.GetOneKneepads(number);
 	if err!=nil	{
 		return entities.KneepadsDataFormat{},err
+	}
+
+	return kneepads,nil
+}
+
+func(sv kneepadsService) GetAllKneepads(studentID string) (*[]entities.KneepadsDataFormat,error){
+	if err := sv.UserService.CheckPermissionMember(studentID); err!=nil{
+		return nil,errors.New("unauthorized")
+	}
+
+	kneepads,err := sv.KneepadsRepository.GetAllKneepads(nil);
+	if err!=nil	{
+		return nil,err
 	}
 
 	return kneepads,nil

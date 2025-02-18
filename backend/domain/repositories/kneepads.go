@@ -19,6 +19,7 @@ type kneepadsRepository struct {
 type IKneepadsRepository interface{
 	CreateKneepads(kneepads entities.KneepadsDataFormat) error
 	GetOneKneepads(number string) (entities.KneepadsDataFormat,error)
+	GetAllKneepads(filter bson.M) (*[]entities.KneepadsDataFormat, error)
 }
 
 func NewKneepadsRepository(db *MongoDB) IKneepadsRepository {
@@ -45,4 +46,26 @@ func(repo kneepadsRepository) GetOneKneepads(number string) (entities.KneepadsDa
 		return result,errors.New("kneepads not found")
 	}
 	return result,nil
+}
+
+func(repo kneepadsRepository) GetAllKneepads(filter bson.M) (*[]entities.KneepadsDataFormat, error){
+	result := []entities.KneepadsDataFormat{}
+
+	cursor,err := repo.Collection.Find(repo.Context,filter)
+	if err != nil{
+		return nil,err
+	}
+	defer cursor.Close(repo.Context)
+
+	for cursor.Next(repo.Context){
+		var kneepads entities.KneepadsDataFormat
+
+		err = cursor.Decode(&kneepads)
+		if err != nil{
+			return nil,err
+		}
+		result = append(result,kneepads)
+	}
+
+	return &result,nil
 }

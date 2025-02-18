@@ -36,3 +36,15 @@ func (h *HTTPGateway) GetOneKneepads(ctx *fiber.Ctx) error{
 	}
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get kneepads",Data: kneepads})
 }
+
+func (h *HTTPGateway) GetAllKneepads(ctx *fiber.Ctx) error{
+	token,err := middlewares.DecodeJWTToken(ctx)
+	if err!=nil || token==nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+	kneepads,err := h.kneepadsService.GetAllKneepads(token.StudentID)
+	if err!=nil{
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully get all kneepads",Data: kneepads})
+}
