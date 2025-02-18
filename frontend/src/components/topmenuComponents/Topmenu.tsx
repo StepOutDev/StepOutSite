@@ -1,61 +1,76 @@
-"use client"
-import { useState, useEffect } from "react"
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+"use client";
+
 import { useSession } from "next-auth/react";
-import { User } from "../../../interface";
-import Link from "next/link"
+import { useEffect, useState } from "react";
 import getUserMe from "@/libs/user/getUserMe";
-import { GetCookie } from "../signinForm";
 
 export default function Topmenu () {
-    // const { data: session, status } = useSession();
-    // console.log(session)
-    const [cookie, setCookie] = useState<string | undefined>();
-    useEffect(() => {
-        function fetchCookie() {
-            const ck = GetCookie("jwt");
-            setCookie(ck);
-        }
-        fetchCookie();
-
-        const interval = setInterval(() => {
-            const currentCookie = GetCookie("jwt");
-            if (currentCookie !== cookie) {
-              setCookie(currentCookie);
-            }
-        }, 500);
-        return () => clearInterval(interval);
-    }, [cookie])
-    const [user, setUser] = useState<User>(); 
+    const { data: session, status } = useSession();
+    console.log(session)
+    // const [user, setUser] = useState<User>(); 
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
-    useEffect(() => {
-        // Function to close the menu when screen width changes to md or larger
-        const handleResize = () => {
-          if (window.innerWidth >= 768) {
-            setMenuOpen(false);
-          }
-        };
-        // Add event listener
-        window.addEventListener("resize", handleResize);
-        // Clean up the event listener
-        return () => {
-          window.removeEventListener("resize", handleResize);
-        };
-      }, []);
 
-      useEffect(() => {
-        const fetchUserData = async () => {
-            if(cookie){
-                const userA:User = (await getUserMe(cookie)).data;
-                setUser(userA)
-            } 
-        };
-        if(user === undefined){
-            fetchUserData();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      console.log("Status:", status);
+      console.log("Session:", session);
+      console.log("Session Token:", session?.user?.token);
+      const token = Cookies.get('jwt'); // Retrieve the token from the cookie.
+      if (!token) {
+          console.error("No JWT token found in cookies.");
+          return;
+      }
+      console.log("1")
+      if (status === "loading") {
+        console.log("2")
+        setSessionLoading(true);
+      } else if (status === "authenticated" && session?.user?.token) {
+        setSessionLoading(false);
+        setUserLoading(true);
+        console.log("3")
+
+        try {
+          const data = await getUserMe(session?.user?.token);
+          if (data) {
+            setUserData(data);
+            console.log("4")
+          } else {
+            console.error("User data is null or undefined.");
+          }
+        } catch (err: any) {
+          console.error("Error fetching user profile:", err.message, err);
+          setError("Failed to load user data.");
+        } finally {
+          setUserLoading(false);
+          console.log("5")
         }
-      }, [cookie, user])
+      } else {
+        setSessionLoading(false);
+        console.log("6")
+      }
+    };
+
+    fetchUserData();
+    console.log("7")
+  }, [session, status]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMenuOpen(false);
+      }
+    };
+
+    //   useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         if(session){
+    //             const userA:User = (await getUserMe(session?.user?.data)).data;
+    //             setUser(userA)
+    //         } 
+    //     };
+    //     fetchUserData();
+    //   }, [session, user])
     
     return(
         <nav className="h-[75px] grid grid-cols-2 backdrop-blur-lg  bg-slate-100/70 fixed top-0 left-0 right-0 z-30 border-gray-200 shadow-lg px-5">
@@ -84,7 +99,7 @@ export default function Topmenu () {
                     >
                     Home
                 </Link>
-                { cookie? 
+                { session? 
                     (
                         <Link
                         href="/"
@@ -100,7 +115,7 @@ export default function Topmenu () {
                     >
                     Contact
                 </a>
-                {cookie? 
+                {session? 
                     (
                         <Link
                         href="/api/auth/signout"
@@ -125,66 +140,72 @@ export default function Topmenu () {
                         </div>
                     )
                 }
-                {cookie?(
+                {/* {session?(
                     <Link
                         href="/myprofile"
                         className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
                         >
-                    {user?.student_id}
+                           
                     </Link>
                     ):null
-                }
+                } */}
             </div>
 
-            {/* hamburger menu */}
-            <div className="flex items-center justify-end h-full md:hidden">
-                <button
-                    className="text-gray-700 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                {/* Hamburger icon */}
-                <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16m-7 6h7"
-                    ></path>
-                </svg>
-                </button>
-            </div>
-            {/* dropdown menu */}
-            {menuOpen && (
-                <div className="absolute top-[75px] right-0 backdrop-blur-lg bg-slate-100/70 shadow-lg w-48 py-2 z-40">
-                <Link
-                    href="/"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    Home
-                </Link>
-                <Link
-                    href="/"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    Member
-                </Link>
-                <Link
-                    href="/#contact"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    Contact
-                </Link>
-                </div>
-            )}
-        </nav>
-    )
+
+      {/* navigation links */}
+      <div className="flex items-center justify-end space-x-6 h-full hidden md:flex">
+        <Link
+          href="/"
+          className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
+        >
+          Home
+        </Link>
+        {session && (
+          <Link
+            href="/myprofile"
+            className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
+          >
+            Member
+          </Link>
+        )}
+        <a
+          href="/#contact"
+          className="flex items-center justify-center h-full py-2 pr-4 pl-3 text-gray-700 font-bold duration-300 ease-in-out hover:bg-[#7A4E9A] hover:text-white"
+        >
+          Contact
+        </a>
+        {session?.user.token ? (
+          <div className="flex space-x-6">
+            {/* Display user info */}
+            
+            <Link
+              href="/api/auth/signout"
+              className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+            >
+              <div className="flex items-center justify-center py-2 px-4 text-gray-700 font-bold">
+                <span>{userData?.nick_name || "Guest"}</span>
+                <span className="ml-2">{userData?.year || "-"}</span>
+                <span className="ml-2">{userData?.major || "-"}</span>
+              </div>
+            </Link>
+          </div>
+        ) : (
+          <div className="flex space-x-6">
+            <Link
+              href="/signin"
+              className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/signup"
+              className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+            >
+              Sign up
+            </Link>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
 }
