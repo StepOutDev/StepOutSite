@@ -15,6 +15,7 @@ type IKneepadsService interface {
 	CreateKneepads(studentID string,kneepads entities.KneepadsDataFormat) error
 	GetOneKneepads(studentID string,number string) (entities.KneepadsDataFormat,error)
 	GetAllKneepads(studentID string) (*[]entities.KneepadsDataFormat,error)
+	UpdateKneepads(studentID string,number string,kneepads entities.KneepadsDataFormat) error
 }
 
 func NewKneepadsService(kneepadsRepository repositories.IKneepadsRepository,userService IUserService) IKneepadsService {
@@ -72,4 +73,25 @@ func(sv kneepadsService) GetAllKneepads(studentID string) (*[]entities.KneepadsD
 	}
 
 	return kneepads,nil
+}
+
+func(sv kneepadsService) UpdateKneepads(studentID string,number string,kneepads entities.KneepadsDataFormat) error{
+	if number == "" {
+		return errors.New("please provide number")
+	}
+
+	if err := sv.UserService.CheckPermissionCoreAndAdmin(studentID); err!=nil{
+		return errors.New("unauthorized")
+	}
+
+	_, err := sv.KneepadsRepository.GetOneKneepads(number)
+	if err!=nil	{
+		return errors.New("kneepads not found")
+	}
+	
+	if err := sv.KneepadsRepository.UpdateKneepads(number,kneepads); err!=nil{
+		return err
+	}
+
+	return nil
 }

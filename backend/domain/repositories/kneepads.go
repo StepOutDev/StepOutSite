@@ -20,6 +20,7 @@ type IKneepadsRepository interface{
 	CreateKneepads(kneepads entities.KneepadsDataFormat) error
 	GetOneKneepads(number string) (entities.KneepadsDataFormat,error)
 	GetAllKneepads(filter bson.M) (*[]entities.KneepadsDataFormat, error)
+	UpdateKneepads(number string, kneepads entities.KneepadsDataFormat) error
 }
 
 func NewKneepadsRepository(db *MongoDB) IKneepadsRepository {
@@ -68,4 +69,14 @@ func(repo kneepadsRepository) GetAllKneepads(filter bson.M) (*[]entities.Kneepad
 	}
 
 	return &result,nil
+}
+
+func(repo kneepadsRepository) UpdateKneepads(number string, kneepads entities.KneepadsDataFormat) error {
+	filter := bson.M{"number":number}
+	update := bson.M{"$set":kneepads}
+	_,err := repo.Collection.UpdateOne(repo.Context,filter,update)
+	if err != nil{
+		return err
+	}
+	return nil
 }

@@ -30,4 +30,5 @@ func GatewayKneepads(gateway HTTPGateway, app *fiber.App){
 	apiJWT.Post("/create",gateway.CreateKneepads)
 	apiJWT.Get("/get_one",gateway.GetOneKneepads)
 	apiJWT.Get("/get_all",gateway.GetAllKneepads)
+	apiJWT.Put("/update",gateway.UpdateKneepads)
 }
