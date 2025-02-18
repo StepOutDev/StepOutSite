@@ -10,7 +10,7 @@ export default function SigninForm() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await signIn("credentials", { student_id, password, redirect: true, callbackUrl: "/" });
+    const result = await signIn("credentials", { student_id, password, redirect: false, callbackUrl: "/" });
     console.log("result",result);
     if(result?.error) {
       setError("Invalid credentials");
