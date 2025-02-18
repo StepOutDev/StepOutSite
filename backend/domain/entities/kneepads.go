@@ -7,6 +7,5 @@ type KneepadsDataFormat struct {
 	Status string `json:"status" bson:"status,omitempty"`
 	BookingDate string `json:"booking_date" bson:"booking_date,"`
 	ReturnDate string `json:"return_date" bson:"return_date,omitempty"`
-	Image string `json:"image" bson:"image,omitempty"`
 	StudentID string `json:"student_id" bson:"student_id,omitempty"`
 }
