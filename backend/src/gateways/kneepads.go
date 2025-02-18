@@ -66,3 +66,17 @@ func (h *HTTPGateway) UpdateKneepads(ctx *fiber.Ctx) error{
 	}
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully update kneepads"})
 }
+
+func (h *HTTPGateway) DeleteKneepads(ctx *fiber.Ctx) error{
+	token,err := middlewares.DecodeJWTToken(ctx)
+	if err!=nil || token==nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+	params := ctx.Queries()
+	number := params["number"]
+	err = h.kneepadsService.DeleteKneepads(token.StudentID,number)
+	if err!=nil{
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully delete kneepads"})
+}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"stepoutsite/domain/entities"
 	"stepoutsite/domain/repositories"
+	"strings"
 )
 
 type kneepadsService struct{
@@ -16,6 +17,7 @@ type IKneepadsService interface {
 	GetOneKneepads(studentID string,number string) (entities.KneepadsDataFormat,error)
 	GetAllKneepads(studentID string) (*[]entities.KneepadsDataFormat,error)
 	UpdateKneepads(studentID string,number string,kneepads entities.KneepadsDataFormat) error
+	DeleteKneepads(studentID string,number string) error
 }
 
 func NewKneepadsService(kneepadsRepository repositories.IKneepadsRepository,userService IUserService) IKneepadsService {
@@ -37,6 +39,8 @@ func(sv kneepadsService) CreateKneepads(studentID string,kneepads entities.Kneep
 	if err := sv.UserService.CheckPermissionCoreAndAdmin(studentID); err!=nil{
 		return errors.New("unauthorized")
 	}
+
+	kneepads.Size = strings.ToUpper(kneepads.Size)
 
 	if err := sv.KneepadsRepository.CreateKneepads(kneepads); err!=nil{
 		return err
@@ -93,5 +97,20 @@ func(sv kneepadsService) UpdateKneepads(studentID string,number string,kneepads 
 		return err
 	}
 
+	return nil
+}
+
+func(sv kneepadsService) DeleteKneepads(studentID string,number string) error{
+	if number == "" {
+		return errors.New("please provide number")
+	}
+
+	if err := sv.UserService.CheckPermissionCoreAndAdmin(studentID); err!=nil{
+		return errors.New("unauthorized")
+	}
+
+	if err := sv.KneepadsRepository.DeleteKneepads(number); err!=nil{
+		return err
+	}
 	return nil
 }
