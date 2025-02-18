@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
+import EditProfileForm from '@/components/EditProfileForm';
 import Button from '@mui/material/Button';
 
 const ProfilePage = () => {
@@ -39,13 +40,13 @@ const ProfilePage = () => {
         {/* Name */}
         <h1 className="flex items-center justify-center w-full text-2xl font-bold absolute top-[7px]">{userProfile.knickname}</h1>
         <div className='flex flex-row absolute w-full absolute top-[53px]'>
-            <div className='flex flex-col w-[500px] h-[180px] absolute left-[50px] top-[0px] justify-between h-full'>
+            <div className='flex flex-col w-[500px] h-[170px] absolute left-[50px] top-[5px] justify-between h-full'>
                 <h1 className=" w-full text-2xl font-bold">Full Name : {userProfile.firstlastname}</h1>
                 <h1 className="w-full text-2xl font-bold">Year : {userProfile.Year}</h1>
                 <h1 className="w-full text-2xl font-bold items-center">Role : {userProfile.Role}</h1>
                 <h1 className="w-full block text-2xl font-bold items-center">Tel : {userProfile.Tel}</h1>
             </div>
-            <div className='flex flex-col w-[300px] h-[180px] absolute left-[570px] top-[0px] justify-between h-full'>
+            <div className='flex flex-col w-[300px] h-[170px] absolute left-[570px] top-[5px] justify-between h-full'>
                 <h1 className=" w-full text-2xl font-bold">StudentId : {userProfile.StudentId}</h1>
                 <h1 className="w-full text-2xl font-bold">Major : {userProfile.Major}</h1>
                 <h1 className="w-full text-2xl font-bold items-center">IG : {userProfile.IG}</h1>
@@ -55,7 +56,10 @@ const ProfilePage = () => {
 
         {/* <h1 className="flex items-center justify-center w-full text-2xl font-bold mt-12">{userProfile.name}</h1> */}
         
-        <Button variant="outlined" 
+        <div className="flex items-center justify-center absolute top-[245px] w-full">
+          <EditProfileForm />
+        </div>
+        {/* <Button variant="outlined" 
             sx={{ width: 300, 
             border: '2px solid',      // Thicker border (3px)
             borderColor: '#184A92',  // Custom border color
@@ -64,7 +68,7 @@ const ProfilePage = () => {
             '&:hover': {
             borderColor: '#1D3557', // Custom hover border color
             },}}  
-        className="flex items-center justify-center bg-[#F5F5F5] text-[#184A92] hover:bg-gray-300 absolute top-[245px]">Edit</Button>
+        className="flex items-center justify-center bg-[#F5F5F5] text-[#184A92] hover:bg-gray-300 absolute top-[245px]">Edit</Button> */}
       </div>
     </div>
   );
