@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"fmt"
-	"log"
+	// "log"
 	"net/http"
 	"os"
 	"stepoutsite/domain/entities"
@@ -37,7 +37,12 @@ func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
 		Token: new(string),
 	}
 
+	// if ctx.Cookies("jwt") == "" {
+	// 	return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
+	// }
+	
 	token, status := ctx.Locals("user").(*jwt.Token)
+
 	if !status {
 		return nil, ctx.Status(http.StatusUnauthorized).SendString("Unauthorization Token.")
 	}
@@ -48,7 +53,7 @@ func DecodeJWTToken(ctx *fiber.Ctx) (*TokenDetails, error) {
 	}
 
 	for key, value := range claims {
-		if key == "user_id" || key == "sub" {
+		if key == "student_id" || key == "sub" {
 			td.StudentID = value.(string)
 		}
 		if key == "uid" {
@@ -77,12 +82,13 @@ func GenerateJWTToken(studentID string) (*TokenDetails, error) {
 	atClaims["iat"] = time.Now().Unix()
 	atClaims["nbf"] = time.Now().Unix()
 
-	log.Println("New claims: ", atClaims)
+	// log.Println("New claims: ", atClaims)
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims).SignedString(SigningKey)
 	if err != nil {
 		return nil, fmt.Errorf("create: sign token: %w", err)
 	}
 	*td.Token = token
+	
 	return td, nil
 }
