@@ -102,12 +102,12 @@ export default function Topmenu () {
                 </a>
                 {cookie? 
                     (
-                        <Link
-                        href="/api/auth/signout"
+                        <button
+                        onClick={signOut}
                         className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
                         >
                             SignOut
-                        </Link>
+                        </button>
                     ):(
                         <div className="flex space-x-6">
                             <Link
@@ -128,9 +128,9 @@ export default function Topmenu () {
                 {cookie?(
                     <Link
                         href="/myprofile"
-                        className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center h-full py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
+                        className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center py-4 pr-7 pl-7 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
                         >
-                    {user?.student_id}
+                    {user?.first_name}
                     </Link>
                     ):null
                 }
@@ -187,4 +187,12 @@ export default function Topmenu () {
             )}
         </nav>
     )
+}
+
+export function signOut(){
+    const isConfirmed = window.confirm("Are you sure you want to sign out?");
+    if(isConfirmed){
+        document.cookie = "jwt=; Max-Age=0; path=/;";
+        window.location.href = "/";
+    }
 }
