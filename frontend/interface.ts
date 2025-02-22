@@ -13,3 +13,12 @@ export interface User{
     line: string;
 
 }
+
+export interface Kneepads{
+    number: string;
+    size: string;
+    status: string;
+    booking_date: string;
+    return_date: string;
+    student_id: string;
+}
