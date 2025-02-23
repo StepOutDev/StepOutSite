@@ -7,17 +7,29 @@ import (
 )
 
 func GatewayUser(gateway HTTPGateway, app *fiber.App) {
-	apiUser := app.Group("/api/v1/user")
+	api := app.Group("/api/v1/user")
 
-	apiUserNoJWT := apiUser.Group("")
-	apiUserNoJWT.Post("/register", gateway.CreateUser)
-	apiUserNoJWT.Post("/login", gateway.Login)
+	apiNoJWT := api.Group("")
+	apiNoJWT.Post("/register", gateway.CreateUser)
+	apiNoJWT.Post("/login", gateway.Login)
 
-	apiUserJWT := apiUser.Group("")
-	apiUserJWT.Use(middlewares.SetJWtHeaderHandler())
-	apiUserJWT.Post("/get_users", gateway.GetAllUsers)
-	apiUserJWT.Get("/me", gateway.GetMe)
-	apiUserJWT.Post("/logout", gateway.Logout)
-	apiUserJWT.Put("/update", gateway.UpdateUser)
-	apiUserJWT.Delete("/delete", gateway.DeleteUser)
+	apiJWT := api.Group("")
+	apiJWT.Use(middlewares.SetJWtHeaderHandler())
+	apiJWT.Post("/get_users", gateway.GetAllUsers)
+	apiJWT.Get("/me", gateway.GetMe)
+	apiJWT.Post("/logout", gateway.Logout)
+	apiJWT.Put("/update", gateway.UpdateUser)
+	apiJWT.Delete("/delete", gateway.DeleteUser)
+}
+
+func GatewayKneepads(gateway HTTPGateway, app *fiber.App){
+	api := app.Group("/api/v1/kneepads")
+
+	apiJWT := api.Group("")
+	apiJWT.Use(middlewares.SetJWtHeaderHandler())
+	apiJWT.Post("/create",gateway.CreateKneepads)
+	apiJWT.Get("/get_one",gateway.GetOneKneepads)
+	apiJWT.Get("/get_all",gateway.GetAllKneepads)
+	apiJWT.Put("/update",gateway.UpdateKneepads)
+	apiJWT.Delete("/delete",gateway.DeleteKneepads)
 }

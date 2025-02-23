@@ -310,6 +310,152 @@ paths:
               application/json:
                 example:
                   message: Unauthorization Token.
+  /kneepads/create:
+    post:
+      tags:
+        - kneepads
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Kneepads'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully create kneepads"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /kneepads/get_one:
+    get:
+      tags:
+        - kneepads
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully get kneepads"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /kneepads/get_all:
+    get:
+      tags:
+        - kneepads
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully get all kneepads"
+                data: []
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /kneepads/update:
+    put:
+      tags:
+        - kneepads
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Kneepads'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully update kneepads"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /kneepads/delete:
+    delete:
+      tags:
+        - kneepads
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully delete kneepads"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
 components:
   schemas:
       UserInput:
@@ -415,6 +561,29 @@ components:
             example: "@stepoutintania"
         xml:
           name: user
+      Kneepads:
+        type: object
+        properties:
+          number:
+            type: string
+            example: "00"
+          size:
+            type: string
+            example: "S"
+          status:
+            type: string
+            example: "available"
+          booking_date:
+            type: string
+            example: "01-01-2021"
+          return_date:
+            type: string
+            example: "01-02-2021"
+          student_id:
+            type: string
+            example: "6630000021"    
+        xml:
+          name: kneepads
   securitySchemes:
     bearerAuth:
       type: http
@@ -426,3 +595,4 @@ components:
 
 tags:
   - name: user
+  - name: kneepads

@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
+import EditProfileForm from '@/components/EditProfileForm';
 import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 
@@ -199,6 +200,7 @@ const MyProfilePage = () => {
         >
           Edit
         </Button>
+
       </div>
 
       {/* Edit Profile Modal */}
