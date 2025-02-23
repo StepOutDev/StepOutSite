@@ -1,4 +1,4 @@
-export default async function deleteKneepads(number: string, token: string) {
+export default async function deleteKneepads(number: string, token?: string) {
     const response = await fetch(
       `http://127.0.0.1:5000/api/v1/kneepads/delete/${number}`,
       {
