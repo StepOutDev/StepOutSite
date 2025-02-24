@@ -42,15 +42,15 @@ func main() {
 	kneepadsMongo := repositories.NewKneepadsRepository(mongodb)
 
 	userService := services.NewUserService(userMongo)
-	kneepadsService := services.NewKneepadsService(kneepadsMongo,userService)
+	kneepadsService := services.NewKneepadsService(kneepadsMongo, userService)
 
-	gateways.NewHTTPGateway(app,userService,kneepadsService)
+	gateways.NewHTTPGateway(app, userService, kneepadsService)
 
 	PORT := os.Getenv("DB_PORT_LOGIN")
 
-	if PORT == ""{
+	if PORT == "" {
 		PORT = "5000"
 	}
 
-	app.Listen(":"+PORT)
+	app.Listen(":" + PORT)
 }
