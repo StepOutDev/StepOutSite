@@ -1,19 +1,57 @@
 import { Button } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { Kneepads } from "../../../interface";
 import { useEffect, useState } from "react";
 import { GetCookie } from "../signinForm";
 import updateKneepads from "@/libs/kneepads/updateKneepads";
 import getUserMe from "@/libs/user/getUserMe";
 import { User } from "../../../interface";
+import KneepadsBookPage from "./kneepadsBookPage";
 
 export default function KneepadsData(props: {kneepads: Kneepads}) {
     
     switch(props.kneepads.status) {
         case "available":
+            const [open, setOpen] = useState(false);
             return (
-               <>available</> 
+               <div className="flex flex-col justify-center mt-[10px] w-[100%]">
+                    <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                        Do you want to book kneepads?
+                    </div>
+                    <Button variant="contained" color="primary" size="small" sx={ 
+                        [{   
+                            bgcolor: "#FFFFFF",
+                            color: "#1A5AB8",
+                            borderColor: "#1A5AB8",	
+                            borderWidth: "2px",
+                            borderStyle: "solid",
+                            borderRadius: "10px",
+                            fontFamily: "poppinsSemiBold",
+                            fontSize: "12px",
+                            mx: "30px",
+                            mt: "20px",
+                            height: "40px",
+                        },{
+                            '&:hover': {
+                                backgroundColor: "#1A5AB8",
+                                color: "#FFFFFF",
+                            }
+                        }]
+                    } onClick={()=>{setOpen(true)}}>Book</Button>
+                    <Modal
+                        open={open}
+                        onClose={()=>{setOpen(false)}}
+                        aria-labelledby="modal-modal-book"
+                        aria-describedby="modal-modal-description"
+                        style={{display:'flex',alignItems:'center',justifyContent:'center'}}
+                    >
+                       <KneepadsBookPage kneepads={props.kneepads}></KneepadsBookPage>
+                    </Modal>
+               </div> 
             )
         case "booked":
             return (
@@ -196,8 +234,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                                         color: "#FFFFFF",
                                     }
                                 }]
-                            } onClick={()=>{props.kneepads.status = "booked"; setApprove(true); 
-                            updateKneepads(props.kneepads,props.kneepads.number,cookie); }}><DoneIcon></DoneIcon></Button>
+                            } onClick={()=>{setApprove(true); console.log(approve);props.kneepads.status = "booked"; 
+                            updateKneepads(props.kneepads,props.kneepads.number,cookie); window.location.reload()}}><DoneIcon></DoneIcon></Button>
                         </div>}
                         </div>
                         :null}
