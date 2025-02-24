@@ -3,6 +3,11 @@ import { Kneepads, User } from "../../../interface";
 import KneepadsData from "./kneepadsData";
 import { GetCookie } from "../signinForm";
 import getUserMe from "@/libs/user/getUserMe";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Dayjs } from "dayjs";
 
 export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
     const [cookie, setCookie] = useState<string | undefined>();
@@ -33,9 +38,11 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                         fetchUserData();
                     }
                 })
+    const [bookingDate, setBookingDate] = useState<Dayjs | null|undefined>(null);
+    const [returnDate, setReturnDate] = useState<Dayjs | null|undefined>(null);            
     return (
         <div className="flex flex-col shadow-[3px_5px_4px_rgba(0,0,0,0.25)] 
-        border-[3px] border-[#5892CA] rounded-[20px] m-[2%] w-[60%] aspect-[1.5/1] bg-white">
+        border-[3px] border-[#1A5AB8] rounded-[20px] m-[2%] w-[60%] aspect-[1.5/1] bg-white">
             <div className="flex flex-row justify-start ">
                 <div className="flex items-center justify-center inline mx-[20px] mt-[30px]
                 p-[30px] font-[poppinsExtraBold] text-[30px] text-[#1A5AB8] bg-[#E6F0FF] 
@@ -59,23 +66,157 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                             {user?.nick_name} {user?.year} {user?.major}
                         </div>
                     </div>
-                    <div className="flex flex-row justify-between">
-                        <p className="inline ml-[35px] mt-[15px]"> 
+                    <div className="flex flex-row justify-start">
+                        <div className="inline ml-[35px] mt-[20px]"> 
                             <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
                                 Book Date :
                             </span>
-                            <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-                                {props.kneepads.booking_date}
-                            </span>    
-                        </p>
-                        <p className="inline mr-[35px] mt-[15px]"> 
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
+                                    <DatePicker label="Pick the date"  value={bookingDate} 
+                                    onChange={(newValue) => setBookingDate(newValue)}
+                                    slotProps={{
+                                        popper: {
+                                          sx: {
+                                            "& .MuiPaper-root": {
+                                              color:"#000",  
+                                              backgroundColor: "#ffffff", // Light blue background for the calendar
+                                              border: "3px solid #1A5AB8", // Border color for the calendar
+                                              borderRadius: "10px", // Rounded corners for the popup
+                                              padding: "15px", // Padding around the calendar
+                                              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)", // Shadow around the calendar
+                                            },
+                                            "& .MuiTypography-root": {
+                                              fontFamily: "PoppinsRegular", // Custom font for the calendar
+                                              fontSize: "16px", 
+                                            },
+                                            "& .MuiPickersDay-root": {
+                                              fontFamily: "PoppinsRegular", // Custom font for the day cells
+                                              fontSize: "16px", // Font size for the day cells
+                                              color: "#1A5AB8", // Text color for the day numbers
+                                              "&:hover": {
+                                                backgroundColor: "lightblue", // Highlight the day on hover
+                                              },
+                                            },
+                                            "& .MuiPickersDay-daySelected": {
+                                              backgroundColor: "#ffffff", // Background color for the selected day
+                                              color: "#ffffff", // Text color for the selected day
+                                            },
+                                          },
+                                        },
+                                      }}
+                                    sx={{
+                                        "& .MuiInputBase-root": {
+                                            color: "#1A5AB8",
+                                            fontSize: "16px",
+                                            fontFamily: "PoppinsRegular",
+                                        },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& fieldset": {
+                                                borderRadius: "20px", 
+                                                borderColor: "#1A5AB8", 
+                                                borderWidth: 2,
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "lightblue",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "#4fc3f7",                                            },
+                                        },
+                                        "& label": {
+                                            color: "#1A5AB8",
+                                            fontSize: "16px",
+                                            fontFamily: "PoppinsRegular",
+                                        },
+                                        "& label.Mui-focused": {
+                                            color: "#1A5AB8",
+                                        },
+                                        "& .MuiInputLabel-shrink": {
+                                            color: "#1A5AB8", 
+                                        },
+                                        "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+                                            color: "#1A5AB8",  
+                                        },
+                                        width: "20%",
+                                    }}/>
+                                </DemoContainer>
+                            </LocalizationProvider> 
+                        </div>
+                        <div className="inline mr-[35px] mt-[20px]"> 
                             <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
                                 Return Date :
                             </span>
-                            <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-                                {props.kneepads.return_date}
-                            </span>    
-                        </p>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
+                                    <DatePicker label="Pick the date"  value={returnDate} 
+                                    onChange={(newValue) => setReturnDate(newValue)}
+                                    slotProps={{
+                                        popper: {
+                                          sx: {
+                                            "& .MuiPaper-root": {
+                                              color:"#000",  
+                                              backgroundColor: "#ffffff", // Light blue background for the calendar
+                                              border: "3px solid #1A5AB8", // Border color for the calendar
+                                              borderRadius: "10px", // Rounded corners for the popup
+                                              padding: "15px", // Padding around the calendar
+                                              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)", // Shadow around the calendar
+                                            },
+                                            "& .MuiTypography-root": {
+                                              fontFamily: "PoppinsRegular", // Custom font for the calendar
+                                              fontSize: "16px", 
+                                            },
+                                            "& .MuiPickersDay-root": {
+                                              fontFamily: "PoppinsRegular", // Custom font for the day cells
+                                              fontSize: "16px", // Font size for the day cells
+                                              color: "#1A5AB8", // Text color for the day numbers
+                                              "&:hover": {
+                                                backgroundColor: "lightblue", // Highlight the day on hover
+                                              },
+                                            },
+                                            "& .MuiPickersDay-daySelected": {
+                                              backgroundColor: "#ffffff", // Background color for the selected day
+                                              color: "#ffffff", // Text color for the selected day
+                                            },
+                                          },
+                                        },
+                                      }}
+                                    sx={{
+                                        "& .MuiInputBase-root": {
+                                            color: "#1A5AB8",
+                                            fontSize: "16px",
+                                            fontFamily: "PoppinsRegular",
+                                        },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& fieldset": {
+                                                borderRadius: "20px", 
+                                                borderColor: "#1A5AB8", 
+                                                borderWidth: 2,
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "lightblue",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "#4fc3f7",                                            },
+                                        },
+                                        "& label": {
+                                            color: "#1A5AB8",
+                                            fontSize: "16px",
+                                            fontFamily: "PoppinsRegular",
+                                        },
+                                        "& label.Mui-focused": {
+                                            color: "#1A5AB8",
+                                        },
+                                        "& .MuiInputLabel-shrink": {
+                                            color: "#1A5AB8", 
+                                        },
+                                        "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+                                            color: "#1A5AB8",  
+                                        },
+                                        width: "20%",
+                                    }}/>
+                                </DemoContainer>
+                            </LocalizationProvider>   
+                        </div>
                     </div>
         </div>
     );
