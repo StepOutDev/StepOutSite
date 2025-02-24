@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react"
 import { useState } from "react"
 import userSignin from "@/libs/user/userSignin";
 import {cookies} from "next/headers";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function SigninForm() {
   const [student_id, setStudent_id] = useState("");
@@ -19,6 +20,7 @@ export default function SigninForm() {
       setError("Invalid credentials");
     }else{
       console.log("Sign-in successful", result);
+      window.location.href = "/";
     }
 
   };

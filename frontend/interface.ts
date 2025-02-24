@@ -13,3 +13,15 @@ export interface User{
     line: string;
 
 }
+
+export interface FormRegister{
+    student_id: string;
+    first_name: string;
+    last_name: string;
+    nick_name: string;
+    year: string;
+    major: string;
+    isMember: boolean;
+    password: string;
+    confirmPassword: string;
+}
