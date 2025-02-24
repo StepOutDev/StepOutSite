@@ -8,15 +8,15 @@ export default function Contact() {
                 <div className="flex flex-col space-y-5 mt-4 md:mt-6">
                     {/* Add your social media links or icons */}
                     <a href="https://youtube.com/@stepout_intania?si=agSPg-xc8y-y4Cgq" target="_blank" rel="noopener noreferrer" className="flex flex-row items-center">
-                        <img src="/images/icon/youtube.png" alt="Youtube" className="w-6 h-6 md:w-8 md:h-8 invert" />
+                        <img src="/images/icon/contact/youtube.png" alt="Youtube" className="w-6 h-6 md:w-8 md:h-8 invert" />
                         <div className="ml-2 md:ml-4 text-[16px] md:text-[20px]">StepOut Intania</div>
                     </a>
                     <a href="https://www.instagram.com/stepout_intania/profilecard/?igsh=MTR2M3lhNWpkbzhnYg==" target="_blank" rel="noopener noreferrer" className="flex flex-row items-center">
-                        <img src="/images/icon/instagram.png" alt="Instagram" className="w-6 h-6 md:w-8 md:h-8 invert" />
+                        <img src="/images/icon/contact/instagram.png" alt="Instagram" className="w-6 h-6 md:w-8 md:h-8 invert" />
                         <div className="ml-2 md:ml-4 text-[16px] md:text-[20px]">stepout_intania</div>
                     </a>
                     <a href="https://www.tiktok.com/@stepout_intania?_t=8rWRHbeqMqO&_r=1" target="_blank" rel="noopener noreferrer" className="flex flex-row items-center">
-                        <img src="/images/icon/tik-tok.png" alt="Tiktok" className="w-6 h-6 md:w-8 md:h-8 invert" />
+                        <img src="/images/icon/contact/tik-tok.png" alt="Tiktok" className="w-6 h-6 md:w-8 md:h-8 invert" />
                         <div className="ml-2 md:ml-4 text-[16px] md:text-[20px]">stepout_intania</div>
                     </a>
                 </div>
@@ -28,15 +28,15 @@ export default function Contact() {
                 <div className="flex flex-col space-y-5 mt-[5%]">
                     {/* Add your social media links or icons */}
                     <a href="https://www.instagram.com/stepout_intania/profilecard/?igsh=MTR2M3lhNWpkbzhnYg==" target="_blank" rel="noopener noreferrer" className="flex flex-row items-center">
-                        <img src="/images/icon/instagram.png" alt="Instagram" className="w-6 h-6 md:w-8 md:h-8 invert" />
+                        <img src="/images/icon/contact/instagram.png" alt="Instagram" className="w-6 h-6 md:w-8 md:h-8 invert" />
                         <div className="ml-2 md:ml-4 text-[16px] md:text-[20px]">stepout_intania</div>
                     </a>
                     <a target="_blank" rel="noopener noreferrer" className="flex flex-row items-center">
-                        <img src="/images/icon/phone-call.png" alt="Call" className="w-6 h-6 md:w-8 md:h-8 invert" />
+                        <img src="/images/icon/contact/phone-call.png" alt="Call" className="w-6 h-6 md:w-8 md:h-8 invert" />
                         <div className="ml-2 md:ml-4 text-[16px] md:text-[20px]">0991905115 : Q 2 CEDT</div>
                     </a>
                     <a target="_blank" rel="noopener noreferrer" className="flex flex-row items-center">
-                        <img src="/images/icon/phone-call.png" alt="Call" className="w-6 h-6 md:w-8 md:h-8 invert" />
+                        <img src="/images/icon/contact/phone-call.png" alt="Call" className="w-6 h-6 md:w-8 md:h-8 invert" />
                         <div className="ml-2 md:ml-4 text-[16px] md:text-[20px]">0944257253 : Auto 3 IE</div>
                     </a>
                 </div>
