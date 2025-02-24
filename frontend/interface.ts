@@ -14,6 +14,18 @@ export interface User{
 
 }
 
+export interface FormRegister{
+    student_id: string;
+    first_name: string;
+    last_name: string;
+    nick_name: string;
+    year: string;
+    major: string;
+    isMember: boolean;
+    password: string;
+    confirmPassword: string;
+}
+
 export interface Kneepads{
     number: string;
     size: string;
