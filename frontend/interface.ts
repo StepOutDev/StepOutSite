@@ -20,5 +20,7 @@ export interface Kneepads{
     status: string;
     booking_date: string;
     return_date: string;
-    student_id: string;
+    nick_name: string;
+    year: string;
+    major: string;
 }
