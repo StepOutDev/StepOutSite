@@ -20,7 +20,7 @@ export default function KneepadsCard(props: {kneepads: Kneepads}) {
                     </span>    
                 </p>
             </div>
-            <div className="flex flex-row justify-center">
+            <div className="flex flex-row justify-start">
                 <KneepadsData kneepads={props.kneepads} />
             </div>
         </div>
