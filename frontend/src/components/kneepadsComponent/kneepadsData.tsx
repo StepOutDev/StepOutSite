@@ -47,6 +47,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                         onClose={()=>{setOpen(false)}}
                         aria-labelledby="modal-modal-book"
                         aria-describedby="modal-modal-description"
+                        disableScrollLock
                         style={{display:'flex',alignItems:'center',justifyContent:'center'}}
                     >
                        <KneepadsBookPage kneepads={props.kneepads}></KneepadsBookPage>
@@ -55,7 +56,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
             )
         case "booked":
             return (
-                <div className="flex flex-col w-[100%]">
+                <div className="flex flex-col w-[full]">
                     <div className="mt-[10px]">
                         <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
                             User : 

@@ -7,7 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
     const [cookie, setCookie] = useState<string | undefined>();
@@ -41,8 +41,8 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
     const [bookingDate, setBookingDate] = useState<Dayjs | null|undefined>(null);
     const [returnDate, setReturnDate] = useState<Dayjs | null|undefined>(null);            
     return (
-        <div className="flex flex-col shadow-[3px_5px_4px_rgba(0,0,0,0.25)] 
-        border-[3px] border-[#1A5AB8] rounded-[20px] m-[2%] w-[60%] aspect-[1.5/1] bg-white">
+        <div className="flex flex-col shadow-[3px_5px_4px_rgba(0,0,0,0.25)] overflow-hidden 
+        border-[3px] border-[#1A5AB8] rounded-[20px] w-[330px] sm:w-[505px] aspect-[1/1.5] sm:aspect-[1.3/1] bg-white">
             <div className="flex flex-row justify-start ">
                 <div className="flex items-center justify-center inline mx-[20px] mt-[30px]
                 p-[30px] font-[poppinsExtraBold] text-[30px] text-[#1A5AB8] bg-[#E6F0FF] 
@@ -66,7 +66,7 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                             {user?.nick_name} {user?.year} {user?.major}
                         </div>
                     </div>
-                    <div className="flex flex-row justify-start">
+                    <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row justify-start">
                         <div className="inline ml-[35px] mt-[20px]"> 
                             <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
                                 Book Date :
@@ -74,7 +74,8 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
                                     <DatePicker label="Pick the date"  value={bookingDate} 
-                                    onChange={(newValue) => setBookingDate(newValue)}
+                                    onChange={(newValue) => setBookingDate(newValue)} 
+                                    disablePast maxDate={returnDate? dayjs(returnDate).subtract(1, 'day') : undefined}
                                     slotProps={{
                                         popper: {
                                           sx: {
@@ -142,14 +143,15 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                                 </DemoContainer>
                             </LocalizationProvider> 
                         </div>
-                        <div className="inline mr-[35px] mt-[20px]"> 
+                        <div className="inline mt-[20px] ml-[35px] sm:ml-[0px] md:ml-[0px] lg:ml-[0px]"> 
                             <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
                                 Return Date :
                             </span>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
                                     <DatePicker label="Pick the date"  value={returnDate} 
-                                    onChange={(newValue) => setReturnDate(newValue)}
+                                    onChange={(newValue) => setReturnDate(newValue)} 
+                                    disablePast minDate={bookingDate? dayjs(bookingDate).add(1, 'day') : undefined}
                                     slotProps={{
                                         popper: {
                                           sx: {
@@ -218,6 +220,13 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                             </LocalizationProvider>   
                         </div>
                     </div>
+                <div>
+                    <button className={`inline font-[poppinsSemiBold] text-[16px] text-[#1A5AB8]
+                    mt-[20px] border-[2px] border-[#1A5AB8] rounded-[10px] px-[20px] py-[10px] 
+                    w-[250px] sm:w-[433px] ml-[35px] h-[55px] ${(!bookingDate || !returnDate) ? 
+                    'border-gray-400 text-gray-400' : 'hover:bg-[#1A5AB8] hover:text-white'}`} 
+                    disabled={!bookingDate || !returnDate}>Book</button>
+                </div>    
         </div>
     );
 }
