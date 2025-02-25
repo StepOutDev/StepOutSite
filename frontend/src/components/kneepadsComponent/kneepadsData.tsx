@@ -13,7 +13,35 @@ import { User } from "../../../interface";
 import KneepadsBookPage from "./kneepadsBookPage";
 
 export default function KneepadsData(props: {kneepads: Kneepads}) {
-    
+    const [cookie, setCookie] = useState<string | undefined>();
+            useEffect(() => {
+                function fetchCookie() {
+                    const ck = GetCookie("jwt");
+                    setCookie(ck);
+                }
+                fetchCookie();
+        
+                const interval = setInterval(() => {
+                    const currentCookie = GetCookie("jwt");
+                    if (currentCookie !== cookie) {
+                        setCookie(currentCookie);
+                    }
+                }, 500);
+                return () => clearInterval(interval);
+            }, [cookie]);
+        const [user, setUser] = useState<User>();
+        useEffect(() => {
+            const fetchUserData = async () => {
+                if(cookie){
+                    const user: User = await getUserMe(cookie);
+                    setUser(user);
+                } 
+            };
+            if(user === undefined){
+                fetchUserData();
+            }
+        })
+
     switch(props.kneepads.status) {
         case "available":
             const [open, setOpen] = useState(false);
@@ -50,13 +78,14 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                         disableScrollLock
                         style={{display:'flex',alignItems:'center',justifyContent:'center'}}
                     >
-                       <KneepadsBookPage kneepads={props.kneepads}></KneepadsBookPage>
+                       <KneepadsBookPage kneepads={props.kneepads} setOpen={setOpen}></KneepadsBookPage>
                     </Modal>
                </div> 
             )
         case "booked":
+
             return (
-                <div className="flex flex-col w-[full]">
+                <div className="flex flex-col w-[100%]">
                     <div className="mt-[10px]">
                         <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
                             User : 
@@ -95,34 +124,6 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
             )  
         case "pending":
             const [approve, setApprove] = useState(true);
-            const [cookie, setCookie] = useState<string | undefined>();
-            useEffect(() => {
-                function fetchCookie() {
-                    const ck = GetCookie("jwt");
-                    setCookie(ck);
-                }
-                fetchCookie();
-        
-                const interval = setInterval(() => {
-                    const currentCookie = GetCookie("jwt");
-                    if (currentCookie !== cookie) {
-                        setCookie(currentCookie);
-                    }
-                }, 500);
-                return () => clearInterval(interval);
-            }, [cookie])
-            const [user, setUser] = useState<User>();
-            useEffect(() => {
-                const fetchUserData = async () => {
-                    if(cookie){
-                        const user: User = await getUserMe(cookie);
-                        setUser(user);
-                    } 
-                };
-                if(user === undefined){
-                    fetchUserData();
-                }
-            })
             return (
                 <div className="flex flex-col w-[100%]">
                     <div className="mt-[10px]">
@@ -241,6 +242,6 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                         </div>
                         :null}
                 </div>
-            )              
+            )           
     }
 }

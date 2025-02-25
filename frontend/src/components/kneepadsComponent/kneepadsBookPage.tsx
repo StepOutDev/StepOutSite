@@ -8,8 +8,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
+import updateKneepads from "@/libs/kneepads/updateKneepads";
 
-export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
+export default function KneepadsBookPage(props: {kneepads: Kneepads, setOpen: (value: boolean) => void}) {
     const [cookie, setCookie] = useState<string | undefined>();
                 useEffect(() => {
                     function fetchCookie() {
@@ -37,7 +38,7 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                     if(user === undefined){
                         fetchUserData();
                     }
-                })
+                })            
     const [bookingDate, setBookingDate] = useState<Dayjs | null|undefined>(null);
     const [returnDate, setReturnDate] = useState<Dayjs | null|undefined>(null);            
     return (
@@ -225,7 +226,17 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads}) {
                     mt-[20px] border-[2px] border-[#1A5AB8] rounded-[10px] px-[20px] py-[10px] 
                     w-[250px] sm:w-[433px] ml-[35px] h-[55px] ${(!bookingDate || !returnDate) ? 
                     'border-gray-400 text-gray-400' : 'hover:bg-[#1A5AB8] hover:text-white'}`} 
-                    disabled={!bookingDate || !returnDate}>Book</button>
+                    disabled={!bookingDate || !returnDate} onClick={()=>{
+                    props.kneepads.status = "pending"; if(bookingDate && returnDate) {
+                        props.kneepads.booking_date = bookingDate.format('DD/MM/YYYY');
+                        props.kneepads.return_date = returnDate.format('DD/MM/YYYY');
+                    } 
+                    if (user){
+                        props.kneepads.nick_name = user.nick_name;
+                        props.kneepads.year = user.year;
+                        props.kneepads.major = user.major;
+                    } updateKneepads(props.kneepads, props.kneepads.number, cookie);    
+                    ; window.location.reload(); }}>Book</button>
                 </div>    
         </div>
     );
