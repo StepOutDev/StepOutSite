@@ -10,7 +10,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import updateKneepads from "@/libs/kneepads/updateKneepads";
 
-export default function KneepadsBookPage(props: {kneepads: Kneepads, setOpen: (value: boolean) => void}) {
+export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (value: boolean) => void}) {
     const [cookie, setCookie] = useState<string | undefined>();
                 useEffect(() => {
                     function fetchCookie() {
@@ -158,27 +158,27 @@ export default function KneepadsBookPage(props: {kneepads: Kneepads, setOpen: (v
                                           sx: {
                                             "& .MuiPaper-root": {
                                               color:"#000",  
-                                              backgroundColor: "#ffffff", // Light blue background for the calendar
-                                              border: "3px solid #1A5AB8", // Border color for the calendar
-                                              borderRadius: "10px", // Rounded corners for the popup
-                                              padding: "15px", // Padding around the calendar
-                                              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)", // Shadow around the calendar
+                                              backgroundColor: "#ffffff", 
+                                              border: "3px solid #1A5AB8", 
+                                              borderRadius: "10px", 
+                                              padding: "15px", 
+                                              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
                                             },
                                             "& .MuiTypography-root": {
-                                              fontFamily: "PoppinsRegular", // Custom font for the calendar
+                                              fontFamily: "PoppinsRegular", 
                                               fontSize: "16px", 
                                             },
                                             "& .MuiPickersDay-root": {
-                                              fontFamily: "PoppinsRegular", // Custom font for the day cells
-                                              fontSize: "16px", // Font size for the day cells
-                                              color: "#1A5AB8", // Text color for the day numbers
+                                              fontFamily: "PoppinsRegular", 
+                                              fontSize: "16px", 
+                                              color: "#1A5AB8", 
                                               "&:hover": {
-                                                backgroundColor: "lightblue", // Highlight the day on hover
+                                                backgroundColor: "lightblue", 
                                               },
                                             },
                                             "& .MuiPickersDay-daySelected": {
-                                              backgroundColor: "#ffffff", // Background color for the selected day
-                                              color: "#ffffff", // Text color for the selected day
+                                              backgroundColor: "#ffffff",
+                                              color: "#ffffff", 
                                             },
                                           },
                                         },
