@@ -17,13 +17,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { major } from '@mui/material';
+import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 
 
 import ProfileImg from '@/components/profile/profileImg';
 
 import { useRouter } from "next/navigation";
-import { render } from 'react-dom';
+
 
 interface UserProfile {
   knickname: string;
@@ -53,7 +53,6 @@ const MyProfilePage = () => {
   //   LineID: 'johndoe',
   //   profilePic: "https://via.placeholder.com/150", // Placeholder image. Replace with actual image URL.
   // };
-
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -119,7 +118,7 @@ const MyProfilePage = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>) => {
 
     const { name, value } = e.target;
 
@@ -181,60 +180,59 @@ const MyProfilePage = () => {
   
 
   return (
-    <div className="min-h-screen flex-col items-center justify-center bg-[#E8DEF8]">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#E8DEF8]">
       <h1
         style={{
           fontFamily: '"Poppins", sans-serif', // Closest match to "Poppy"
           textShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)', // Custom shadow effect
         }}
-        className="flex items-center justify-center w-full text-[75px] font-extrabold absolute top-[90px] text-[#7F62AC] drop-shadow-md transition-transform transform "
+        className="flex items-center justify-center w-full text-[75px] font-extrabold absolute top-[90px] text-[#7F62AC] drop-shadow-md transition-transform transform"
       >
         My Profile
       </h1>
-      {/* Profile Picture */}
-      <ProfileImg imageUrl={profile?.image} handleImageUpload={handleImageUpload} />
+      
 
-      <div className="rounded-3xl bg-[#F2D3EF] flex-col flex items-center w-[900px] h-[300px] mx-auto p-6 text-[#184A92] relative shadow-2xl absolute top-[220px]">
-        {/* Name */}
-        <h1 className="flex items-center justify-center w-full text-2xl font-bold absolute top-[7px]">
-          {profile?.nick_name}
-        </h1>
-        <div className="flex flex-row absolute w-full absolute top-[53px]">
-          <div className="flex flex-col w-[500px] h-[180px] absolute left-[50px] top-[0px] justify-between h-full">
-            <h1 className=" w-full text-2xl font-bold">
-              Full Name : {profile?.first_name} {profile?.last_name}
-            </h1>
-            <h1 className="w-full text-2xl font-bold">Year : {profile?.year}</h1>
-            <h1 className="w-full text-2xl font-bold items-center">Role : {profile?.role}</h1>
-            <h1 className="w-full block text-2xl font-bold items-center">Tel : {profile?.telephone}</h1>
+      <div className="rounded-3xl bg-[#F2D3EF] flex flex-row items-center w-[1400px] h-[300px] mx-auto p-6 text-[#184A92] relative shadow-2xl absolute top-[100px]"> {/*absolute top-[220px]*/}
+
+        
+        <div className="flex flex-row absolute w-full absolute top-[53px]">{/*absolute top-[7px]*/}
+          <div className='flex flex-row basis-1/2'>
+            <div className='flex basis-1/3'><ProfileImg imageUrl={profile?.image} handleImageUpload={handleImageUpload} /></div>
+            <div className="flex flex-col justify-end mb-10">{/*flex flex-col w-[500px] h-[180px] absolute left-[50px] top-[0px] justify-between h-full*/}
+              <div className="flex flex-row gap-4 mb-6">
+                <h1 className="text-4xl font-bold">{profile?.first_name} {profile?.last_name} ({profile?.nick_name})</h1>
+                <h1 className="text-[15px] rounded-full px-6 h-6 mt-2 font-bold flex items-center bg-[#FFEDD5]">{profile?.role}</h1>
+              </div>
+              <h1 className=" w-full text-[20px] font-bold">StudentId : {profile?.student_id} </h1>
+              <h1 className="w-full text-[20px] font-bold">Year : {profile?.year}</h1>
+              <h1 className="w-full text-[20px] font-bold">Major : {profile?.major}</h1>
+            </div>
           </div>
-          <div className="flex flex-col w-[300px] h-[180px] absolute left-[570px] top-[0px] justify-between h-full">
-            <h1 className=" w-full text-2xl font-bold">
-              StudentId : {profile?.student_id}
-            </h1>
-            <h1 className="w-full text-2xl font-bold">Major : {profile?.major}</h1>
-            <h1 className="w-full text-2xl font-bold items-center">IG : {profile?.instagram}</h1>
-            <h1 className="w-full block text-2xl font-bold items-center">LineID : {profile?.line}</h1>
+          <div className="basis-1/3 flex flex-col justify-end mb-10">{/*flex flex-col w-[300px] h-[180px] absolute left-[570px] top-[0px] justify-between h-full*/}
+            <h1 className="w-full block text-[20px] font-bold items-center">Tel : {profile?.telephone}</h1>
+            <h1 className="w-full text-[20px] font-bold items-center">IG : {profile?.instagram}</h1>
+            <h1 className="w-full block text-[20px] font-bold items-center">LineID : {profile?.line}</h1>
           </div>
+          <Button
+            variant="outlined"
+            onClick={handleClickOpen}
+            sx={{
+              width: 120,
+              border: '2px solid', // Thicker border (3px)
+              borderColor: '#184A92', // Custom border color
+              borderRadius: '10px', // Makes the button rounder
+              fontWeight: 'bold',
+              '&:hover': {
+                borderColor: '#1D3557', // Custom hover border color
+              },
+            }}
+            className="flex items-center justify-center bg-[#F5F5F5] text-[#184A92] hover:bg-gray-300 absolute right-[100px] top-[10px] text-[13px]"
+          >
+            Edit Profile
+          </Button>
         </div>
 
-        <Button
-          variant="outlined"
-          onClick={handleClickOpen}
-          sx={{
-            width: 300,
-            border: '2px solid', // Thicker border (3px)
-            borderColor: '#184A92', // Custom border color
-            borderRadius: '10px', // Makes the button rounder
-            fontWeight: 'bold',
-            '&:hover': {
-              borderColor: '#1D3557', // Custom hover border color
-            },
-          }}
-          className="flex items-center justify-center bg-[#F5F5F5] text-[#184A92] hover:bg-gray-300 absolute top-[245px]"
-        >
-          Edit
-        </Button>
+        
 
       </div>
 
@@ -258,14 +256,27 @@ const MyProfilePage = () => {
             fullWidth
             margin="normal"
           />
-          <TextField
+          {/* <TextField
             label="Year"
             name="year"
             value={editedProfile?.year}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
-          />
+          /> */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Year</InputLabel>
+            <Select
+              name="year"
+              value={editedProfile?.year || ""}
+              onChange={handleInputChange}
+            >
+              <MenuItem value="1">Year 1</MenuItem>
+              <MenuItem value="2">Year 2</MenuItem>
+              <MenuItem value="3">Year 3</MenuItem>
+              <MenuItem value="4">Year 4</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             label="Role"
             name="role"
@@ -324,7 +335,9 @@ const MyProfilePage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      
     </div>
+    
   );
 };
 

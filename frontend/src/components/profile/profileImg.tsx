@@ -22,7 +22,7 @@ export default function ProfileImg({ imageUrl, handleImageUpload }: ProfileImgPr
   // };
 
   return (
-    <div className="relative flex flex-col items-center top-[200px]">
+    <div>
       <label htmlFor="fileInput" className="cursor-pointer">
         <img
           src={imageUrl}
