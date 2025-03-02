@@ -17,10 +17,10 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-const poppinsBlack = localFont({
-  src: "./fonts/Poppins-1/Poppins-Black.ttf",
-  variable: "--font-poppins-black",
-});
+// const poppins = localFont({
+//   src: "./fonts/Poppins-Regular.ttf",
+//   variable: "--font-poppins",
+// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -37,7 +37,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600;700&display=swap"
+            rel="stylesheet"
+          />
+      </head>
+      <body style={{ fontFamily: "Poppins, sans-serif" }}>
         <NextAuthProvider session={ nextAuthSession }>
           <Topmenu></Topmenu>
           {children}
