@@ -33,4 +33,5 @@ func GatewayKneepads(gateway HTTPGateway, app *fiber.App){
 	apiJWT.Put("/update",gateway.UpdateKneepads)
 	apiJWT.Delete("/delete",gateway.DeleteKneepads)
 	apiJWT.Put("/pending",gateway.PendingKneepads)
+	apiJWT.Put("/return",gateway.ReturnKneepads)
 }

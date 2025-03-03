@@ -98,3 +98,21 @@ func (h *HTTPGateway) PendingKneepads(ctx *fiber.Ctx) error{
 	}
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully pending kneepads"})
 }
+
+func (h *HTTPGateway) ReturnKneepads(ctx *fiber.Ctx) error{
+	token,err := middlewares.DecodeJWTToken(ctx)
+	if err!=nil || token==nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
+	}
+	params := ctx.Queries()
+	number := params["number"]
+	var kneepads entities.KneepadsDataFormat
+	if err := ctx.BodyParser(&kneepads); err!=nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+	err = h.kneepadsService.ReturnKneepads(token.StudentID,number, kneepads)
+	if err!=nil{
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully pending kneepads"})	
+}
