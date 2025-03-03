@@ -25,3 +25,14 @@ export interface FormRegister{
     password: string;
     confirmPassword: string;
 }
+
+export interface Kneepads{
+    number: string;
+    size: string;
+    status: string;
+    booking_date: string;
+    return_date: string;
+    nick_name: string;
+    year: string;
+    major: string;
+}

@@ -5,7 +5,9 @@ type KneepadsDataFormat struct {
 	Size   string `json:"size" bson:"size,omitempty"`
 	//["available","booked","disappear","unavailable","pending"]
 	Status string `json:"status" bson:"status,omitempty"`
-	BookingDate string `json:"booking_date" bson:"booking_date,"`
+	BookingDate string `json:"booking_date" bson:"booking_date,omitempty"`
 	ReturnDate string `json:"return_date" bson:"return_date,omitempty"`
-	StudentID string `json:"student_id" bson:"student_id,omitempty"`
+	NickName string `json:"nick_name" bson:"nick_name,omitempty"`
+	Year string `json:"year" bson:"year,omitempty"`
+	Major string `json:"major" bson:"major,omitempty"`
 }
