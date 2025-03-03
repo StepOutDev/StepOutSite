@@ -61,7 +61,7 @@ export default function KneepadsPage() {
                 if(!cookie || !user){
                     window.location.href = "/signin";
                 }
-            }, 100);
+            }, 200);
 
             return () => clearInterval(interval);
         },[cookie, user])
