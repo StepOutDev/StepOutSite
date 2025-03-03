@@ -3,6 +3,9 @@ import { User } from "../../../interface";
 import Link from "next/link";
 import { signOut } from "./Topmenu";
 import { useEffect, useState, useRef } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ProtectRoute from "../protectRoute/protectRoute";
+import KneepadsPage from "@/app/kneepads/page";
 
 interface NavLinksProps {
     cookie?: string;
