@@ -9,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import updateKneepads from "@/libs/kneepads/updateKneepads";
+import pendingKneepads from "@/libs/kneepads/pendingKneepads";
 
 export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (value: boolean) => void}) {
     const [cookie, setCookie] = useState<string | undefined>();
@@ -235,7 +236,7 @@ export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (
                         props.kneepads.nick_name = user.nick_name;
                         props.kneepads.year = user.year;
                         props.kneepads.major = user.major;
-                    } updateKneepads(props.kneepads, props.kneepads.number, cookie);    
+                    } pendingKneepads(props.kneepads, props.kneepads.number, cookie);    
                     ; window.location.reload(); }}>Book</button>
                 </div>    
         </div>
