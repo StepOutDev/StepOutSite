@@ -216,11 +216,11 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                             } onClick={()=>{setApprove(true)}}>Data</Button>
                             }
                         </div>
-                        :null}
+                        :<div className="mt-[20px] ml-[35px] mr-[10px] font-[poppinsSemiBold] text-[16px] text-[#E799AC]">Waiting for admin to approve.</div>}
                     </div>
                     {user?.role === "admin"||user?.role === "core"?
                         <div>
-                        {approve?
+                        {approve? 
                         <div className="flex flex-row justify-between">
                             <p className="inline ml-[35px] mt-[15px]"> 
                                 <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
