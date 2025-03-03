@@ -76,6 +76,7 @@ export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
                                     <DatePicker label="Pick the date"  value={bookingDate} 
+                                    format="DD/MM/YYYY"
                                     onChange={(newValue) => setBookingDate(newValue)} 
                                     disablePast maxDate={returnDate? dayjs(returnDate).subtract(1, 'day') : undefined}
                                     slotProps={{
@@ -152,6 +153,7 @@ export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
                                     <DatePicker label="Pick the date"  value={returnDate} 
+                                    format="DD/MM/YYYY"
                                     onChange={(newValue) => setReturnDate(newValue)} 
                                     disablePast minDate={bookingDate? dayjs(bookingDate).add(1, 'day') : undefined}
                                     slotProps={{
