@@ -1,9 +1,42 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Link from "next/link";
+import { GetCookie } from "../signinForm";
+import { User } from "../../../interface";
+import getUserMe from "@/libs/user/getUserMe";
 
 export default function EventCard(){
     const [showMore, setShowMore] = useState<boolean>(false);
     const description = `โชว์สุดปังขนาดนี้จะพลาดได้ไง\n₊⊹ 13.09.2024 @ Thephasadin Stadium\n⁣หน้าสแตนด์เชียร์ฝั่งประตูใหญ่\n⁣20.00 onwards`;
+
+    const [cookie, setCookie] = useState<string | undefined>();
+        useEffect(() => {
+            function fetchCookie() {
+                const ck = GetCookie("jwt");
+                setCookie(ck);
+            }
+            fetchCookie();
+
+            const interval = setInterval(() => {
+                const currentCookie = GetCookie("jwt");
+                if (currentCookie !== cookie) {
+                    setCookie(currentCookie);
+                }
+            }, 500);
+            return () => clearInterval(interval);
+        }, [cookie])
+    const [user, setUser] = useState<User>();
+        useEffect(() => {
+            const fetchUserData = async () => {
+                if(cookie){
+                    const user: User = await getUserMe(cookie);
+                    setUser(user);
+                } 
+            };
+            if(user === undefined){
+                fetchUserData();
+            }
+        })
 
     return (
         <div className="flex flex-col bg-white rounded-3xl shadow-md w-[95%] items-start my-4">
@@ -65,6 +98,18 @@ export default function EventCard(){
                         </p>
                     </div>
                 </div>
+            )}
+            {user?.role === "core" ? (
+                <div className="flex justify-end w-full">
+                    <Link
+                        href={"/"}
+                        className="my-1 mr-8 px-8 py-1 bg-white rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px]"
+                    >
+                        Edit
+                    </Link>
+                </div>
+            ) : (
+                <p>{user?.role}</p>
             )}
         </div>
     )
