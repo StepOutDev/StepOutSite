@@ -39,19 +39,17 @@ export default function EventCard(){
         })
 
     return (
-        <div className="flex flex-col bg-white rounded-3xl shadow-md w-[95%] items-start my-4">
-            {/* image */}
-            <div className="flex mt-4 ml-0 mb-4 justify-center w-[350px]">
-                <div className="flex rounded-xl mx-4 w-[450px] h-[250px] overflow-hidden shadow-md">
-                    <img 
-                        src={"/images/bannerImg/vishnuBanner.jpg"} 
-                        className="w-full h-full object-cover"
-                        alt="EventImage" 
-                    ></img>
-                </div>
+        <div className="flex flex-col bg-white rounded-3xl shadow-md items-start my-4 min-w-[350px] overflow-hidden p-4">
+            {/* image */}        
+            <div className="flex rounded-xl overflow-hidden shadow-md w-full h-[200px]">
+                <img 
+                    src={"/images/bannerImg/vishnuBanner.jpg"} 
+                    className="w-full h-full object-cover"
+                    alt="EventImage" 
+                ></img>
             </div>
             {/* Detail */}
-            <div className="flex flex-col ml-[5%]">
+            <div className="flex flex-col mx-[5%] my-[5%]">
                 <div className="text-[32px] font-medium text-[#422A40]">
                     Vishnu 2024
                 </div>
@@ -100,10 +98,10 @@ export default function EventCard(){
                 </div>
             )}
             {user?.role === "core" ? (
-                <div className="flex justify-end w-full">
+                <div className="flex flex-grow justify-end items-end w-full">
                     <Link
                         href={"/"}
-                        className="my-1 mr-8 px-8 py-1 bg-white rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px]"
+                        className="h-fit mx-[5%] my-[5%] px-10 py-2 bg-white rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white transition duration-200"
                     >
                         Edit
                     </Link>

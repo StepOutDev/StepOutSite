@@ -45,7 +45,7 @@ export default function UpcomingEvent(){
                 {user?.role === "core" && (
                     <Link
                         href={'/eventmanage'}
-                        className="px-8 py-2 bg-white rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px]">
+                        className="px-8 py-2 bg-white rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white transition duration-200">
                         manage event
                     </Link>
                 )}
