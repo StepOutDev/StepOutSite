@@ -40,13 +40,13 @@ export default function UpcomingEvent(){
         <div>
             <div className="flex md:flex-row flex-col justify-between items-center mt-[5%] mx-[10%] space-y-3">
                 <div className="text-[#422A40] text-[32px] font-bold">
-                    Upcoming Event
+                    Upcoming Event 
                 </div>
                 {user?.role === "core" && (
                     <Link
                         href={'/eventmanage'}
-                        className="px-8 py-2 bg-white rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white transition duration-200">
-                        manage event
+                        className="px-8 py-2 bg-white rounded-lg shadow-md border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white duration-150">
+                        Manage
                     </Link>
                 )}
             </div>
