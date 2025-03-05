@@ -1,29 +1,107 @@
-
+"use client"
+import { useState } from "react"
+import userRegister from "@/libs/user/userRegister"
+import { FormRegister } from "../../../interface"
+import userSignin from "@/libs/user/userSignin"
+import { SetCookie } from "../signinForm"
 
 export default function SignupForm() {
+    const [formData, setFormData] = useState<FormRegister>({
+        student_id: "",
+        first_name: "",
+        last_name: "",
+        nick_name: "",
+        year: "",
+        major: "",
+        isMember: false,
+        password: "",
+        confirmPassword: ""
+    })
 
-    const major = [
+    const majorList = [
         '-','Civil','Electrical','Mechanical','Automotive','Industrial',
         'Environmental','Metallurgical & Materials','Mining & Petroleum','Chemical','Computer',
         'Nuclear','Georesources','Survey','Robotics & AI','ICE',
         'NANO','ADME','AERO','CHPE','CEDT','SEMI'
     ]
 
+    const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const {name, value, type} = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === "checked" ? (e.target as HTMLInputElement).checked : value
+        }));
+
+        if(name === "confirmPassword") {
+            setConfirmPasswordError("");
+        } 
+    }
+
+    const handleSubmit = async (e:React.FormEvent) => {
+        e.preventDefault();
+
+        if(formData.password !== formData.confirmPassword){
+            setConfirmPasswordError("Password do not match");
+            setFormData((prev)=>({
+                ...prev,
+                confirmPassword: ""
+            }));
+            return;
+        }
+
+        const formDataObj = new FormData();
+        Object.keys(formData).forEach((key) => {
+            const typedKey = key as keyof FormRegister;
+            formDataObj.append(typedKey, String(formData[typedKey]));
+        });
+
+        console.log("Submitting:", Object.fromEntries(formDataObj.entries()));
+
+        try{
+
+            const signupResponse = await userRegister(formDataObj);
+            console.log("User registered successfully:", signupResponse)
+
+            if(!signupResponse){
+                throw new Error("Signup failed");
+            }
+
+            const signinResponse = await userSignin(formData.student_id, formData.password);
+
+            if(signinResponse?.error){
+                console.error("Auto login failed:", signinResponse.error);
+                return;
+            }
+
+            SetCookie("jwt", signinResponse?.data);
+
+            window.location.href = "/";
+
+        }catch(error){
+            console.error("Error registered user:", error)
+
+        }
+    }
+
     return(
 
         <div className="flex bg-white rounded-lg shadow-lg">
   
           {/* Form Section */}
-          <form className="flex flex-col flex-1 p-6 space-y-4">
+          <form className="flex flex-col flex-1 p-6 space-y-4" onSubmit={handleSubmit}>
             {/* Student ID */}
             <div>
                 <div className="text-black font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">StudentID</div>
                 <input
-                type="text"
-                name="studentID"
-                // placeholder="Student ID"
-                className="w-full px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
-                required
+                    type="text"
+                    name="student_id"
+                    // placeholder="Student ID"
+                    className="w-full px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                    value={formData.student_id}
+                    onChange={handleChange}
+                    required
                 />
             </div>
 
@@ -33,9 +111,11 @@ export default function SignupForm() {
                     <div className="text-black font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Firstname</div>
                     <input
                         type="text"
-                        name="firstName"
+                        name="first_name"
                         // placeholder="Firstname"
                         className="px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        value={formData.first_name}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -43,9 +123,11 @@ export default function SignupForm() {
                     <div className="text-black font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Lastname</div>
                     <input
                         type="text"
-                        name="lastName"
+                        name="last_name"
                         // placeholder="Lastname"
                         className="px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        value={formData.last_name}
+                        onChange={handleChange}
                         required
                     />                  
                 </div>
@@ -53,9 +135,11 @@ export default function SignupForm() {
                     <div className="text-black font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Nickname</div>
                     <input
                         type="text"
-                        name="nickname"
+                        name="nick_name"
                         // placeholder="Nickname"
                         className="px-4 py-2 bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        value={formData.nick_name}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -68,6 +152,8 @@ export default function SignupForm() {
                     <select
                         name="year"
                         className="px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        value={formData.year}
+                        onChange={handleChange}
                         required
                     >
                         <option value="" disabled>
@@ -83,12 +169,14 @@ export default function SignupForm() {
                     <div className="text-black font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Major</div>
                     <select
                         id="major"
-                        name="Major"
+                        name="major"
                         className="px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        value={formData.major}
+                        onChange={handleChange}
                         required
                     >
                         <option value="" disabled>Major</option>
-                            {major.map((dept, index) => (
+                            {majorList.map((dept, index) => (
                                 <option key={index} value={dept}>
                                     {dept}
                                 </option>
@@ -99,15 +187,17 @@ export default function SignupForm() {
   
             {/* Checkbox */}
             <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="isMember"
-                className="w-4 h-4 text-pink-500 border-gray-300 bg-white rounded focus:ring-pink-300"
-              />
-              <span className="text-sm text-gray-700">
-                Are you a StepOut member?{" "}
-                <span className="text-pink-500 text-xl">🦋</span>
-              </span>
+                <input
+                    type="checkbox"
+                    name="isMember"
+                    className="w-4 h-4 text-pink-500 border-gray-300 bg-white rounded focus:ring-pink-300"
+                    checked={formData.isMember}
+                    onChange={handleChange}
+                />
+                <span className="text-sm text-gray-700">
+                    Are you a StepOut member?{" "}
+                    <span className="text-pink-500 text-xl">🦋</span>
+                </span>
             </label>
   
             {/* Password Fields */}
@@ -119,6 +209,8 @@ export default function SignupForm() {
                         name="password"
                         // placeholder="Password"
                         className="px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        value={formData.password}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -128,9 +220,16 @@ export default function SignupForm() {
                         type="password"
                         name="confirmPassword"
                         // placeholder="Confirm Password"
-                        className="px-4 py-2 border bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl"
+                        className={`px-4 py-2 border ${
+                            confirmPasswordError ? "border-red-500" : ""
+                        } bg-gray-300 text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-xl`}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
                         required
                     />
+                    {confirmPasswordError && (
+                        <span className="text-red-500 text-sm mt-1">{confirmPasswordError}</span>
+                    )}
                 </div>
             </div>
   

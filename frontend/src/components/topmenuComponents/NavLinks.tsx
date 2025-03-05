@@ -2,7 +2,10 @@
 import { User } from "../../../interface";
 import Link from "next/link";
 import { signOut } from "./Topmenu";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ProtectRoute from "../protectRoute/protectRoute";
+import KneepadsPage from "@/app/kneepads/page";
 
 interface NavLinksProps {
     cookie?: string;
@@ -11,10 +14,29 @@ interface NavLinksProps {
 
 export default function NavLinks({cookie, user}:NavLinksProps){
     const [userMenu, setUserMenu] = useState<boolean>(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
     
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                menuRef.current && !menuRef.current.contains(event.target as Node) &&
+                buttonRef.current && !buttonRef.current.contains(event.target as Node)
+            ) {
+                setUserMenu(false);
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="flex items-center justify-end space-x-2 h-full">
@@ -72,8 +94,9 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                 </a>
                 {cookie? 
                     (
-                        <div className="relative">
+                        <div className="relative" ref={menuRef}>
                             <button
+                                ref={buttonRef}
                                 onClick={toggleUserMenu}
                                 className="flex-none items-center justify-center w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-lg hover:border-[#7A4E9A] transition"
                             >
@@ -89,6 +112,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                                     <Link
                                         href="/myprofile"
                                         className="flex space-x-2 px-4 py-4 text-gray-800 hover:bg-[#7A4E9A] hover:text-white hover:rounded-lg"
+                                        onClick={toggleUserMenu}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" 
                                             fill="none" viewBox="0 0 24 24" 
@@ -120,6 +144,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                     ):(
                         <div className="flex space-x-2">
                             <Link
+
                                 href="/signin"
                                 className="flex items-center bg-[#7A4E9A] rounded-2xl justify-center space-x-2 h-full py-4 pr-5 pl-5 text-gray-100 font-bold duration-300 ease-in-out hover:bg-gray-300 hover:text-[#7A4E9A] whitespace-nowrap shadow-lg"
                                 title="Sign In"
