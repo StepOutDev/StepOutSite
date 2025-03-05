@@ -22,6 +22,11 @@ const geistMono = localFont({
 //   variable: "--font-poppins",
 // });
 
+const poppinsBlack = localFont({
+  src: "./fonts/Poppins-1/Poppins-Black.ttf",
+  variable: "--font-poppins-black",
+})
+
 const poppinsExtraBold = localFont({
   src: "./fonts/Poppins-1/Poppins-ExtraBold.ttf",
   variable: "--font-poppins-extrabold",
