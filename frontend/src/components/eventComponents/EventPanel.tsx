@@ -35,7 +35,7 @@ export default function EventPanel(){
     return (
         <div>
             <div className="flex space-x-4 w-[80%] md:min-h-[600px] min-h-[550px] overflow-x-scroll mt-[10px] mx-auto px-4 text-black
-                custom-scrollbar">
+                custom-scrollbar shadow-xl">
                 {events.map((event, index) => (
                     <EventCard 
                         key={index} 

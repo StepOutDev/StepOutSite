@@ -31,7 +31,7 @@ export default function SignupForm() {
         const {name, value, type} = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checked" ? (e.target as HTMLInputElement).checked : value
+            [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
         }));
 
         if(name === "confirmPassword") {
