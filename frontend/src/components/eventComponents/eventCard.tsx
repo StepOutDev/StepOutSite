@@ -1,49 +1,81 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Link from "next/link";
+import { GetCookie } from "../signinForm";
+import { User, Event } from "../../../interface";
+import getUserMe from "@/libs/user/getUserMe";
 
-export default function EventCard(){
+export default function EventCard(
+    { img, name, date, description }: Event
+){
     const [showMore, setShowMore] = useState<boolean>(false);
-    const description = `โชว์สุดปังขนาดนี้จะพลาดได้ไง\n₊⊹ 13.09.2024 @ Thephasadin Stadium\n⁣หน้าสแตนด์เชียร์ฝั่งประตูใหญ่\n⁣20.00 onwards`;
+
+    const [cookie, setCookie] = useState<string | undefined>();
+        useEffect(() => {
+            function fetchCookie() {
+                const ck = GetCookie("jwt");
+                setCookie(ck);
+            }
+            fetchCookie();
+
+            const interval = setInterval(() => {
+                const currentCookie = GetCookie("jwt");
+                if (currentCookie !== cookie) {
+                    setCookie(currentCookie);
+                }
+            }, 500);
+            return () => clearInterval(interval);
+        }, [cookie])
+    const [user, setUser] = useState<User>();
+        useEffect(() => {
+            const fetchUserData = async () => {
+                if(cookie){
+                    const user: User = await getUserMe(cookie);
+                    setUser(user);
+                } 
+            };
+            if(user === undefined){
+                fetchUserData();
+            }
+        })
 
     return (
-        <div className="flex flex-col bg-white rounded-3xl shadow-md w-[95%] items-start my-4">
-            {/* image */}
-            <div className="flex mt-4 ml-0 mb-4 justify-center w-[350px]">
-                <div className="flex rounded-xl mx-4 w-[450px] h-[250px] overflow-hidden shadow-md">
-                    <img 
-                        src={"/images/bannerImg/vishnuBanner.jpg"} 
-                        className="w-full h-full object-cover"
-                        alt="EventImage" 
-                    ></img>
-                </div>
+        <div className="flex flex-col bg-white rounded-3xl shadow-md items-start my-4 md:min-w-[350px] min-w-[300px] overflow-hidden p-4">
+            {/* image */}        
+            <div className="flex rounded-xl overflow-hidden shadow-md w-full md:min-h-[200px] min-h-[175px]">
+                <img 
+                    src={img} 
+                    className="w-full h-full object-cover"
+                    alt="EventImage" 
+                ></img>
             </div>
             {/* Detail */}
-            <div className="flex flex-col ml-[5%]">
-                <div className="text-[32px] font-medium text-[#422A40]">
-                    Vishnu 2024
+            <div className="flex flex-col mx-[5%] my-[5%]">
+                <div className="md:text-[32px] text-[30px] font-medium text-[#422A40]">
+                    {name}
                 </div>
-                <div className="flex text-[16px] font-semibold text-[#422A40] mt-2">
+                <div className="flex md:text-[16px] text-[14px] font-semibold text-[#422A40] mt-2 items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         fill="none" viewBox="0 0 24 24" 
                         strokeWidth="2" 
                         stroke="currentColor" 
-                        className="size-6">
+                        className="md:size-6 size-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-                    <span>: 23/07/2024</span>
+                    <span>: {date}</span>
                 </div>
-                <div className="text-[16px] text-[#422A40] mt-2 mb-4">
-                    <div className={"line-clamp-3 leading-relax"}>
+                <div className="md:text-[16px] text-[14px] text-[#422A40] mt-2">
+                    <div className={"line-clamp-4 leading-relax"}>
                             {description.split("\n").map((line, index) => (
                                 <span key={index}>{line}<br /></span>
                             ))}
                         </div>
                         {!showMore && (
                             <button 
-                                className="text-gray-500 ml-2" 
+                                className="text-gray-500" 
                                 onClick={() => setShowMore(true)}
                             >
-                                ...Read More
+                            ... Read More
                             </button>
                         )}
                     </div>
@@ -65,6 +97,18 @@ export default function EventCard(){
                         </p>
                     </div>
                 </div>
+            )}
+            {user?.role === "core" ? (
+                <div className="flex flex-grow justify-end items-end w-full">
+                    <Link
+                        href={"/"}
+                        className="flex h-fit mx-[5%] my-[5%] w-full py-2 justify-center   bg-white shadow-md rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white transition duration-150"
+                    >
+                        Edit
+                    </Link>
+                </div>
+            ) : (
+                <p>{user?.role}</p>
             )}
         </div>
     )
