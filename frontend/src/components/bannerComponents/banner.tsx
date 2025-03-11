@@ -22,7 +22,7 @@ export default function Banner() {
   return (
     <div className="w-full h-[100vh] overflow-hidden relative">
 
-      <div className="flex flex-col absolute w-full h-full justify-center left-[5%] transform text-white z-30 font-bold">
+      <div className="flex flex-col absolute w-full h-[80vh] pt-[100px] left-[5%] transform text-white z-20 font-bold">
         <span className="text-[80px] md:text-[150px]"
           style={{
             textShadow: "5px 8px 0px rgba(0, 0, 0, 0.7)", // Drop shadow
@@ -31,7 +31,7 @@ export default function Banner() {
         >
             StepOut
         </span>
-        <div className="flex flex-col space-y-2 ml-5">
+        <div className="flex flex-col space-y-2 ml-5 ">
           <span className="md:text-[26px] text:text-[14px]"
             style={{
               textShadow: "0px 3px 0px rgba(0, 0, 0, 0.7)", // Drop shadow
@@ -49,8 +49,7 @@ export default function Banner() {
         </div>
       </div>
 
-      <div
-        className="w-full h-full flex transition-transform duration-1000 ease-in-out"
+      <div className="w-full h-full flex transition-transform duration-1000 ease-in-out"
         style={{
           transform: `translateX(-${currentImageIndex * 100}%)`,
         }}
@@ -66,8 +65,7 @@ export default function Banner() {
               objectFit="cover"
             />
             {/* Image Name at the Bottom */}
-            <div
-              className="absolute bottom-14 left-1/2 transform -translate-x-1/2 text-white md:text-[26px] text-[14px] z-30"
+            <div className="absolute bottom-14 z-40 left-1/2 transform -translate-x-1/2 text-white md:text-[26px] text-[14px]"
               style={{
                 textShadow: "0px 3px 0px rgba(0, 0, 0, 0.7)", // Drop shadow
                 WebkitTextStroke: "1px #88383", // Stroke (outline)
@@ -83,7 +81,7 @@ export default function Banner() {
       </div>
 
       {/* Dots navigation */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+      <div className="absolute bottom-4 left-1/2 transform z-50 -translate-x-1/2 flex space-x-2 z-50">
         {images.map((_, index) => (
           <div
             key={index}

@@ -81,7 +81,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                 </a>
                 {cookie? 
                     (
-                        <div className="" ref={menuRef}>
+                        <div className="pr-4 pl-1" ref={menuRef}>
                             <button
                                 ref={buttonRef}
                                 onClick={toggleUserMenu}
