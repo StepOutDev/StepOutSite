@@ -70,7 +70,6 @@ export default function KneepadsPage() {
             return <div>Loading...</div>; // Show a loading message or spinner while fetching data
         }
     return (
-        cookie && user ?
         <ProtectRoute role={["member","admin","core"]} cookie={cookie} user={user}>
             <div className="min-h-screen bg-[#B1C1D8]">
                 <div className="pb-[5%] pt-[24%] my-[25px] sm:pt-[20%] sm:px-[20%] md:pt-[15%] 
@@ -92,7 +91,6 @@ export default function KneepadsPage() {
 
             </div>
         </ProtectRoute>
-    : window.location.href = "/signin"
     );
   }
   

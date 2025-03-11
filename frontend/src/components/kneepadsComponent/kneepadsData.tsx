@@ -109,7 +109,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
             const [approve, setApprove] = useState(true);
             return (
                 <div className="flex flex-col w-[100%]">
-                    <div className="mt-[10px] flex flex-row justify-center sm:justify-start">
+                    <div className="mt-[10px] flex flex-row justify-start ml-[20px] sm:ml-[0px]">
                         <div className="inline mt-[5px] sm:mt-[4px] sm:ml-[35px] mr-[10px] font-[poppinsRegular] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                             Applicant : 
                         </div>  
@@ -156,7 +156,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                             } onClick={()=>{setApprove(true)}}>Data</Button>
                             }
                         </div>
-                        :<div className="mt-[20px] ml-[35px] mr-[10px] font-[poppinsSemiBold] text-[16px] text-[#E799AC]">Waiting for admin to approve.</div>}
+                        :null}
                     </div>
                     {user?.role === "admin"||user?.role === "core"?
                         <div>
@@ -229,7 +229,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                             updateKneepads(props.kneepads,props.kneepads.number,cookie); window.location.reload()}}><DoneIcon></DoneIcon></Button>
                         </div>}
                         </div>
-                        :null}
+                        :<div className="mt-[20px] ml-[35px] mr-[10px] font-[poppinsSemiBold] 
+                        text-[14px] sm:text-[16px] text-[#E799AC]">Waiting for admin to approve.</div>}
                 </div>
             )           
     }
