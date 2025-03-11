@@ -85,7 +85,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                             <button
                                 ref={buttonRef}
                                 onClick={toggleUserMenu}
-                                className="items-center justify-center my-[8px] w-[59px] h-[59px] mr-2 rounded-full overflow-hidden border-2 border-white shadow-lg hover:border-[#7A4E9A] transition"
+                                className="items-center justify-center my-[8px] w-[59px] h-[59px] rounded-full overflow-hidden border-2 border-white shadow-lg hover:border-[#7A4E9A] transition"
                             >
                                 <img 
                                     src={user?.image || "/images/user/default-profile.png"} 
