@@ -73,16 +73,16 @@ export default function KneepadsPage() {
         cookie && user ?
         <ProtectRoute role={["member","admin","core"]} cookie={cookie} user={user}>
             <div className="min-h-screen bg-[#B1C1D8]">
-                <div className="pb-[5%] pt-[24%] px-[24%] sm:pt-[20%] sm:px-[20%] md:pt-[15%] 
+                <div className="pb-[5%] pt-[24%] my-[25px] sm:pt-[20%] sm:px-[20%] md:pt-[15%] 
                 md:px-[15%] lg:pt-[10%] lg:px-[10%] lg:pb-[2%] xl:pt-[8%] xl:px-[3%] text-center 
-                font-[poppinsBlack] text-7xl md:text-8xl lg:text-8xl text-[#1A5AB8] 
+                font-[poppinsBlack] text-5xl md:text-8xl lg:text-8xl text-[#1A5AB8] 
                 [text-shadow:_0_5px_4px_rgb(99_102_241_/_0.8)]">
                     Kneepads
                 </div>
 
                 {/* <div className="flex flex-row flex-wrap justify-center sm:justify-center 
                 md:justify-start lg:justify-start "> */}
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,max-content))] gap-4 justify-center p-0">
+                <div className="grid sm:grid-cols-[repeat(auto-fit,minmax(400px,max-content))] gap-4 justify-center p-0">
                     {kneepads?.map((kneepad) => {
                         return(
                         <KneepadsCard key={kneepad.number} kneepads={kneepad}></KneepadsCard>
