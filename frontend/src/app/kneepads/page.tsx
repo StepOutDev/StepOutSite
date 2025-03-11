@@ -23,7 +23,7 @@ export default function KneepadsPage() {
                 if (currentCookie !== cookie) {
                   setCookie(currentCookie);
                 }
-            }, 500);
+            }, 300);
             return () => clearInterval(interval);
         }, [cookie])
         const [user, setUser] = useState<User>();
@@ -61,10 +61,11 @@ export default function KneepadsPage() {
                 if(!cookie || !user){
                     window.location.href = "/signin";
                 }
-            }, 200);
+            }, 500);
 
             return () => clearInterval(interval);
         },[cookie, user])
+
         if (loading) {
             return <div>Loading...</div>; // Show a loading message or spinner while fetching data
         }
