@@ -102,7 +102,7 @@ func (h *HTTPGateway) UpdateEvent(ctx *fiber.Ctx) error{
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
 	}
 	params := ctx.Queries()
-	eventID := params["event_name"]
+	eventParam := params["event_name_param"]
 
 	eventName := ctx.FormValue("event_name")
 	day := ctx.FormValue("day")
@@ -152,7 +152,7 @@ func (h *HTTPGateway) UpdateEvent(ctx *fiber.Ctx) error{
 	// if err := ctx.BodyParser(&event); err!=nil {
 	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	// }
-	err = h.eventService.UpdateEvent(eventID,event,token.StudentID,imageByte)
+	err = h.eventService.UpdateEvent(eventParam,event,token.StudentID,imageByte)
 	if err!=nil{
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	}

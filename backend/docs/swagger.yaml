@@ -544,7 +544,7 @@ paths:
         - multipart/form-data
       parameters:
         - in: query
-          name: event_name
+          name: event_name_param
           schema:
             type: string
           required: true
