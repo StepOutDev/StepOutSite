@@ -1,8 +1,11 @@
 package gateways
 
 import (
+	"fmt"
+	"io/ioutil"
 	"stepoutsite/domain/entities"
 	"stepoutsite/src/middlewares"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,11 +26,51 @@ func (h *HTTPGateway) CreateEvent(ctx *fiber.Ctx) error {
 	if err!=nil || token==nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Unauthorization Token."})
 	}
-	var event entities.EventDataFormat
-	if err := ctx.BodyParser(&event); err!=nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+
+	eventName := ctx.FormValue("event_name")
+	day := ctx.FormValue("day")
+	description := ctx.FormValue("description")
+	imagefile, err := ctx.FormFile("image")
+
+	var songList []string
+	for i:=0;true;i++ {
+		key := fmt.Sprintf("song[%s]",strconv.Itoa(i))
+		song := ctx.FormValue(key)
+		if song == ""{
+			break
+		} else {
+			songList = append(songList, song)
+		}
 	}
-	err = h.eventService.CreateEvent(event,token.StudentID)
+	
+	var imageByte []byte
+	if imagefile != nil {
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		image, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+		defer image.Close()
+		imageByte, err = ioutil.ReadAll(image)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+		}
+	} else {
+		imageByte = nil
+	}
+
+	var event = entities.EventDataFormat{
+		EventName: eventName, 
+		Day: day, 
+		Description: description, 
+		Song: songList,
+	}
+	// if err := ctx.BodyParser(&event); err!=nil {
+	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
+	// }
+	err = h.eventService.CreateEvent(event,token.StudentID,imageByte)
 	if err!=nil{
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
 	}

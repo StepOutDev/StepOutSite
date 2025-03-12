@@ -4,6 +4,8 @@ import (
 	"errors"
 	"stepoutsite/domain/entities"
 	"stepoutsite/domain/repositories"
+	"stepoutsite/src/utils"
+	"strings"
 )
 
 type eventService struct {
@@ -12,7 +14,7 @@ type eventService struct {
 }
 
 type IEventService interface {
-	CreateEvent(event entities.EventDataFormat, studentID string) error
+	CreateEvent(event entities.EventDataFormat, studentID string, imageByte []byte) error
 	GetAllEvents() (*[]entities.EventDataFormat, error)
 	UpdateEvent(eventName string, event entities.EventDataFormat, studentID string) error
 	DeleteEvent(eventName string, studentID string) error
@@ -25,9 +27,9 @@ func NewEventService(eventRepository repositories.IEventRepository, userService 
 	}
 }
 
-func (sv eventService) CreateEvent(event entities.EventDataFormat, studentID string) error {
+func (sv eventService) CreateEvent(event entities.EventDataFormat, studentID string, imageByte []byte) error {
 	if event.EventName == ""{
-		return errors.New("Please fill in event name")
+		return errors.New("please fill in event name")
 	}
 
 	if _ ,err := sv.EventRepository.GetOneEvent(event.EventName); err == nil{
@@ -37,6 +39,18 @@ func (sv eventService) CreateEvent(event entities.EventDataFormat, studentID str
 	
 	if err := sv.UserService.CheckPermissionCoreAndAdmin(studentID); err != nil {
 		return errors.New("unauthorized")
+	}
+
+	if imageByte != nil {
+		name := strings.ReplaceAll(event.EventName," ","")
+		keyName, contentType := utils.CreateKeyNameBannerImage(name, "webp", "")
+
+		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
+
+		if err != nil {
+			return err
+		}
+		event.Image = imageURL
 	}
 
 	err := sv.EventRepository.CreateEvent(event)
