@@ -36,3 +36,10 @@ export interface Kneepads{
     year: string;
     major: string;
 }
+
+export interface Event{
+    img: string;
+    name: string;
+    date: string;
+    description: string;
+}
