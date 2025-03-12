@@ -16,7 +16,7 @@ type eventService struct {
 type IEventService interface {
 	CreateEvent(event entities.EventDataFormat, studentID string, imageByte []byte) error
 	GetAllEvents() (*[]entities.EventDataFormat, error)
-	UpdateEvent(eventName string, event entities.EventDataFormat, studentID string) error
+	UpdateEvent(eventName string, event entities.EventDataFormat, studentID string, imageByte []byte) error
 	DeleteEvent(eventName string, studentID string) error
 }
 
@@ -71,7 +71,7 @@ func (sv eventService) GetAllEvents() (*[]entities.EventDataFormat, error) {
 	return result, nil
 }
 
-func (sv eventService) UpdateEvent(eventName string, event entities.EventDataFormat, studentID string) error {
+func (sv eventService) UpdateEvent(eventName string, event entities.EventDataFormat, studentID string, imageByte []byte) error {
 	if eventName == ""{
 		return errors.New("please fill in event name")
 	}
@@ -82,6 +82,18 @@ func (sv eventService) UpdateEvent(eventName string, event entities.EventDataFor
 	
 	if err:= sv.UserService.CheckPermissionCoreAndAdmin(studentID); err != nil {
 		return errors.New("unauthorized")
+	}
+
+	if imageByte != nil {
+		name := strings.ReplaceAll(eventName," ","")
+		keyName, contentType := utils.CreateKeyNameBannerImage(name, "webp", "")
+
+		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
+
+		if err != nil {
+			return err
+		}
+		event.Image = imageURL
 	}
 
 	err := sv.EventRepository.UpdateEvent(eventName, event)
