@@ -456,6 +456,171 @@ paths:
             application/json:
               example:
                 message: "Unauthorization Token."
+  /event/create:
+    post:
+      tags:
+        - event
+      security:
+        - bearerAuth: []
+      description: input with form-data. The song data fill in form with key song[0] for the first song, song[1] for the second song, ...
+      consumes:
+        - multipart/form-data
+      produces:
+        - multipart/form-data
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - event_name
+              properties:
+                event_name:
+                  type: string
+                  example: Freshy Game 2029
+                day:
+                  type: string
+                  example: 10/08/2029
+                time:
+                  type: string
+                  example: 18:00
+                place:
+                  type: string
+                  example: LarnIntania
+                song[0]:
+                  type: string
+                  example: feat
+                song[1]:
+                  type: string
+                  example: hot2hot
+                description:
+                  type: string
+                  example: โชว์สุดปังขนาดนี้จะพลาดได้ไง ₊⊹ 13.09.2024 @ Thephasadin Stadium หน้าสแตนด์เชียร์ฝั่งประตูใหญ่ 20.00 onwards
+                image:
+                  type: file
+                  example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/FreshyGame2024.webp"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully create event"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /event/get_all:
+    get:
+      tags:
+        - event
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully get all events"
+                data: []
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /event/update:
+    put:
+      tags:
+        - event
+      security:
+        - bearerAuth: []
+      description: if you want to update song data then you must get the old array and then append/delete.
+      consumes:
+        - multipart/form-data
+      produces:
+        - multipart/form-data
+      parameters:
+        - in: query
+          name: event_name
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                event_name:
+                  type: string
+                  example: Freshy Game 2029
+                day:
+                  type: string
+                  example: 10/08/2029
+                time:
+                  type: string
+                  example: 18:00
+                place:
+                  type: string
+                  example: LarnIntania
+                song[0]:
+                  type: string
+                  example: feat
+                song[1]:
+                  type: string
+                  example: hot2hot
+                description:
+                  type: string
+                  example: โชว์สุดปังขนาดนี้จะพลาดได้ไง ₊⊹ 13.09.2024 @ Thephasadin Stadium หน้าสแตนด์เชียร์ฝั่งประตูใหญ่ 20.00 onwards
+                image:
+                  type: file
+                  example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/FreshyGame2024.webp"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully update event"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /event/delete:
+    delete:
+      tags:
+        - event
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: event_name
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully delete event"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
 components:
   schemas:
       UserInput:
@@ -584,6 +749,34 @@ components:
             example: "6630000021"    
         xml:
           name: kneepads
+      Event:
+        type: object
+        properties: 
+          event_name:
+            type: string
+            example: Freshy Game 2029
+          day:
+            type: string
+            example: 19/09/2029
+          time:
+            type: string
+            example: 19:00
+          place:
+            type: string
+            example: LarnIntania
+          song:
+            type: array
+            items:
+              type: string
+            example: ["feat","hot2hot"]
+          description:
+            type: string
+            example:  โชว์สุดปังขนาดนี้จะพลาดได้ไง ₊⊹ 13.09.2024 @ Thephasadin Stadium หน้าสแตนด์เชียร์ฝั่งประตูใหญ่ 20.00 onwards
+          image:
+            type: string
+            example: https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/FreshyGame2024.webp
+        xml:
+          name: event
   securitySchemes:
     bearerAuth:
       type: http
@@ -596,3 +789,4 @@ components:
 tags:
   - name: user
   - name: kneepads
+  - name: event
