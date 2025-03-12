@@ -30,6 +30,8 @@ func (h *HTTPGateway) CreateEvent(ctx *fiber.Ctx) error {
 	eventName := ctx.FormValue("event_name")
 	day := ctx.FormValue("day")
 	description := ctx.FormValue("description")
+	time := ctx.FormValue("time")
+	place := ctx.FormValue("place")
 	imagefile, err := ctx.FormFile("image")
 
 	var songList []string
@@ -66,6 +68,8 @@ func (h *HTTPGateway) CreateEvent(ctx *fiber.Ctx) error {
 		Day: day, 
 		Description: description, 
 		Song: songList,
+		Time: time,
+		Place: place,
 	}
 	// if err := ctx.BodyParser(&event); err!=nil {
 	// 	return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
@@ -103,6 +107,8 @@ func (h *HTTPGateway) UpdateEvent(ctx *fiber.Ctx) error{
 	eventName := ctx.FormValue("event_name")
 	day := ctx.FormValue("day")
 	description := ctx.FormValue("description")
+	time := ctx.FormValue("time")
+	place := ctx.FormValue("place")
 	imagefile, err := ctx.FormFile("image")
 
 	var songList []string
@@ -139,6 +145,8 @@ func (h *HTTPGateway) UpdateEvent(ctx *fiber.Ctx) error{
 		Day: day, 
 		Description: description, 
 		Song: songList,
+		Time: time,
+		Place: place,
 	}
 
 	// if err := ctx.BodyParser(&event); err!=nil {
