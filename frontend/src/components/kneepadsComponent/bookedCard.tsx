@@ -11,10 +11,10 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
     return (
         <div className="flex flex-col w-[100%]">
             <div className="mt-[10px]">
-                <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                <div className="inline ml-[18px] sm:ml-[35px] mr-[10px] font-[poppinsRegular] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                     User : 
                 </div>
-                <div className="inline font-[poppinsSemiBold] text-[16px] text-[#1A5AB8]">
+                <div className="inline font-[poppinsSemiBold] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                     {props.kneepads.nick_name} {props.kneepads.year} {props.kneepads.major}
                 </div>
                 {props.cookie && props.user?.nick_name===props.kneepads.nick_name && 
@@ -29,7 +29,8 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
                             borderStyle: "solid",
                             marginLeft: "14px",
                             fontFamily: "poppinsRegular",
-                            fontSize: "12px",
+                            fontSize: { xs: "10px", sm: "12px" },
+                            width: { xs: "60px", sm: "80px" },
                         },{
                             '&:hover': {
                                 backgroundColor: "#ED79B7",
@@ -52,19 +53,19 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
                     : null}
             </div>
             <div className="flex flex-row justify-between">
-                <p className="inline ml-[35px] mt-[15px]"> 
-                    <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-                        Book Date :
-                    </span>
-                    <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-                        {props.kneepads.booking_date}
-                    </span>    
+            <p className="inline ml-[18px] mt-[10px] sm:ml-[35px] sm:mt-[15px]"> 
+                <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
+                    Book Date :
+                </span>
+                <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
+                    {props.kneepads.booking_date}
+                </span>    
                 </p>
-                <p className="inline mr-[35px] mt-[15px]"> 
-                    <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                <p className="inline mr-[18px] mt-[10px] sm:mr-[35px] sm:mt-[15px]"> 
+                    <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
                         Return Date :
                     </span>
-                    <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                    <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
                         {props.kneepads.return_date}
                     </span>    
                 </p>
