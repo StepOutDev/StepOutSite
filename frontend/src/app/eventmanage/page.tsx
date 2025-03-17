@@ -11,7 +11,7 @@ export default function EventManage(){
                     Manage Event
                 </div>
                 <Link
-                    href={'/'}
+                    href={'/eventmanage/add'}
                     className="h-fit py-2 px-10 bg-white shadow-md rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white transition duration-200"
                 >
                     add
