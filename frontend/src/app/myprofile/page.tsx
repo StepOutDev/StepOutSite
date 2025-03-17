@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import EditProfileForm from '@/components/EditProfileForm';
 import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 
@@ -169,10 +168,20 @@ const MyProfilePage = () => {
     
     const fetchUserData = async () => {
       if (cookie && !profile) {  // Fetch only if profile is not already set
-        const userProfile: User = (await getUserMe(cookie)).data;
-        setProfile(userProfile);
-        setImage(userProfile?.image);
-        // setEditedProfile(profile);  // Set initial profile for editing
+        try {
+          const response = await getUserMe(cookie);
+          console.log("getUserMe response:", response);
+    
+          if (response) {
+            console.log("User data received:", response); 
+            setProfile(response); 
+            setImage(response?.image);
+          } else {
+            console.error("User data is undefined or null:", response);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       }
     };
     fetchUserData();
@@ -201,9 +210,9 @@ const MyProfilePage = () => {
               <div className="flex flex-col md:mb-10 md:ml-10">{/*flex flex-col w-[500px] h-[180px] absolute left-[50px] top-[0px] justify-between h-full*/}
                 <div className="flex md:flex-row gap-4 mb-6">
                   <div className='flex flex-col md:gap-4 gap-2'>
-                    <div className='flex md:flex-row flex-col md:gap-4 md:max-w-[500px] max-w-[250px] gap-2'>
-                      <h1 className="text-4xl font-bold overflow-x-auto">{profile?.first_name} </h1>
-                      <h1 className="text-4xl font-bold overflow-x-auto">{profile?.last_name} </h1>
+                    <div className='flex md:flex-row flex-col md:gap-4 max-w-[250px] md:max-w-[500px] gap-2'>
+                      <h1 className="text-4xl font-bold overflow-x-auto md:max-w-[250px]">{profile?.first_name} </h1>
+                      <h1 className="text-4xl font-bold overflow-x-auto md:max-w-[250px]">{profile?.last_name} </h1>
                     </div>
                     <div><h1 className="text-4xl font-bold">({profile?.nick_name})</h1></div>
                   </div>
