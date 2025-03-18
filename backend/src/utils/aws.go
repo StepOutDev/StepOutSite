@@ -53,8 +53,8 @@ func UploadS3FromString(fileName []byte, keyName string, contentType string) (st
 	return fullURL, nil
 }
 
-func CreateKeyNameBannerImage(studentID string, imageType string, fileName string) (string, string) {
-	keyName := fmt.Sprintf("image/%v.%v", studentID, imageType)
+func CreateKeyNameBannerImage(name string, imageType string, fileName string) (string, string) {
+	keyName := fmt.Sprintf("image/%v.%v", name, imageType)
 	contentType := fmt.Sprintf("image/%v", imageType)
 	return keyName, contentType
 }

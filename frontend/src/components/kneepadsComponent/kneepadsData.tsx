@@ -49,7 +49,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
             const [open, setOpen] = useState(false);
             return (
                <div className="flex flex-col justify-center mt-[10px] w-[100%]">
-                    <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                    <div className="inline flex flex-row justify-center items-center
+                    font-[poppinsRegular] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                         Do you want to book kneepads?
                     </div>
                     <Button variant="contained" color="primary" size="small" sx={ 
@@ -92,90 +93,27 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                 }
                 </>
             )
-            // const [openReturn, setOpenReturn] = useState(false);
-            // useEffect(() => {
-            //     setOpenReturn(false);
-            // }, [props.kneepads]); 
-            // return (
-            //     <div className="flex flex-col w-[100%]">
-            //         <div className="mt-[10px]">
-            //             <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-            //                 User : 
-            //             </div>
-            //             <div className="inline font-[poppinsSemiBold] text-[16px] text-[#1A5AB8]">
-            //                 {props.kneepads.nick_name} {props.kneepads.year} {props.kneepads.major}
-            //             </div>
-            //             {cookie && user?.nick_name===props.kneepads.nick_name && 
-            //             user?.year===props.kneepads.year && user?.major===props.kneepads.major ? 
-            //                 <div className="inline">
-            //                 <Button variant="contained" color="primary" size="small" sx={
-            //                     [{   
-            //                         bgcolor: "#FFFFFF",
-            //                         color: "#ED79B7",
-            //                         borderColor: "#ED79B7",	
-            //                         borderWidth: "2px",
-            //                         borderStyle: "solid",
-            //                         marginLeft: "14px",
-            //                         fontFamily: "poppinsRegular",
-            //                         fontSize: "12px",
-            //                     },{
-            //                         '&:hover': {
-            //                             backgroundColor: "#ED79B7",
-            //                             color: "#FFFFFF",
-            //                         }
-            //                     }]
-            //                 } onClick={()=>{setOpenReturn(true)}}>Return</Button>
-            //                 { openReturn &&(
-            //                 <Modal
-            //                     open={openReturn}
-            //                     onClose={()=>{setOpenReturn(false)}}
-            //                     aria-labelledby="modal-modal-return"
-            //                     aria-describedby="modal-modal-description"
-            //                     disableScrollLock
-            //                     style={{display:'flex',alignItems:'center',justifyContent:'center'}}
-            //                 >
-            //                 <KneepadsReturnPopup kneepads={props.kneepads} setOpenReturn={setOpenReturn} cookie={cookie}></KneepadsReturnPopup>
-            //                 </Modal> )}
-            //                 </div>
-            //                 : null}
-            //         </div>
-            //         <div className="flex flex-row justify-between">
-            //             <p className="inline ml-[35px] mt-[15px]"> 
-            //                 <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-            //                     Book Date :
-            //                 </span>
-            //                 <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-            //                     {props.kneepads.booking_date}
-            //                 </span>    
-            //             </p>
-            //             <p className="inline mr-[35px] mt-[15px]"> 
-            //                 <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-            //                     Return Date :
-            //                 </span>
-            //                 <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
-            //                     {props.kneepads.return_date}
-            //                 </span>    
-            //             </p>
-            //         </div>
-            //     </div>
-            // )
         case "unavailable":
             return (
-                <img src="/images/kneepads/cat.jpg" className="w-[90px] mt-[10px] rounded-[20px] mx-[127px]"/>
+                <div className="flex flex-row justify-center w-[100%]">
+                    <img src="/images/kneepads/cat.jpg" className="w-[90px] mt-[10px] rounded-[20px]"/>
+                </div>
             )
         case "disappear":
             return (
-                <img src="/images/kneepads/cat2.jpeg" className="w-[90px] mt-[10px] rounded-[20px] mx-[127px]"/>
+                <div className="flex flex-row justify-center w-[100%]">
+                    <img src="/images/kneepads/cat2.jpeg" className="w-[90px] mt-[10px] rounded-[20px]"/>
+                </div>
             )  
         case "pending":
             const [approve, setApprove] = useState(true);
             return (
                 <div className="flex flex-col w-[100%]">
-                    <div className="mt-[10px]">
-                        <div className="inline ml-[35px] mr-[10px] font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                    <div className="mt-[10px] flex flex-row justify-start ml-[20px] sm:ml-[0px]">
+                        <div className="inline mt-[5px] sm:mt-[4px] sm:ml-[35px] mr-[10px] font-[poppinsRegular] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                             Applicant : 
-                        </div>
-                        <div className="inline font-[poppinsSemiBold] text-[16px] text-[#1A5AB8]">
+                        </div>  
+                        <div className="inline mt-[5px] sm:mt-[4px] font-[poppinsSemiBold] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                             {props.kneepads.nick_name} {props.kneepads.year} {props.kneepads.major}
                         </div>
                         {user?.role === "admin"||user?.role === "core"?
@@ -189,7 +127,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                                     borderStyle: "solid",
                                     marginLeft: "14px",
                                     fontFamily: "poppinsRegular",
-                                    fontSize: "12px",
+                                    fontSize: { xs: "10px", sm: "12px" },
+                                    width: { xs: "60px", sm: "80px" },
                                 },{
                                     '&:hover': {
                                         backgroundColor: "#ED79B7",
@@ -206,7 +145,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                                     borderStyle: "solid",
                                     marginLeft: "14px",
                                     fontFamily: "poppinsRegular",
-                                    fontSize: "12px",
+                                    fontSize: { xs: "10px", sm: "12px" },
+                                    width: { xs: "60px", sm: "80px" },
                                 },{
                                     '&:hover': {
                                         backgroundColor: "#ED79B7",
@@ -216,32 +156,32 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                             } onClick={()=>{setApprove(true)}}>Data</Button>
                             }
                         </div>
-                        :<div className="mt-[20px] ml-[35px] mr-[10px] font-[poppinsSemiBold] text-[16px] text-[#E799AC]">Waiting for admin to approve.</div>}
+                        :null}
                     </div>
                     {user?.role === "admin"||user?.role === "core"?
                         <div>
                         {approve? 
                         <div className="flex flex-row justify-between">
-                            <p className="inline ml-[35px] mt-[15px]"> 
-                                <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                            <p className="inline ml-[18px] mt-[10px] sm:ml-[35px] sm:mt-[15px]"> 
+                                <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
                                     Book Date :
                                 </span>
-                                <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                                <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
                                     {props.kneepads.booking_date}
                                 </span>    
                             </p>
-                            <p className="inline mr-[35px] mt-[15px]"> 
-                                <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                            <p className="inline mr-[18px] mt-[10px] sm:mr-[35px] sm:mt-[15px]"> 
+                                <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
                                     Return Date :
                                 </span>
-                                <span className="block font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                                <span className="block font-[poppinsRegular]  text-[14px] sm:text-[16px] text-[#1A5AB8]">
                                     {props.kneepads.return_date}
                                 </span>    
                             </p>
                         </div>
                         :
                         <div className="mt-[20px] flex flex-row justify-center">
-                            <div className="inline font-[poppinsRegular] text-[16px] text-[#1A5AB8]">
+                            <div className="inline mt-[5px] sm:mt-[4px] font-[poppinsRegular] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                                 Approve or not ?
                             </div>
                             <Button variant="contained" color="primary" size="small" sx={ 
@@ -256,6 +196,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                                     fontSize: "12px",
                                     display: "inline",
                                     borderRadius: "100px",
+                                    paddingX: "2px", 
+                                    minWidth: {xs:"40px", sm:"60px"},
                                 },{
                                     '&:hover': {
                                         backgroundColor: "#ED79B7",
@@ -275,6 +217,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                                     fontFamily: "poppinsRegular",
                                     fontSize: "12px",
                                     display: "inline",
+                                    paddingX: "2px", 
+                                    minWidth: {xs:"40px", sm:"60px"},
                                 },{
                                     '&:hover': {
                                         backgroundColor: "#1A5AB8",
@@ -285,7 +229,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                             updateKneepads(props.kneepads,props.kneepads.number,cookie); window.location.reload()}}><DoneIcon></DoneIcon></Button>
                         </div>}
                         </div>
-                        :null}
+                        :<div className="mt-[20px] ml-[35px] mr-[10px] font-[poppinsSemiBold] 
+                        text-[14px] sm:text-[16px] text-[#E799AC]">Waiting for admin to approve.</div>}
                 </div>
             )           
     }
