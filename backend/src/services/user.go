@@ -24,6 +24,8 @@ type IUserService interface {
 	UpdateUser(userID string,targetID string,user entities.UserDataFormat, imageByte []byte) error
 	DeleteUser(userID string,targetID string) error
 	GetMe(studentID string) (entities.UserResponseFormat, error)
+	CheckPermissionAdmin(studentID string) error
+	CheckPermissionMember(studentID string) error
 }
 
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
@@ -44,6 +46,9 @@ func (sv userService) CreateUser(user entities.UserDataFormat, imageByte []byte)
 
 	if imageByte != nil {
 		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+		if keyName == "" && contentType == ""{
+			return errors.New("hashing the key image error")
+		}
 
 		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
 
@@ -150,9 +155,12 @@ func (sv userService) UpdateUser(userID string,targetID string,user entities.Use
 	if err != nil {
 		user.Role = checkUser.Role
 	}
-	
+
 	if imageByte != nil {
-		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+		keyName, contentType := utils.CreateKeyNameBannerImage(checkUser.StudentID, "webp", "")
+		if keyName == "" && contentType == ""{
+			return errors.New("hashing the key image error")
+		}
 
 		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
 
@@ -187,4 +195,15 @@ func (sv userService) GetMe(studentID string) (entities.UserResponseFormat, erro
 		return entities.UserResponseFormat{},err
 	}
 	return user,nil
+}
+
+func (sv userService) CheckPermissionMember(studentID string) error {
+	member, err := sv.UserRepository.GetOneUser(studentID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	if !(member.Role == "admin" || member.Role =="core" || member.Role=="member") {
+		return errors.New("unauthorized")
+	}
+	return nil
 }

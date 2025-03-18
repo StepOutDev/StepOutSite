@@ -1,6 +1,9 @@
 "use client"
 import { signIn } from "next-auth/react"
 import { useState } from "react"
+import userSignin from "@/libs/user/userSignin";
+import {cookies} from "next/headers";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function SigninForm() {
   const [student_id, setStudent_id] = useState("");
@@ -10,13 +13,15 @@ export default function SigninForm() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await signIn("credentials", { student_id, password, redirect: false, callbackUrl: "/" });
-    console.log("result",result);
+    // const result = await signIn("credentials", { student_id, password, redirect: false, callbackUrl: "/" });
+    const result = await userSignin(student_id, password);
+    // console.log("result",result);
+    SetCookie("jwt", result?.data);
     if(result?.error) {
       setError("Invalid credentials");
     }else{
       console.log("Sign-in successful", result);
-      document.cookie = `jwt=${result}; path=/; Secure; SameSite=Strict`;
+      window.location.href = "/";
     }
 
   };

@@ -26,14 +26,12 @@ const getUserMe = async (token : string) => {
       console.error("Error fetching user data:", errorResponse);
       throw new Error("Failed to fetch user data.");
     }
-
-    const data = await response.json();
-    console.log("User data:", data);
-    return data.data;
-  } catch (error) {
-    console.error("Error in getUserMe:", error);
-    throw error;
-  }
-};
-
-export default getUserMe;
+  );
+  if (!response.ok) {
+    throw new Error("Cannot get user me")
+  };
+  
+  const responseJson = await response.json();
+  console.log("getUserMe Response:", responseJson); // Debug API response
+  return await responseJson.data;
+}
