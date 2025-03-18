@@ -14,35 +14,35 @@ import KneepadsBookPopup from "./kneepadsBookPopup";
 import KneepadsReturnPopup from "./kneepadsReturnPopup";
 import BookedCard from "./bookedCard";
 
-export default function KneepadsData(props: {kneepads: Kneepads}) {
-    const [cookie, setCookie] = useState<string | undefined>();
-            useEffect(() => {
-                function fetchCookie() {
-                    const ck = GetCookie("jwt");
-                    setCookie(ck);
-                }
-                fetchCookie();
+export default function KneepadsData(props: {kneepads: Kneepads, cookie: string|undefined, user: User|undefined}) {
+    // const [cookie, setCookie] = useState<string | undefined>();
+    //         useEffect(() => {
+    //             function fetchCookie() {
+    //                 const ck = GetCookie("jwt");
+    //                 setCookie(ck);
+    //             }
+    //             fetchCookie();
         
-                const interval = setInterval(() => {
-                    const currentCookie = GetCookie("jwt");
-                    if (currentCookie !== cookie) {
-                        setCookie(currentCookie);
-                    }
-                }, 500);
-                return () => clearInterval(interval);
-            }, [cookie]);
-        const [user, setUser] = useState<User>();
-        useEffect(() => {
-            const fetchUserData = async () => {
-                if(cookie){
-                    const user: User = await getUserMe(cookie);
-                    setUser(user);
-                } 
-            };
-            if(user === undefined){
-                fetchUserData();
-            }
-        })
+    //             const interval = setInterval(() => {
+    //                 const currentCookie = GetCookie("jwt");
+    //                 if (currentCookie !== cookie) {
+    //                     setCookie(currentCookie);
+    //                 }
+    //             }, 500);
+    //             return () => clearInterval(interval);
+    //         }, [cookie]);
+    //     const [user, setUser] = useState<User>();
+    //     useEffect(() => {
+    //         const fetchUserData = async () => {
+    //             if(cookie){
+    //                 const user: User = await getUserMe(cookie);
+    //                 setUser(user);
+    //             } 
+    //         };
+    //         if(user === undefined){
+    //             fetchUserData();
+    //         }
+    //     })
     
     switch(props.kneepads.status) {
         case "available":
@@ -88,8 +88,8 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
         case "booked":
             return (
                 <>
-                {cookie&&user ?
-                <BookedCard kneepads={props.kneepads} cookie={cookie} user={user}></BookedCard>:null
+                {props.cookie&&props.user ?
+                <BookedCard kneepads={props.kneepads} cookie={props.cookie} user={props.user}></BookedCard>:null
                 }
                 </>
             )
@@ -116,7 +116,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                         <div className="inline mt-[5px] sm:mt-[4px] font-[poppinsSemiBold] text-[14px] sm:text-[16px] text-[#1A5AB8]">
                             {props.kneepads.nick_name} {props.kneepads.year} {props.kneepads.major}
                         </div>
-                        {user?.role === "admin"||user?.role === "core"?
+                        {props.user?.role === "admin"||props.user?.role === "core"?
                         <div className="inline">
                             {approve? <Button variant="contained" color="primary" size="small" sx={
                                 [{   
@@ -158,7 +158,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                         </div>
                         :null}
                     </div>
-                    {user?.role === "admin"||user?.role === "core"?
+                    {props.user?.role === "admin"||props.user?.role === "core"?
                         <div>
                         {approve? 
                         <div className="flex flex-row justify-between">
@@ -226,7 +226,7 @@ export default function KneepadsData(props: {kneepads: Kneepads}) {
                                     }
                                 }]
                             } onClick={()=>{setApprove(true); console.log(approve);props.kneepads.status = "booked"; 
-                            updateKneepads(props.kneepads,props.kneepads.number,cookie); window.location.reload()}}><DoneIcon></DoneIcon></Button>
+                            updateKneepads(props.kneepads,props.kneepads.number,props.cookie); window.location.reload()}}><DoneIcon></DoneIcon></Button>
                         </div>}
                         </div>
                         :<div className="mt-[20px] ml-[35px] mr-[10px] font-[poppinsSemiBold] 
