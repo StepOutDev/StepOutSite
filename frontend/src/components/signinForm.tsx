@@ -9,6 +9,7 @@ export default function SigninForm() {
   const [student_id, setStudent_id] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,33 +72,4 @@ export default function SigninForm() {
 
     )
 
-}
-
-export function SetCookie(name: string, val: string){
-  const date = new Date();
-  const value = val;
-
-  // Set it expire in 7 days
-  date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
-
-  // Set it
-  document.cookie = name+"="+value+"; expires="+date.toUTCString()+"; path=/";
-  
-}
-
-
-export function GetCookie(name: string){
-  if (typeof document === "undefined") {
-      return undefined;
-  }
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-  
-  if (parts.length == 2) {
-      const part = parts.pop();
-      if (part) {
-          return part.split(";").shift();
-      }
-      return undefined;
-  }
 }

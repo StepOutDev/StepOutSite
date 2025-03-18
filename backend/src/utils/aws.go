@@ -10,13 +10,14 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func UploadS3FromString(fileName []byte, keyName string, contentType string) (string, error) {
 	//config aws
 	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String(os.Getenv("AWS_REGION")),
-		Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), ""),
+		Region:      aws.String(os.Getenv("AWS_REG")),
+		Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_KEY_ID"), os.Getenv("AWS_SECRET_KEY"), ""),
 	})
 	if err != nil {
 		return "", err
@@ -48,13 +49,18 @@ func UploadS3FromString(fileName []byte, keyName string, contentType string) (st
 		return "", err
 	}
 
-	fullURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", os.Getenv("AWS_BUCKET"), os.Getenv("AWS_REGION"), keyName)
+	fullURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", os.Getenv("AWS_BUCKET"), os.Getenv("AWS_REG"), keyName)
 
 	return fullURL, nil
 }
 
 func CreateKeyNameBannerImage(name string, imageType string, fileName string) (string, string) {
-	keyName := fmt.Sprintf("image/%v.%v", name, imageType)
+	nameByte := []byte(name)
+	hash, err := bcrypt.GenerateFromPassword(nameByte, bcrypt.MinCost)
+	if err != nil {
+		return "", ""
+	}
+	keyName := fmt.Sprintf("image/%v.%v", string(hash), imageType)
 	contentType := fmt.Sprintf("image/%v", imageType)
 	return keyName, contentType
 }

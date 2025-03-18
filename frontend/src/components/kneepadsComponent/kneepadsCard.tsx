@@ -1,7 +1,7 @@
-import { Kneepads } from "../../../interface";
+import { Kneepads, User } from "../../../interface";
 import KneepadsData from "./kneepadsData";
 
-export default function KneepadsCard(props: {kneepads: Kneepads}) {
+export default function KneepadsCard(props: {kneepads: Kneepads, cookie: string|undefined, user: User|undefined}) {
     return (
         <div className="flex flex-col shadow-[3px_5px_4px_rgba(0,0,0,0.25)] 
         border-[3px] border-[#5892CA] rounded-[20px] m-[2%] w-[280px] h-[187px] sm:w-[344px] sm:h-[230px] bg-white">
@@ -21,7 +21,7 @@ export default function KneepadsCard(props: {kneepads: Kneepads}) {
                 </p>
             </div>
             <div className="flex flex-row justify-start">
-                <KneepadsData kneepads={props.kneepads} />
+                <KneepadsData kneepads={props.kneepads} cookie={props.cookie} user={props.user} />
             </div>
         </div>
     );
