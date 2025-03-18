@@ -38,8 +38,11 @@ export interface Kneepads{
 }
 
 export interface Event{
-    img: string;
-    name: string;
-    date: string;
+    event_name: string;
+    day: string;
+    time: string;
+    place: string;
+    song: string[];
     description: string;
+    image: string;
 }
