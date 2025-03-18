@@ -1,8 +1,15 @@
-
 "use client"
 
 import * as React from 'react';
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import getUserMe from "@/libs/user/getUserMe";
+
+import Cookies from 'js-cookie';
+
+
 import Stack from '@mui/material/Stack';
+import EditProfileForm from '@/components/EditProfileForm';
 import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 
@@ -80,6 +87,7 @@ const MyProfilePage = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
 
   const handleSave = async() => {
     // Here you would save the editedProfile state to your backend or local storage
@@ -187,7 +195,6 @@ const MyProfilePage = () => {
     fetchUserData();
   }, [cookie, profile]);
   
-
   return (
     <div className=''>
       <div className="min-h-screen flex flex-col bg-[#E8DEF8]">
@@ -376,7 +383,6 @@ const MyProfilePage = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        
       </div>
     </div>
 

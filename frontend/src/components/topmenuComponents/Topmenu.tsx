@@ -1,10 +1,7 @@
-"use client"
-import { useState, useEffect } from "react"
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+"use client";
+
 import { useSession } from "next-auth/react";
-import { User } from "../../../interface";
-import Link from "next/link"
+import { useEffect, useState } from "react";
 import getUserMe from "@/libs/user/getUserMe";
 import { GetCookie } from "../signinForm";
 import Logo from "./Logo";
