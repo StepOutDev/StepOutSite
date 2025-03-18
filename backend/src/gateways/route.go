@@ -32,4 +32,19 @@ func GatewayKneepads(gateway HTTPGateway, app *fiber.App){
 	apiJWT.Get("/get_all",gateway.GetAllKneepads)
 	apiJWT.Put("/update",gateway.UpdateKneepads)
 	apiJWT.Delete("/delete",gateway.DeleteKneepads)
+	apiJWT.Put("/pending",gateway.PendingKneepads)
+	apiJWT.Put("/return",gateway.ReturnKneepads)
+}
+
+func GatewayEvent(gateway HTTPGateway, app *fiber.App){
+	api := app.Group("/api/v1/event")
+
+	apiNoJWT := api.Group("")
+	apiNoJWT.Get("/get_all",gateway.GetAllEvents)
+
+	apiJWT := api.Group("")
+	apiJWT.Use(middlewares.SetJWtHeaderHandler())
+	apiJWT.Post("/create",gateway.CreateEvent)
+	apiJWT.Put("/update",gateway.UpdateEvent)
+	apiJWT.Delete("/delete",gateway.DeleteEvent)
 }

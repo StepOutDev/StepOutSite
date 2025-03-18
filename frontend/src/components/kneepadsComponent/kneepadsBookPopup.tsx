@@ -9,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import updateKneepads from "@/libs/kneepads/updateKneepads";
+import pendingKneepads from "@/libs/kneepads/pendingKneepads";
 
 export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (value: boolean) => void}) {
     const [cookie, setCookie] = useState<string | undefined>();
@@ -75,6 +76,7 @@ export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
                                     <DatePicker label="Pick the date"  value={bookingDate} 
+                                    format="DD/MM/YYYY"
                                     onChange={(newValue) => setBookingDate(newValue)} 
                                     disablePast maxDate={returnDate? dayjs(returnDate).subtract(1, 'day') : undefined}
                                     slotProps={{
@@ -151,6 +153,7 @@ export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DatePicker']} sx={{mt: 1}}>
                                     <DatePicker label="Pick the date"  value={returnDate} 
+                                    format="DD/MM/YYYY"
                                     onChange={(newValue) => setReturnDate(newValue)} 
                                     disablePast minDate={bookingDate? dayjs(bookingDate).add(1, 'day') : undefined}
                                     slotProps={{
@@ -235,7 +238,7 @@ export default function KneepadsBookPopup(props: {kneepads: Kneepads, setOpen: (
                         props.kneepads.nick_name = user.nick_name;
                         props.kneepads.year = user.year;
                         props.kneepads.major = user.major;
-                    } updateKneepads(props.kneepads, props.kneepads.number, cookie);    
+                    } pendingKneepads(props.kneepads, props.kneepads.number, cookie);    
                     ; window.location.reload(); }}>Book</button>
                 </div>    
         </div>
