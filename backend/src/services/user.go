@@ -152,9 +152,9 @@ func (sv userService) UpdateUser(userID string,targetID string,user entities.Use
 	if err != nil {
 		user.Role = checkUser.Role
 	}
-	
+
 	if imageByte != nil {
-		keyName, contentType := utils.CreateKeyNameBannerImage(user.StudentID, "webp", "")
+		keyName, contentType := utils.CreateKeyNameBannerImage(checkUser.StudentID, "webp", "")
 
 		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
 
