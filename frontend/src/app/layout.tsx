@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Topmenu from "@/components/topmenuComponents/Topmenu";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 
 const geistSans = localFont({
@@ -58,8 +57,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const nextAuthSession = await getServerSession(authOptions)
-
   return (
     <html lang="en">
       <head>
@@ -75,10 +72,8 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <NextAuthProvider session={ nextAuthSession }>
           <Topmenu></Topmenu>
           {children}
-        </NextAuthProvider>
       </body>
     </html>
   );
