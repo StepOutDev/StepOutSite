@@ -1,22 +1,45 @@
 "use client"
 import { useState } from "react"
 import userRegister from "@/libs/user/userRegister"
-import { FormRegister } from "../../../../interface"
+import { FormEvent } from "../../../../interface"
 import userSignin from "@/libs/user/userSignin"
 import { SetCookie } from "../../../components/signinForm"
+import AddInput from "../../../components/addInput/AddInput"
+import { TextField } from "@mui/material";
 
-export default function SignupForm() {
-    const [formData, setFormData] = useState<FormRegister>({
-        student_id: "",
-        first_name: "",
-        last_name: "",
-        nick_name: "",
-        year: "",
-        major: "",
-        isMember: false,
-        password: "",
-        confirmPassword: ""
+import * as React from 'react';
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
+import EventImg from '@/components/eventComponents/EventImg';
+
+
+const mockFormEvent: FormEvent = {
+    song: ["Fire", "BST", "BWL"],  
+    event_name: "vidlove 2025",
+    day: "2023-09-30",  // วันที่ปัจจุบัน
+    time: "10:00",
+    image: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp",
+    place: "Bangkok Convention Center",
+    description: "An annual technology conference covering the latest trends in software development."
+};
+
+
+export default function EventForm() {
+    const [formEvent, setFormEvent] = useState<FormEvent>({
+        song: [], 
+        event_name: "",
+        day: "", 
+        time: "",
+        image: "",
+        place: "",
+        description: ""
     })
+    const [image, setImage] = useState<string>("https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp");
+    const [event, setEvent] = useState<FormEvent | null>(null);
 
     const majorList = [
         '-','Civil','Electrical','Mechanical','Automotive','Industrial',
@@ -25,65 +48,57 @@ export default function SignupForm() {
         'NANO','ADME','AERO','CHPE','CEDT','SEMI'
     ]
 
-    const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
+    
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value, type} = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === "checked" ? (e.target as HTMLInputElement).checked : value
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+        try {
+        // await updateUser(cookie, profile?.role || '', profile?.student_id || null, formData);
+        // Once the image is uploaded, update the profile with the new image
+        setEvent((prevState) => ({
+        ...prevState!,
+        image: reader.result as string  , // Update the profile image with the new image URL
         }));
-
-        if(name === "confirmPassword") {
-            setConfirmPasswordError("");
-        } 
-    }
-
-    const handleSubmit = async (e:React.FormEvent) => {
-        e.preventDefault();
-
-        if(formData.password !== formData.confirmPassword){
-            setConfirmPasswordError("Password do not match");
-            setFormData((prev)=>({
-                ...prev,
-                confirmPassword: ""
-            }));
-            return;
+        console.log('User updated image successfully:', file);
+        } catch (error) {
+            // console.log('cookie', cookie, profile?.role, profile?.student_id);
+            console.log('Failed to update user image :', error);
         }
-
-        const formDataObj = new FormData();
-        Object.keys(formData).forEach((key) => {
-            const typedKey = key as keyof FormRegister;
-            formDataObj.append(typedKey, String(formData[typedKey]));
-        });
-
-        console.log("Submitting:", Object.fromEntries(formDataObj.entries()));
-
-        try{
-
-            const signupResponse = await userRegister(formDataObj);
-            console.log("User registered successfully:", signupResponse)
-
-            if(!signupResponse){
-                throw new Error("Signup failed");
-            }
-
-            const signinResponse = await userSignin(formData.student_id, formData.password);
-
-            if(signinResponse?.error){
-                console.error("Auto login failed:", signinResponse.error);
-                return;
-            }
-
-            SetCookie("jwt", signinResponse?.data);
-
-            window.location.href = "/";
-
-        }catch(error){
-            console.error("Error registered user:", error)
-
-        }
+      };
+      reader.readAsDataURL(file);
+      
     }
+    
+  };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        
+        setFormEvent(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleDateChange = (newValue: dayjs.Dayjs | null) => {
+        setFormEvent(prevState => ({
+            ...prevState,
+            event_date: newValue ? newValue.format('MM-DD-YYYY') : ''
+        }));
+    };
+
+    const handleTimeChange = (newValue: dayjs.Dayjs | null) => {
+        setFormEvent(prevState => ({
+            ...prevState,
+            event_time: newValue ? newValue.format('HH:mm') : ''
+        }));
+    };
+
+    
 
     return(
         
@@ -95,73 +110,24 @@ export default function SignupForm() {
             <div className="py-auto px-[7%]">
                 {/* <div className=""> */}
                 {/* Form Section */}
-                <form className="justify-items-center mx-8 rounded-3xl flex flex-col p-10 text-[#184A92] md:relative shadow-2xl my-10 bg-gray-300" onSubmit={handleSubmit}>
+                <form className="justify-items-center mx-8 rounded-3xl flex flex-col p-10 text-[#184A92] md:relative shadow-2xl my-10 bg-gray-300" onSubmit={(e) => e.preventDefault()}>
                     <div className="flex flex-col md:flex-row md:gap-10">
                         <div className="flex flex-col basis-1/2 gap-5">
-                            {/* File Input */}
-                            {/* <input
-                                type="file"
-                                name="student_id"
-                                // placeholder="Student ID"
-                                className="w-full h-[250px] px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-3xl"
-                                value={formData.student_id}
-                                onChange={handleChange}
-                                required
-                            /> */}
+                            <div className="relative"><EventImg imageUrl={event?.image} handleImageUpload={handleImageUpload} /></div>
                             {/* Image preview and label */}
-                            <label htmlFor="fileInput" className="cursor-pointer block relative">
-                                <img
-                                    src="https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/FreshyGame2024.webp"
-                                    alt="event"
-                                    className="w-full h-[250px] px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-3xl"
-                                />
-                                {/* Button for selecting file */}
-                                <button
-                                    type="button"
-                                    className="absolute inset-0 m-auto w-fit h-fit py-2 px-4 bg-white text-[#7A4E9A] rounded-xl hover:bg-[#c596c2] border-2 border-[#7A4E9A]"
-                                    onClick={() => document.getElementById("fileInput")?.click()}
-                                >
-                                    Select Photo
-                                </button>
-                            </label>
 
                             {/* Hidden file input */}
-                            <input id="fileInput" type="file" accept="image/*" className="hidden" />
-                            
-                            {/* Select Photo Button inside the box */}
-                            {/* <button
-                                type="button"
-                                className="absolute right-0 top-0 py-2 px-4 bg-[#E799AC] text-white rounded-2xl hover:bg-pink-600"
-                                onClick={() => document.querySelector('input[type="file"]')?.click()}
-                            >
-                                Select Photo
-                            </button> */}
-
+                            {/* <input id="fileInput" type="file" accept="image/*" className="hidden" /> */}
+                        
                             <div className="basis-1/2 flex flex-row mb-5">
                                 <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Song List</div>
                                 <div className="flex flex-col w-full gap-5">
-                                    <input
-                                        type="text"
-                                        name="student_id"
-                                        // placeholder="Student ID"
-                                        className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                        value={formData.student_id}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                    <input
-                                        type="text"
-                                        name="student_id"
-                                        // placeholder="Student ID"
-                                        className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                        value={formData.student_id}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <AddInput/>
                                 </div>
+                                
                             </div>
                         </div>
-
+                    
                         <div className="flex flex-col basis-1/2 gap-5">
                             <div className="basis-1/2 flex flex-row">
                                 <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Event Name</div>
@@ -170,35 +136,41 @@ export default function SignupForm() {
                                     name="event_name"
                                     // placeholder="Student ID"
                                     className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                    value={formData.student_id}
+                                    value={formEvent.event_name}
                                     onChange={handleChange}
                                     required
                                 />
+                            </div>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <div className="basis-1/2 flex flex-row">
+                                <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">
+                                Event Date
+                                </div>
+                                <DatePicker
+                                value={formEvent.day ? dayjs(formEvent.day) : null}
+                                onChange={handleDateChange}
+                                // disableMaskedInput
+                                slotProps={{
+                                    textField: { 
+                                        variant: "outlined", 
+                                        fullWidth: true,
+                                        inputProps: { "aria-hidden": "false" }
+                                    }
+                                }}
+                                className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
+                            />
                             </div>
                             <div className="basis-1/2 flex flex-row">
-                                <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Event Date</div>
-                                <input
-                                    type="date"
-                                    name="event_date"
-                                    // placeholder="Student ID"
+                                <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">
+                                Event Time
+                                </div>
+                                <TimePicker
+                                    value={formEvent.time ? dayjs(formEvent.time, "HH:mm") : null}
+                                    onChange={handleTimeChange}
                                     className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                    value={formData.student_id}
-                                    onChange={handleChange}
-                                    required
                                 />
                             </div>
-                            <div className="basis-1/2 flex flex-row">
-                                <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Event Time</div>
-                                <input
-                                    type="text"
-                                    name="event_time"
-                                    // placeholder="Student ID"
-                                    className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                    value={formData.student_id}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                            </LocalizationProvider>
                             <div className="basis-1/2 flex flex-row">
                                 <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Event Place</div>
                                 <input
@@ -206,7 +178,7 @@ export default function SignupForm() {
                                     name="event_place"
                                     // placeholder="Student ID"
                                     className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                    value={formData.student_id}
+                                    value={formEvent.place}
                                     onChange={handleChange}
                                     required
                                 />
@@ -215,10 +187,10 @@ export default function SignupForm() {
                                 <div className="basis-1/3 text-[#7A4E9A] font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Description</div>
                                 <input
                                     type="text"
-                                    name="student_id"
+                                    name="description"
                                     // placeholder="Student ID"
                                     className="w-full h-[200px] px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl"
-                                    value={formData.student_id}
+                                    value={formEvent.description}
                                     onChange={handleChange}
                                     required
                                 />
@@ -228,11 +200,11 @@ export default function SignupForm() {
                     </div>
 
                     
-                    {/* Submit Button */}
+                    {/* Add Button */}
                     <div className="flex justify-end mt-5">
                         <button
                         type="submit"
-                        className="w-[150px] py-1 bg-[#7A4E9A] text-white rounded-2xl hover:bg-[#c596c2]"
+                        className="w-[150px] py-1 bg-[#7A4E9A] text-white rounded-2xl hover:bg-[#c596c2] transition-all"
                         >
                         Add
                         </button>
