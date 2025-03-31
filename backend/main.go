@@ -54,9 +54,9 @@ func main() {
 		PORT = "5000"
 	}
 
-	// addr := "0.0.0.0:" + PORT
+	addr := "0.0.0.0:" + PORT
 	// fmt.Println("Server running on " + addr)
 
-	// app.Listen(addr)
-	app.Listen(":" + PORT)
+	app.Listen(addr)
+	// app.Listen(":" + PORT)
 }
