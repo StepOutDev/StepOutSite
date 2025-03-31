@@ -49,12 +49,13 @@ func main() {
 
 	gateways.NewHTTPGateway(app, userService, kneepadsService,eventService)
 
-	fmt.Println("Starting server...")
-	PORT := os.Getenv("DB_PORT_LOGIN")
-	fmt.Println("PORT: " + PORT)
-	if PORT == "" {
-		PORT = "5000"
-	}
+	// fmt.Println("Starting server...")
+	// PORT := os.Getenv("DB_PORT_LOGIN")
+	// fmt.Println("PORT: " + PORT)
+	// if PORT == "" {
+	// 	PORT = "5000"
+	// }
+	PORT := "5000"
 
 	addr := "0.0.0.0:" + PORT
 	fmt.Println("Server running on " + addr)
