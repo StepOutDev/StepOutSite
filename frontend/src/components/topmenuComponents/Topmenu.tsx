@@ -43,7 +43,7 @@ export default function Topmenu () {
         
       }, [cookie, user])
       return(
-          <nav className="h-[75px] grid grid-cols-2 backdrop-blur-lg bg-slate-100/70 fixed top-0 left-0 right-0 z-30 border-gray-200 shadow-lg px-5">   
+          <nav className="flex h-[75px] justify-between backdrop-blur-lg bg-slate-100/70 fixed top-0 left-0 right-0 z-30 border-gray-200 shadow-lg">   
             <Logo/>
             <NavLinks cookie={cookie} user={user}/>        
         </nav>

@@ -44,6 +44,9 @@ func (sv eventService) CreateEvent(event entities.EventDataFormat, studentID str
 	if imageByte != nil {
 		name := strings.ReplaceAll(event.EventName," ","")
 		keyName, contentType := utils.CreateKeyNameBannerImage(name, "webp", "")
+		if keyName == "" && contentType == ""{
+			return errors.New("hashing the key image error")
+		}
 
 		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
 
@@ -87,6 +90,9 @@ func (sv eventService) UpdateEvent(eventName string, event entities.EventDataFor
 	if imageByte != nil {
 		name := strings.ReplaceAll(eventName," ","")
 		keyName, contentType := utils.CreateKeyNameBannerImage(name, "webp", "")
+		if keyName == "" && contentType == ""{
+			return errors.New("hashing the key image error")
+		}
 
 		imageURL, err := utils.UploadS3FromString(imageByte, keyName, contentType)
 
