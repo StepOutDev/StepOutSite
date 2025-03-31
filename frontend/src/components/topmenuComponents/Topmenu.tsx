@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { useSession } from "next-auth/react";
 import { User } from "../../../interface";
 import Link from "next/link"
