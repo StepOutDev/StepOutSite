@@ -100,7 +100,7 @@ export default function EventCard(
                 >
                     More
                 </button>
-                {user?.role === "core" ? (
+                {user?.role === "core"|| user?.role === "admin" ? (
                     <div className="flex flex-grow justify-end items-end w-full">
                         <Link
                             href={"/"}
@@ -109,9 +109,7 @@ export default function EventCard(
                             Edit
                         </Link>
                     </div>
-                ) : (
-                    <p>{user?.role}</p>
-                )}
+                ) : null}
             </div>
         </div>
     )
