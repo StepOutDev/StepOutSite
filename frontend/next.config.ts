@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: 'build',
   images: {
       domains: ['drive.google.com']
   },
