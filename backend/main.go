@@ -49,8 +49,9 @@ func main() {
 
 	gateways.NewHTTPGateway(app, userService, kneepadsService,eventService)
 
+	fmt.Println("Starting server...")
 	PORT := os.Getenv("DB_PORT_LOGIN")
-
+	fmt.Println("PORT: " + PORT)
 	if PORT == "" {
 		PORT = "5000"
 	}
