@@ -22,12 +22,12 @@ export default function ProfileImg({ imageUrl, handleImageUpload }: ProfileImgPr
   // };
 
   return (
-    <div>
+    <div className="w-[200px] h-[200px]">
       <label htmlFor="fileInput" className="cursor-pointer">
         <img
           src={imageUrl}
           alt="Profile"
-          className="w-[200px] h-[200px] rounded-full object-cover"
+          className="w-full h-full rounded-full object-cover"
         />
       </label>
       <input
