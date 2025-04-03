@@ -37,20 +37,10 @@ export interface Kneepads{
     major: string;
 }
 
-export interface Event{
-    event_name: string;
-    day: string;
-    time: string;
-    place: string;
-    song: string[];
-    description: string;
-    image: string;
-}
-
 export interface FormEvent {
-    song: string[];  // Use string[] to define a list (array) of strings
+    song: string[]; 
     event_name: string;
-    day: string;      // Use Date type for date values
+    day: string;  
     time: string;
     image: string;
     place: string;

@@ -2,16 +2,16 @@
 
 import Link from "next/link"
 import EventCard from "./eventCard"
-import { Event } from "../../../interface"
+import { FormEvent } from "../../../interface"
 import { useState, useEffect } from "react"
 import getAllEvents from "@/libs/event/getAllEvents"
 
 export default function EventPanel(){
 
-    const [events, setEvents] = useState<Event[]>([]);
+    const [events, setEvents] = useState<FormEvent[]>([]);
             useEffect(() => {
                 const fetchEvents = async () => {
-                    const events:Event[] = await getAllEvents();
+                    const events:FormEvent[] = await getAllEvents();
                     setEvents(events);
                 };
                 
@@ -23,11 +23,11 @@ export default function EventPanel(){
             <div className="flex space-x-4 w-[80%] md:min-h-[600px] min-h-[550px] overflow-x-scroll mt-[10px] mx-auto px-4 text-black
                 custom-scrollbar shadow-xl">
                 {events.length > 0 ? (
-                    events.map((event, index) => (
-                    <EventCard key={index} {...event} />
-                    ))
+                    events.map((event, index) => {
+                        return <EventCard key={index} {...event} />;
+                    })
                 ) : (
-                    <p className="text-gray-500">No events available.</p>
+                    <p className="text-gray-500">Coming soon...</p>
                 )}
             </div>
         </div>

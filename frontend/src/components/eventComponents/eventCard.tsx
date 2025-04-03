@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link";
 import { GetCookie } from "../signinForm";
-import { User, Event } from "../../../interface";
+import { User, FormEvent } from "../../../interface";
 import getUserMe from "@/libs/user/getUserMe";
 import ShowMore from "./ShowMore";
 import { CalendarIcon, ClockIcon, LocationIcon } from "./ShowMore";
@@ -16,7 +16,7 @@ export default function EventCard(
         song, 
         description, 
         image 
-    }: Event
+    }: FormEvent
 ){
     const [showMore, setShowMore] = useState<boolean>(false);
     const [cookie, setCookie] = useState<string | undefined>();
@@ -47,6 +47,13 @@ export default function EventCard(
                 fetchUserData();
             }
         })
+
+    const handleEditClick = () => {
+        localStorage.setItem("eventData", JSON.stringify({
+            event_name, day, time, place, description, image, song
+        }));
+        window.location.href = "/eventmanage/edit";
+    };
 
     return (
         <div className="flex flex-col bg-white rounded-3xl shadow-md items-start my-4 md:min-w-[350px] min-w-[300px] md:max-w-[350px] max-w-[300px] overflow-hidden p-4">
@@ -102,12 +109,12 @@ export default function EventCard(
                 </button>
                 {user?.role === "core"|| user?.role === "admin" ? (
                     <div className="flex flex-grow justify-end items-end w-full">
-                        <Link
-                            href={"/"}
+                        <button
+                            onClick={handleEditClick}
                             className="flex h-fit w-full py-2 justify-center bg-white shadow-md rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[14px] hover:bg-[#ED79B7] hover:text-white transition duration-150"
                         >
                             Edit
-                        </Link>
+                        </button>
                     </div>
                 ) : null}
             </div>
