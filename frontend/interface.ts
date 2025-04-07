@@ -44,13 +44,25 @@ export interface Event{
     description: string;
 }
 
-export interface FormEvent {
+export interface AddEvent {
     song: string[];  // Use string[] to define a list (array) of strings
     event_name: string;
     day: string;      // Use Date type for date values
     time: string;
     image: string;
     place: string;
-    description: string;
-    
+    description: string;  
 }
+
+
+export interface FormEvent {
+    song: string[];  // Use string[] to define a list (array) of strings
+    event_name: string;
+    day: string;      // Use Date type for date values
+    time: string;
+    image: File | null;
+    place: string;
+    description: string;  
+}
+
+
