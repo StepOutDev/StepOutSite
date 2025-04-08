@@ -3,6 +3,6 @@
     "compatibility_date": "2025-04-08",
     "main": "src/app/page.tsx",
     "assets": {
-        "directory": "./dist"
+        "directory": "./build"
     }
 }
