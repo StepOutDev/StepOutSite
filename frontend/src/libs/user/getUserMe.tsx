@@ -1,7 +1,7 @@
 
 export default async function getUserMe(token: string) {
   const response = await fetch(
-    `http://127.0.0.1:5000/api/v1/user/me`,
+    `${process.env.BACKEND_URL}/api/v1/user/me`,
     {
       method: "GET",
       headers: {
