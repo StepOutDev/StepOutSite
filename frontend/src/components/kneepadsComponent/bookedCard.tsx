@@ -8,6 +8,11 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
     useEffect(() => {
         setOpenReturn(false);
     }, [props.kneepads]); 
+
+    let audio = new Audio("/sound/oiia.mp3");
+    const playAudio = () => {
+        audio.play();
+    };
     return (
         <div className="flex flex-col w-[100%]">
             <div className="mt-[10px]">
@@ -37,7 +42,7 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
                                 color: "#FFFFFF",
                             }
                         }]
-                    } onClick={()=>{setOpenReturn(true)}}>Return</Button>
+                    } onClick={()=>{setOpenReturn(true); playAudio();}}>Return</Button>
                     { openReturn &&(
                     <Modal
                         open={openReturn}
