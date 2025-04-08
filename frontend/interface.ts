@@ -37,6 +37,7 @@ export interface Kneepads{
     major: string;
 }
 
+
 export interface Event{
     event_name: string;
     day: string;
@@ -50,7 +51,7 @@ export interface Event{
 export interface AddEvent {
     song: string[];  // Use string[] to define a list (array) of strings
     event_name: string;
-    day: string;      // Use Date type for date values
+    day: string;  
     time: string;
     image: string;
     place: string;
