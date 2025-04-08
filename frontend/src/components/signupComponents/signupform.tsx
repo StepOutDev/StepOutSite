@@ -31,7 +31,7 @@ export default function SignupForm() {
         const {name, value, type} = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checked" ? (e.target as HTMLInputElement).checked : value
+            [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
         }));
 
         if(name === "confirmPassword") {
@@ -106,7 +106,7 @@ export default function SignupForm() {
             </div>
 
             {/* Name Fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex flex-col">
                     <div className="text-black font-poppins text-[14px] sm:text-[14px] lg:text-[16px]">Firstname</div>
                     <input

@@ -12,6 +12,8 @@ export default async function getUserMe(token: string) {
   if (!response.ok) {
     throw new Error("Cannot get user me")
   };
-
-  return await response.json();
+  
+  const responseJson = await response.json();
+  console.log("getUserMe Response:", responseJson); // Debug API response
+  return await responseJson.data;
 }

@@ -25,3 +25,47 @@ export interface FormRegister{
     password: string;
     confirmPassword: string;
 }
+
+export interface Kneepads{
+    number: string;
+    size: string;
+    status: string;
+    booking_date: string;
+    return_date: string;
+    nick_name: string;
+    year: string;
+    major: string;
+}
+
+export interface Event{
+    event_name: string;
+    day: string;
+    time: string;
+    place: string;
+    song: string[];
+    description: string;
+    image: string;
+}
+
+export interface AddEvent {
+    song: string[];  // Use string[] to define a list (array) of strings
+    event_name: string;
+    day: string;      // Use Date type for date values
+    time: string;
+    image: string;
+    place: string;
+    description: string;  
+}
+
+
+export interface FormEvent {
+    song: string[];  // Use string[] to define a list (array) of strings
+    event_name: string;
+    day: string;      // Use Date type for date values
+    time: string;
+    image: File | null;
+    place: string;
+    description: string;  
+}
+
+

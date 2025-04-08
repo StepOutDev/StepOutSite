@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func UploadS3FromString(fileName []byte, keyName string, contentType string) (string, error) {
@@ -53,8 +54,13 @@ func UploadS3FromString(fileName []byte, keyName string, contentType string) (st
 	return fullURL, nil
 }
 
-func CreateKeyNameBannerImage(studentID string, imageType string, fileName string) (string, string) {
-	keyName := fmt.Sprintf("image/%v.%v", studentID, imageType)
+func CreateKeyNameBannerImage(name string, imageType string, fileName string) (string, string) {
+	nameByte := []byte(name)
+	hash, err := bcrypt.GenerateFromPassword(nameByte, bcrypt.MinCost)
+	if err != nil {
+		return "", ""
+	}
+	keyName := fmt.Sprintf("image/%v.%v", string(hash), imageType)
 	contentType := fmt.Sprintf("image/%v", imageType)
 	return keyName, contentType
 }
