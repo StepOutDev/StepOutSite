@@ -15,7 +15,7 @@ export default function EventImg({ imageUrl, handleImageUpload }: EventImgProps)
         <img
           src={imageUrl}
           alt="event"
-          className="w-full h-[250px] px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-3xl"
+          className="w-full h-[250px] px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-3xl object-contain object-cover"
         />
         <button
             type="button"
