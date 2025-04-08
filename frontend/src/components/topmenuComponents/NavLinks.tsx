@@ -111,8 +111,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                                         <span>Edit profile</span>
                                     </Link>
                                     <Link
-                                        href="/"
-                                        onClick={signOut}
+                                        href="/signout"
                                         className="flex space-x-2 w-full text-left px-4 py-4 text-gray-800 hover:bg-[#7A4E9A] hover:text-white hover:rounded-lg"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" 
