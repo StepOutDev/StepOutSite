@@ -19,7 +19,7 @@ export default async function createEvent(event: FormEvent, token?: string) {
   }
 
   const response = await fetch(
-      `http://127.0.0.1:5000/api/v1/event/create`,
+      `${process.env.BACKEND_URL}/api/v1/event/create`,
       {
         method: "POST",
         headers: {

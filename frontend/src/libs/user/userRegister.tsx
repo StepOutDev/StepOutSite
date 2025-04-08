@@ -2,7 +2,7 @@ export default async function userRegister(
     register_form : FormData
 ){
     const response = await fetch(
-        `http://127.0.0.1:5000/api/v1/user/register`,
+        `${process.env.BACKEND_URL}/api/v1/user/register`,
         {
             method: "POST",
             // headers: {
