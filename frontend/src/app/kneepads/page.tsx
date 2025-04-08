@@ -84,7 +84,7 @@ export default function KneepadsPage() {
                 <div className="grid sm:grid-cols-[repeat(auto-fit,minmax(400px,max-content))] gap-4 justify-center p-0">
                     {kneepads?.map((kneepad) => {
                         return(
-                        <KneepadsCard key={kneepad.number} kneepads={kneepad}></KneepadsCard>
+                        <KneepadsCard key={kneepad.number} kneepads={kneepad} cookie={cookie} user={user}></KneepadsCard>
                         )
                     })}
                 </div>

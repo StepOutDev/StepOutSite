@@ -2,7 +2,7 @@ import updateKneepads from "@/libs/kneepads/updateKneepads";
 import { Kneepads } from "../../../interface";
 import returnKneepads from "@/libs/kneepads/returnKneepads";
 
-export default function KneepadsReturnPopup(props: {kneepads: Kneepads, cookie: string, setOpenReturn: Function}) {
+export default function KneepadsReturnPopup(props: {kneepads: Kneepads, cookie: string, setOpenReturn: Function, audio: HTMLAudioElement}) {
     return (
         <div className="flex flex-col item-center bg-white w-[306px] h-[300px] sm:w-[550px] sm:h-[270px]
         border-[3px] border-[#1A5AB8] rounded-[20px] shadow-[3px_5px_4px_rgba(0,0,0,0.25)]">
@@ -13,7 +13,7 @@ export default function KneepadsReturnPopup(props: {kneepads: Kneepads, cookie: 
             <div>
                 <button className="inline font-[poppinsSemiBold] text-[16px] text-[#ED79B7]
                     border-[2px] border-[#ED79B7] rounded-[10px] px-[20px] py-[10px] 
-                    w-[35%] sm:w-[35%] ml-[10%] mr-[5%] hover:bg-[#ED79B7] hover:text-white" onClick={() => props.setOpenReturn(false)}>
+                    w-[35%] sm:w-[35%] ml-[10%] mr-[5%] hover:bg-[#ED79B7] hover:text-white" onClick={() =>{ props.setOpenReturn(false); props.audio.pause();}}>
                     No
                 </button>
                 <button className="inline font-[poppinsSemiBold] text-[16px] text-[#1A5AB8]

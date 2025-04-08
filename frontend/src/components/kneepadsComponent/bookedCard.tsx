@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import KneepadsReturnPopup from "./kneepadsReturnPopup";
 import { Kneepads, User } from "../../../interface";
 import { Button, Modal } from "@mui/material";
@@ -8,6 +8,18 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
     useEffect(() => {
         setOpenReturn(false);
     }, [props.kneepads]); 
+
+    let audio = new Audio("/sound/oiia.mp3");
+
+    audio.loop = true;
+    useEffect(() => {
+        openReturn ? audio.play() : audio.pause();
+        return () => {
+            audio.pause();
+        }; 
+      },
+    ),[openReturn];
+
     return (
         <div className="flex flex-col w-[100%]">
             <div className="mt-[10px]">
@@ -37,7 +49,7 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
                                 color: "#FFFFFF",
                             }
                         }]
-                    } onClick={()=>{setOpenReturn(true)}}>Return</Button>
+                    } onClick={()=>{setOpenReturn(true);}}>Return</Button>
                     { openReturn &&(
                     <Modal
                         open={openReturn}
@@ -47,7 +59,7 @@ export default function BookedCard(props: {kneepads: Kneepads, cookie: string,us
                         disableScrollLock
                         style={{display:'flex',alignItems:'center',justifyContent:'center'}}
                     >
-                    <KneepadsReturnPopup kneepads={props.kneepads} setOpenReturn={setOpenReturn} cookie={props.cookie}></KneepadsReturnPopup>
+                    <KneepadsReturnPopup kneepads={props.kneepads} setOpenReturn={setOpenReturn} cookie={props.cookie} audio={audio}></KneepadsReturnPopup>
                     </Modal> )}
                     </div>
                     : null}
