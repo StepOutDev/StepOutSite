@@ -37,6 +37,13 @@ interface UserProfile {
   profilePic: string;
 }
 
+const majorList = [
+  "-", "Civil", "Electrical", "Mechanical", "Automotive", "Industrial",
+  "Environmental", "Metallurgical & Materials", "Mining & Petroleum", "Chemical", "Computer",
+  "Nuclear", "Georesources", "Survey", "Robotics & AI", "ICE",
+  "NANO", "ADME", "AERO", "CHPE", "CEDT", "SEMI"
+];
+
 
 const MyProfilePage = () => {
   // Example profile data
@@ -196,80 +203,79 @@ const MyProfilePage = () => {
             fontFamily: '"Poppins", sans-serif', // Closest match to "Poppy"
             textShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)', // Custom shadow effect
           }}
-          className="flex mt-10 items-center justify-center w-full text-[75px] font-extrabold pt-10 text-[#7F62AC] drop-shadow-md transition-transform transform"
+          className="flex mt-10 items-center justify-center w-full md:text-[75px] text-[60px] font-extrabold pt-10 text-[#7F62AC] drop-shadow-md transition-transform transform"
         >
           My Profile
         </h1>
         
 
-        <div className="justify-items-center md:px-10 px-5">{/*rounded-3xl bg-[#FFE3EF] flex md:flex-row flex-col items-center w-[1400px] h-[400px] mx-auto p-6 text-[#184A92] relative shadow-2xl absolute top-[100px] absolute top-[220px]*/}
+        <div className="justify-items-center md:px-10 px-5 ">{/*rounded-3xl bg-[#FFE3EF] flex md:flex-row flex-col items-center w-[1400px] h-[400px] mx-auto p-6 text-[#184A92] relative shadow-2xl absolute top-[100px] absolute top-[220px]*/}
 
           
-          <div className="w-full mx-8 rounded-3xl flex md:flex-row flex-col p-6 text-[#184A92] md:relative shadow-2xl my-10 bg-[#FFE3EF] ">{/*absolute top-[7px]*/}
-              <div className='flex basis-1/6 mx:ml-10 mb-10 justify-center'><ProfileImg imageUrl={profile?.image} handleImageUpload={handleImageUpload} /></div>
-              <div className="flex flex-col md:mb-10 md:ml-10">{/*flex flex-col w-[500px] h-[180px] absolute left-[50px] top-[0px] justify-between h-full*/}
-                <div className="flex md:flex-row gap-4 mb-6">
-                  <div className='flex flex-col md:gap-4 gap-2'>
-                    <div className='flex md:flex-row flex-col md:gap-4 max-w-[250px] md:max-w-[500px] gap-2'>
-                      <h1 className="text-4xl font-bold overflow-x-auto md:max-w-[250px]">{profile?.first_name} </h1>
-                      <h1 className="text-4xl font-bold overflow-x-auto md:max-w-[250px]">{profile?.last_name} </h1>
-                    </div>
-                    <div><h1 className="text-4xl font-bold">({profile?.nick_name})</h1></div>
-                  </div>
-                  <h1 className="text-[15px] rounded-full px-6 h-6 mt-2 font-bold flex md:items-center bg-[#FFDC94]">{profile?.role}</h1>
-                </div>
-                <div className="w-full h-[2px] md:bg-[#FFE3EF] bg-black my-4" />
-                <div className='md:h-[200px] leading-[3rem]'>
-                  <div className='flex flex-row '>
-                    <h1 className="md:w-[200px] w-[400px] text-[20px] font-bold">StudentId</h1>
-                    <h1 className=" w-full text-[20px] font-bold"> {profile?.student_id} </h1>
-                  </div>
-                  <div className='flex flex-row'>
-                    <h1 className="md:w-[200px] w-[400px] text-[20px] font-bold">Year</h1>
-                    <h1 className=" w-full text-[20px] font-bold"> {profile?.year} </h1>
-                  </div>
-                  <div className='flex flex-row'>
-                    <h1 className="md:w-[200px] w-[400px] text-[20px] font-bold">Major</h1>
-                    <h1 className=" w-full text-[20px] font-bold"> {profile?.major} </h1>
-                  </div>
-                </div>
+          <div className="w-full mx-8 rounded-3xl flex flex-col p-6 text-[#184A92] shadow-2xl my-10 bg-[#FFE3EF] overflow-hidden">{/*absolute top-[7px]*/}
+            <div className='flex md:flex-row flex-col'>
+              <div className='flex px-10 pb-10 md:w-fit w-full md:justify-start justify-center'>
+                <ProfileImg imageUrl={profile?.image} handleImageUpload={handleImageUpload} />
               </div>
-    
-            <div className="basis-1/3 flex flex-col justify-end mb-10 md:ml-20">{/*flex flex-col w-[300px] h-[180px] absolute left-[570px] top-[0px] justify-between h-full*/}
-              <div className='h-[200px] leading-[3rem]'>
-                <div className='flex flex-row'>
-                  <h1 className="md:w-[150px] w-[200px] text-[20px] font-bold items-center">Tel</h1>
-                  <h1 className="text-[20px] font-bold items-center">{profile?.telephone}</h1>  
+
+              <div className='flex flex-col w-full ml-6'>
+                <div className="flex flex-row flex-wrap">
+                  <div className='flex flex-col space-y-2 mr-4'>
+                    <div className='flex md:flex-row flex-wrap gap-2'>
+                      <h1 className="md:text-4xl text-3xl font-bold">{profile?.first_name} </h1>
+                      <h1 className="md:text-4xl text-3xl font-bold">{profile?.last_name} </h1>
+                    </div>
+                    <div>
+                      <h1 className="md:text-4xl text-3xl font-bold">({profile?.nick_name})</h1>
+                    </div>
+                  </div>
+                  <div className="text-[15px] rounded-full px-6 h-6 mt-2 font-bold bg-[#FFDC94]">{profile?.role}</div>
                 </div>
-                <div className='flex flex-row'>
-                  <h1 className="md:w-[150px] w-[200px] text-[20px] font-bold items-center">IG</h1>
-                  <h1 className="text-[20px] font-bold items-center">{profile?.instagram}</h1>
+
+                <div className='my-6'>
+                  <hr style={{ 
+                    border: "1.5px solid", 
+                    width: "90%" 
+                    }} />
                 </div>
-                <div className='flex flex-row'>
-                  <h1 className="md:w-[150px] w-[200px] text-[20px] font-bold items-center">LineID</h1>
-                  <h1 className="text-[20px] font-bold items-center">{profile?.line}</h1>  
+
+                <div className='flex md:flex-row flex-col flex-wrap w-full gap-8'>
+                  <div className='flex flex-1 flex-row space-x-10 mr-5'>
+                    <div className='flex flex-col space-y-8'>
+                      <h1 className="md:text-[20px] text-[16px] font-bold">StudentId</h1>
+                      <h1 className="md:text-[20px] text-[16px] font-bold">Year</h1>
+                      <h1 className="md:text-[20px] text-[16px] font-bold">Major</h1>
+                    </div>
+                    <div className='flex flex-col space-y-8'>
+                      <h1 className="md:text-[20px] text-[16px] font-semibold"> {profile?.student_id} </h1>
+                      <h1 className="md:text-[20px] text-[16px] font-semibold"> {profile?.year} </h1>
+                      <h1 className="md:text-[20px] text-[16px] font-semibold"> {profile?.major} </h1>
+                    </div>
+                  </div>
+
+                  <div className='flex flex-1 flex-row space-x-10'>
+                    <div className='flex flex-col space-y-8'>
+                      <h1 className="md:text-[20px] text-[16px] font-bold">Tel</h1>
+                      <h1 className="md:text-[20px] text-[16px] font-bold">IG</h1>
+                      <h1 className="md:text-[20px] text-[16px] font-bold">LineID</h1>
+                    </div>
+                    <div className='flex flex-col space-y-8'>
+                      <h1 className="md:text-[20px] text-[16px] font-semibold"> {profile?.telephone} </h1>
+                      <h1 className="md:text-[20px] text-[16px] font-semibold"> {profile?.instagram} </h1>
+                      <h1 className="md:text-[20px] text-[16px] font-semibold"> {profile?.line} </h1>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
             
-            <div className='flex items-center justify-center'>
-              <Button
-                variant="outlined"
+            <div className='flex items-center justify-center w-full my-10'>
+              <button
                 onClick={handleClickOpen}
-                sx={{
-                  width: 120,
-                  border: '2px solid', // Thicker border (3px)
-                  borderColor: '#184A92', // Custom border color
-                  borderRadius: '10px', // Makes the button rounder
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    borderColor: '#1D3557', // Custom hover border color
-                  },
-                }}
-                className="mt-6 flex bg-[#F5F5F5] text-[#184A92] hover:bg-gray-300 md:absolute md:right-[100px]  md:top-[10px] text-[13px]"
+                className="px-10 py-2 text-nowrap bg-[#F5F5F5] rounded-xl border-2 border-[#184A92] font-bold text-[#184A92] hover:bg-[#184A92] hover:text-[#F5F5F5] shadow-xl transition duration-150 text-[14px]"
               >
-                Edit Profile
-              </Button>
+                EDIT PROFILE
+              </button>
             </div>
           </div>
 
@@ -297,6 +303,14 @@ const MyProfilePage = () => {
               fullWidth
               margin="normal"
             />
+            <TextField
+              label="Nick Name"
+              name="nick_name"
+              value={editedProfile?.nick_name || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
             {/* <TextField
               label="Year"
               name="year"
@@ -312,20 +326,20 @@ const MyProfilePage = () => {
                 value={editedProfile?.year || ""}
                 onChange={handleInputChange}
               >
-                <MenuItem value="1">Year 1</MenuItem>
-                <MenuItem value="2">Year 2</MenuItem>
-                <MenuItem value="3">Year 3</MenuItem>
-                <MenuItem value="4">Year 4</MenuItem>
+                <MenuItem value="1">1</MenuItem>
+                <MenuItem value="2">2</MenuItem>
+                <MenuItem value="3">3</MenuItem>
+                <MenuItem value="4">4</MenuItem>
               </Select>
             </FormControl>
-            <TextField
+            {/* <TextField
               label="Role"
               name="role"
               value={editedProfile?.role}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
-            />
+            /> */}
             <TextField
               label="Tel"
               name="telephone"
@@ -342,14 +356,20 @@ const MyProfilePage = () => {
               fullWidth
               margin="normal"
             /> */}
-            <TextField
-              label="Major"
-              name="major"
-              value={editedProfile?.major}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Major</InputLabel>
+              <Select
+                name="major"
+                value={editedProfile?.major || ""}
+                onChange={handleInputChange}
+              >
+                {majorList.map((major) => (
+                  <MenuItem key={major} value={major}>
+                    {major}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
               label="Instagram"
               name="instagram"

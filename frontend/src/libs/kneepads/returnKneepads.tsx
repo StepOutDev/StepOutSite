@@ -2,7 +2,7 @@ import { Kneepads } from "../../../interface";
 
 export default async function returnKneepads(kneepad: Kneepads, number: string, token?: string) {
     const response = await fetch(
-      `http://127.0.0.1:5000/api/v1/kneepads/return?number=${number}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kneepads/return?number=${number}`,
       {
         method: "PUT",
         headers: {

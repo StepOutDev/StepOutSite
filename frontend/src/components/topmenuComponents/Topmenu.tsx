@@ -50,9 +50,6 @@ export default function Topmenu () {
 }
 
 export function signOut(){
-    const isConfirmed = window.confirm("Are you sure you want to sign out?");
-    if(isConfirmed){
         document.cookie = "jwt=; Max-Age=0; path=/;";
         window.location.href = "/";
-    }
 }
