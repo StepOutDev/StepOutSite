@@ -43,6 +43,7 @@ export default function AddInput({ setSongs }: AddInputProps) {
                     ))}
                 </div>
                 <button
+                    type="button"
                     onClick={addInputField}
                     className="w-full px-4 py-2 border-2 border-[#7A4E9A] bg-white text-[14px] sm:text-[14px] lg:text-[16px] text-black rounded-2xl hover:bg-[#c596c2] transition-all"
                 >
