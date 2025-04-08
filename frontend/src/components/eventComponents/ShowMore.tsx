@@ -10,7 +10,7 @@ interface ShowMoreProps {
   
   export default function ShowMore({ event_name, day, time, place, description, image, onClose }: ShowMoreProps) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-50 p-5 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-xl w-full mx-[10%] shadow-lg relative z-50">
           
           <button
@@ -20,16 +20,16 @@ interface ShowMoreProps {
             ✖
           </button>
           
-          <h2 className="md:text-3xl text-2xl text-[#422A40] text-center mb-4">{event_name}</h2>
+          <h2 className="md:text-3xl font-bold text-2xl text-[#422A40] text-center mb-4">{event_name}</h2>
   
-          <div className="flex md:flex-row flex-col items-center">
+          <div className="flex md:flex-row flex-col items-center gap-5">
             {/* Image */}
             <div className="flex m-4 rounded-xl overflow-hidden shadow-md w-full max-w-[400px] h-[200px]">
               <img src={image} className="w-full h-full object-cover" alt="Event Image" />
             </div>
   
             {/* Details */}
-            <div className="text-[14px] text-[#222A40] space-y-2 w-full">
+            <div className="text-[14px] text-[#222A40] space-y-2 w-full gap-5">
               <div className="flex items-center">
                 <CalendarIcon /> <span className="ml-2">{day}</span>
               </div>

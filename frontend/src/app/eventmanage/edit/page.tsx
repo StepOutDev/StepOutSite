@@ -16,6 +16,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import getUserMe from "@/libs/user/getUserMe"
 import EventImg from '@/components/eventComponents/EventImg';
 import updateEvent from "@/libs/event/updateEvent"
+import deleteEvent from "@/libs/event/deleteEvent"
 
 export default function EventEdit() {
     const [formEvent, setFormEvent] = useState<FormEvent>({
@@ -30,7 +31,7 @@ export default function EventEdit() {
     const [image, setImage] = useState<string|null>("https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp");
     const [event, setEvent] = useState<FormEvent | null>(null);
     const [eventnameparam, setEventnameparam] = useState<string>("");
-    
+    const [deleteCard, setDeleteCard] = useState<boolean>(false);
     const [cookie, setCookie] = useState<string | undefined>();
         useEffect(() => {
             function fetchCookie() {
@@ -68,7 +69,7 @@ export default function EventEdit() {
         reader.onloadend = () => {
             setImage(reader.result as string);
             try {
-                setEvent((prevState) => ({
+                setFormEvent((prevState) => ({
                 ...prevState!,
                 image: reader.result as string,
                 }));
@@ -137,6 +138,17 @@ export default function EventEdit() {
             }
             await updateEvent(formData, eventnameparam, cookie);
             console.log("Event update successfully");
+
+            window.location.href = "/eventmanage";
+        }catch(error){
+            console.error("Update Failed: ", error);
+        }
+    }
+
+    const handleDeleteSubmit = async () => {
+        try{
+            await deleteEvent(eventnameparam, cookie);
+            console.log("Event delete successfully");
 
             window.location.href = "/eventmanage";
         }catch(error){
@@ -272,13 +284,39 @@ export default function EventEdit() {
                                     required
                                 />
                             </div>
-                        </div>
-                        
+                        </div>      
                     </div>
-
                     
-                    {/* Edit Button */}
-                    <div className="flex justify-end mt-5">
+                    {/* Edit and Delete Button */}
+                    <div className="flex justify-end mt-5 items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setDeleteCard(true)}
+                            className="w-[150px] py-1 bg-[#7A4E9A] text-white rounded-2xl hover:bg-[#c596c2] transition-all"
+                        >
+                        Delete
+                        </button>
+                        {deleteCard && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 p-5 flex justify-center items-center z-50">
+                                <div className="bg-white p-6 rounded-xl shadow-lg relative z-50 flex flex-col gap-5">
+                                    <div className="font-bold text-[#7A4E9A] text-xl">Are you sure to delete this event?</div>
+                                    <div className="w-full flex justify-center gap-5">
+                                        <button 
+                                            className="py-2 px-6 border-2 border-red-500 rounded-lg text-red-500 shadow-lg hover:scale-110 duration-150 hover:bg-red-500 hover:text-white"
+                                            onClick={handleDeleteSubmit}
+                                        >
+                                            Delete
+                                        </button>
+                                        <button 
+                                            className="py-2 px-6 border-2 border-[#7A4E9A] rounded-lg text-[#7A4E9A] shadow-lg hover:scale-110 duration-150"
+                                            onClick={()=> setDeleteCard(false)}
+                                        >
+                                            Cancle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}       
                         <button
                             type="button"
                             onClick={handleEditSubmit}
@@ -288,11 +326,7 @@ export default function EventEdit() {
                         </button>
                     </div>
                 </form>
-            </div>
-  
-        
+            </div>    
         </div>
-
     )
-
 }

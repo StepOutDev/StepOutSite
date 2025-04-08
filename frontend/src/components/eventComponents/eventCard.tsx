@@ -60,7 +60,7 @@ export default function EventCard(
             {/* image */}        
             <div className="flex rounded-xl overflow-hidden shadow-md w-full md:h-[200px] h-[175px]">
                 <img 
-                    src={image} 
+                    src={image || "/images/logo/Logo1.png"} 
                     className="w-full h-full object-cover"
                     alt="EventImage" 
                 ></img>
