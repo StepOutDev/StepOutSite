@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 interface AddInputProps {
     initialSongs?: string[];
     onSongsChange?: (songs: string[]) => void;
-    setSongs: (songs: string[]) => void;
+    setSongs?: (songs: string[]) => void;
 }
 
 export default function AddInput({ initialSongs = [], onSongsChange, setSongs }: AddInputProps) {
@@ -20,7 +20,7 @@ export default function AddInput({ initialSongs = [], onSongsChange, setSongs }:
         const updatedFields = [...inputFields, ''];
         setInputFields(updatedFields);
         onSongsChange?.(updatedFields);
-        setSongs(updatedFields);
+        setSongs?.(updatedFields);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -28,14 +28,14 @@ export default function AddInput({ initialSongs = [], onSongsChange, setSongs }:
         newInputFields[index] = e.target.value;
         setInputFields(newInputFields);
         onSongsChange?.(newInputFields);
-        setSongs(newInputFields);
+        setSongs?.(newInputFields);
     };
     
     const handleRemoveField = (index: number) => {
         const newInputFields = [...inputFields];
         newInputFields.splice(index, 1); // Remove the field
         setInputFields(newInputFields);
-        setSongs(newInputFields);
+        setSongs?.(newInputFields);
         setActiveIndex(null); // Reset active state
     };
 

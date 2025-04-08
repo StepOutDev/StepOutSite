@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import userRegister from "@/libs/user/userRegister"
-import { FormEvent, User } from "../../../../interface"
+import { Event, User } from "../../../../interface"
 import userSignin from "@/libs/user/userSignin"
 import { SetCookie } from "../../../components/signinForm"
 import AddInput from "../../../components/addInput/AddInput"
@@ -19,7 +19,7 @@ import updateEvent from "@/libs/event/updateEvent"
 import deleteEvent from "@/libs/event/deleteEvent"
 
 export default function EventEdit() {
-    const [formEvent, setFormEvent] = useState<FormEvent>({
+    const [formEvent, setFormEvent] = useState<Event>({
         song: [], 
         event_name: "",
         day: "", 
@@ -29,7 +29,7 @@ export default function EventEdit() {
         description: ""
     })
     const [image, setImage] = useState<string|null>("https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/6633074721.webp");
-    const [event, setEvent] = useState<FormEvent | null>(null);
+    const [event, setEvent] = useState<Event | null>(null);
     const [eventnameparam, setEventnameparam] = useState<string>("");
     const [deleteCard, setDeleteCard] = useState<boolean>(false);
     const [cookie, setCookie] = useState<string | undefined>();

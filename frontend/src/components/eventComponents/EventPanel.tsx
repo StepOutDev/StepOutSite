@@ -2,16 +2,16 @@
 
 import Link from "next/link"
 import EventCard from "./eventCard"
-import { FormEvent } from "../../../interface"
+import { Event } from "../../../interface"
 import { useState, useEffect } from "react"
 import getAllEvents from "@/libs/event/getAllEvents"
 
 export default function EventPanel(){
 
-    const [events, setEvents] = useState<FormEvent[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
             useEffect(() => {
                 const fetchEvents = async () => {
-                    const events:FormEvent[] = await getAllEvents();
+                    const events:Event[] = await getAllEvents();
                     setEvents(events);
                 };
                 

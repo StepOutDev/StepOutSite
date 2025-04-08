@@ -39,11 +39,11 @@ export interface Kneepads{
 
 
 export interface Event{
+    song: string[];
     event_name: string;
     day: string;
     time: string;
     place: string;
-    song: string[];
     description: string;
     image: string;
 }

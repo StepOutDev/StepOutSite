@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link";
 import { GetCookie } from "../signinForm";
-import { User, FormEvent } from "../../../interface";
+import { User, Event } from "../../../interface";
 import getUserMe from "@/libs/user/getUserMe";
 import ShowMore from "./ShowMore";
 import { CalendarIcon, ClockIcon, LocationIcon } from "./ShowMore";
@@ -16,7 +16,7 @@ export default function EventCard(
         song, 
         description, 
         image 
-    }: FormEvent
+    }: Event
 ){
     const [showMore, setShowMore] = useState<boolean>(false);
     const [cookie, setCookie] = useState<string | undefined>();
