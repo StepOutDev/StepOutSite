@@ -1,7 +1,7 @@
 
 export default async function getUserMe(token: string) {
   const response = await fetch(
-    `${process.env.BACKEND_URL}/api/v1/user/me`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/me`,
     {
       method: "GET",
       headers: {

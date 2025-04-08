@@ -2,7 +2,7 @@ import { Kneepads } from "../../../interface";
 
 export default async function getAllKneepads(token?: string) {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/v1/kneepads/get_all`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kneepads/get_all`,
       {
         method: "GET",
         headers: {

@@ -4,7 +4,7 @@ export default async function updateUser(
     studentId: string | null,
     formData: FormData
   ) {
-    let url = `${process.env.BACKEND_URL}/api/v1/user/update`;
+    let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/update`;
     url += `?student_id=${studentId}`;
     // if (userRole.toLowerCase() !== "core" && userRole.toLowerCase() !== "admin" && studentId) {
       

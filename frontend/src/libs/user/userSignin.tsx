@@ -2,7 +2,7 @@ export default async function userSignin(
     student_id: string,
     password: string
   ) {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/user/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 export default async function getAllEvents() {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/v1/event/get_all`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/event/get_all`,
       {
         method: "GET",
         headers: {
