@@ -18,7 +18,9 @@ import EventImg from '@/components/eventComponents/EventImg';
 
 import createEvent from "@/libs/event/createEvent"
 import { GetCookie } from "../../../components/signinForm";
-import updateKneepads from "@/libs/kneepads/updateKneepads"
+
+
+
 
 
 const mockFormEvent: AddEvent = {
@@ -96,7 +98,7 @@ export default function EventForm() {
     const handleDateChange = (newValue: dayjs.Dayjs | null) => {
         setFormEvent(prevState => ({
             ...prevState,
-            day: newValue ? newValue.format('DD-MM-YYYY') : ''
+            day: newValue ? newValue.format('DD/MM/YYYY') : ''
         }));
     };
 
@@ -119,6 +121,7 @@ export default function EventForm() {
             const response = await createEvent(updatedEvent, cookie ); // ใส่ token ถ้ามีระบบ auth
             console.log("Event created:", response);
             alert("Event created successfully!");
+            window.location.href = "/eventmanage";
         } catch (error) {
             console.error("Error creating event:", error);
             console.log("updatedEvent",updatedEvent);
@@ -175,7 +178,7 @@ export default function EventForm() {
                                     Event Date
                                     </div>
                                     <DatePicker
-                                    value={formEvent.day ? dayjs(formEvent.day, "DD-MM-YYYY") : null}
+                                    value={formEvent.day ? dayjs(formEvent.day, "DD/MM/YYYY") : null}
                                     onChange={handleDateChange}
                                     // format="DD-MM-YYYY"
                                     slotProps={{

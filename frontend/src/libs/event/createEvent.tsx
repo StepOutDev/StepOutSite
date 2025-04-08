@@ -14,6 +14,10 @@ export default async function createEvent(event: FormEvent, token?: string) {
     formData.append(`song[${index}]`, s);
   });
 
+  if (event.image) {
+    formData.append("image", event.image); 
+  }
+
   const response = await fetch(
       `http://127.0.0.1:5000/api/v1/event/create`,
       {
