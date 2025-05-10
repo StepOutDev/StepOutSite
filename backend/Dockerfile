@@ -1,35 +1,30 @@
-FROM golang:1.22
+FROM golang:latest
 
-# Set destination for COPY
-WORKDIR /
+WORKDIR /src
 
-# Download Go modules
-# COPY go.mod go.sum ./
-# RUN go mod download
+# copy all your .go source files
+# (or use a .dockerignore and COPY . .)
+COPY *.go .
 
-# Copy the source code. Note the slash at the end, as explained in
-# https://docs.docker.com/reference/dockerfile/#copy
-# COPY *.go ./
+# remove any previously initialized go.mod and go.sum files
+# (this is in case the container data wasn't destroyed)
+RUN rm -f go.mod rm go.sum
 
-# Copy source code before creating go.mod
+# initialize Go modules
+RUN go mod init stepoutsite
+
+# fetch dependencies
+RUN go mod tidy
+RUN go mod download
+
 COPY . .
 
-# Initialize Go module (only if go.mod does not exist)
-RUN go mod init stepoutsite && go mod tidy
+# build (switch to 1 to use the CGO SQLite)
+RUN CGO_ENABLED=0 go build -o /stepoutserve
 
-
-# # Now copy the full source code (preserving structure)
-COPY . .
-
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /stepoutserve
-
-# Optional:
-# To bind to a TCP port, runtime parameters must be supplied to the docker command.
-# But we can document in the Dockerfile what ports
-# the application is going to listen on by default.
-# https://docs.docker.com/reference/dockerfile/#expose
+# export listener port
 EXPOSE 5000
 
-# Run
-CMD ["/stepoutserve"]
+# run
+# (ps. don't forget to mount the pb_data as volume in /pb_data)
+CMD ["/stepoutserve", "serve", "--http=0.0.0.0:5000"]
