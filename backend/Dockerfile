@@ -1,7 +1,7 @@
 FROM golang:1.22
 
 # Set destination for COPY
-WORKDIR /app
+WORKDIR /
 
 # Download Go modules
 # COPY go.mod go.sum ./
@@ -19,7 +19,7 @@ RUN go mod init stepoutsite && go mod tidy
 
 
 # # Now copy the full source code (preserving structure)
-# COPY . .
+COPY . .
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /stepoutserve
