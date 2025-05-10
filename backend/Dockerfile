@@ -4,16 +4,22 @@ FROM golang:1.22
 WORKDIR /app
 
 # Download Go modules
-COPY go.mod go.sum ./
-RUN go mod download
+# COPY go.mod go.sum ./
+# RUN go mod download
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/reference/dockerfile/#copy
-COPY *.go ./
+# COPY *.go ./
 
-
-# Now copy the full source code (preserving structure)
+# Copy source code before creating go.mod
 COPY . .
+
+# Initialize Go module (only if go.mod does not exist)
+RUN go mod init stepoutsite && go mod tidy
+
+
+# # Now copy the full source code (preserving structure)
+# COPY . .
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /stepoutserve
