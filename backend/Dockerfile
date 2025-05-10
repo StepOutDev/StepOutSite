@@ -4,7 +4,6 @@ FROM golang:1.22
 WORKDIR /app
 
 # Download Go modules
-RUN go mod init stepoutserve; go mod tidy;
 COPY go.mod go.sum ./
 RUN go mod download
 
