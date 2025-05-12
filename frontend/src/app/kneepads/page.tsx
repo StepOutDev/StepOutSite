@@ -8,6 +8,8 @@ import { Kneepads, User } from "../../../interface";
 import ProtectRoute from "@/components/protectRoute/protectRoute";
 import getUserMe from "@/libs/user/getUserMe";
 import Home from "../page";
+import AddIcon from '@mui/icons-material/Add';
+
 
 export default function KneepadsPage() {
     const [cookie, setCookie] = useState<string | undefined>();
@@ -74,11 +76,17 @@ export default function KneepadsPage() {
             <div className="min-h-screen bg-[#B1C1D8]">
                 <div className="pb-[5%] pt-[24%] my-[25px] sm:pt-[20%] sm:px-[20%] md:pt-[15%] 
                 md:px-[15%] lg:pt-[10%] lg:px-[10%] lg:pb-[2%] xl:pt-[8%] xl:px-[3%] text-center 
-                font-[poppinsBlack] text-5xl md:text-8xl lg:text-8xl text-[#1A5AB8] 
+                font-[poppinsBlack] text-7xl md:text-8xl lg:text-8xl text-[#1A5AB8] 
                 [text-shadow:_0_5px_4px_rgb(99_102_241_/_0.8)]">
                     Kneepads
                 </div>
-
+                <div className="flex flex-row flex-wrap justify-end mr-[10%]">
+                <div className="rounded-[20px] border-[3px] border-[#5892CA] px-[40px] py-[7px] text-[#1A5AB8]
+                bg-[#FFF] hover:bg-[#5892CA] hover:text-white mx-[10px] lg:px-[60px] lg:py-[15px] lg:rounded-[40px]">
+                    <AddIcon/>
+                </div>
+                </div>
+                <hr className="mb-[20px] mt-[10px] mx-[10%] border-[1px] border-[#5892CA]"/>
                 {/* <div className="flex flex-row flex-wrap justify-center sm:justify-center 
                 md:justify-start lg:justify-start "> */}
                 <div className="grid sm:grid-cols-[repeat(auto-fit,minmax(400px,max-content))] gap-4 justify-center p-0">
