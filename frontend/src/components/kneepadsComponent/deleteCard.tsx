@@ -1,6 +1,3 @@
-import updateKneepads from "@/libs/kneepads/updateKneepads";
-import { Kneepads } from "../../../interface";
-import returnKneepads from "@/libs/kneepads/returnKneepads";
 import deleteKneepads from "@/libs/kneepads/deleteKneepads";
 
 export default function KneepadsDeletePopup(props: {number: string, cookie: string, setDelete: Function}) {
@@ -9,7 +6,7 @@ export default function KneepadsDeletePopup(props: {number: string, cookie: stri
         border-[3px] border-[#1A5AB8] rounded-[20px] shadow-[3px_5px_4px_rgba(0,0,0,0.25)]">
             <img src="/images/kneepads/cat3.jpg" alt="delete" className="w-[90px] h-[100px] mx-auto mt-[30px]
             rounded-[10px]"/>
-            <div className="flex flex-row justify-center font-[poppinsSemiBold] text-[24px] text-[#1A5AB8] p-[20px]">
+            <div className="flex flex-row justify-center font-[poppinsSemiBold] text-[20px] sm:text-[24px] text-[#1A5AB8] p-[20px]">
                 Do you want to delete the kneepads?
             </div>
             <div>

@@ -9,7 +9,8 @@ import ProtectRoute from "@/components/protectRoute/protectRoute";
 import getUserMe from "@/libs/user/getUserMe";
 import Home from "../page";
 import AddIcon from '@mui/icons-material/Add';
-import { Button } from "@mui/material";
+import { Button, Modal } from "@mui/material";
+import KneepadsAddPopup from "@/components/kneepadsComponent/addCard";
 
 
 export default function KneepadsPage() {
@@ -78,7 +79,7 @@ export default function KneepadsPage() {
             <div className="min-h-screen bg-[#B1C1D8]">
                 <div className="pb-[5%] pt-[24%] my-[25px] sm:pt-[20%] sm:px-[20%] md:pt-[15%] 
                 md:px-[15%] lg:pt-[10%] lg:px-[10%] lg:pb-[2%] xl:pt-[8%] xl:px-[3%] text-center 
-                font-[poppinsBlack] text-7xl md:text-8xl lg:text-8xl text-[#1A5AB8] 
+                font-[poppinsBlack] text-5xl md:text-8xl lg:text-8xl text-[#1A5AB8] 
                 [text-shadow:_0_5px_4px_rgb(99_102_241_/_0.8)]">
                     Kneepads
                 </div>
@@ -88,8 +89,8 @@ export default function KneepadsPage() {
                     <Button sx={{
                         borderRadius: '25px',
                         border: '3px solid #5892CA',
-                        px: '40px',
-                        py: '10px',
+                        px: '30px',
+                        py: '8px',
                         color: '#1A5AB8',
                         backgroundColor: '#FFF',
                         '&:hover': {
@@ -109,6 +110,17 @@ export default function KneepadsPage() {
                     </Button>
                 </div>
                 </div>) : null}
+                {open && cookie ? (
+                    <Modal open={open} onClose={() => {
+                        setOpen(false);
+                    }} 
+                    aria-labelledby="modal-modal-return"
+                    aria-describedby="modal-modal-description"
+                    disableScrollLock
+                    style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <KneepadsAddPopup cookie={cookie} setOpen={setOpen}/> 
+                    </Modal>
+                ) : null}
                 <hr className="mb-[20px] mt-[10px] mx-[10%] border-[1px] border-[#5892CA]"/>
                 {/* <div className="flex flex-row flex-wrap justify-center sm:justify-center 
                 md:justify-start lg:justify-start "> */}
