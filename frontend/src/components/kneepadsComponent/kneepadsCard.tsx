@@ -11,6 +11,7 @@ export default function KneepadsCard(props: {kneepads: Kneepads, cookie: string|
     return (
         <div className="relative flex flex-col shadow-[3px_5px_4px_rgba(0,0,0,0.25)] 
         border-[3px] border-[#5892CA] rounded-[20px] m-[2%] w-[280px] h-[187px] sm:w-[344px] sm:h-[230px] bg-white">
+            {props.user?.role === "admin" || props.user?.role === "core" ?(
             <div className="z-2 absolute right-[1px] mt-[10px] mr-[10px] h-[1px]
             sm:mt-[25px] sm:mr-[15px]">
                     <Button sx={{ 
@@ -30,7 +31,7 @@ export default function KneepadsCard(props: {kneepads: Kneepads, cookie: string|
                         }
                     }/>
                     </Button>
-            </div>
+            </div>) : null}
             {openDelete && props.cookie ?(
                 <Modal open={openDelete} onClose={() => {
                     setOpenDelete(false);
