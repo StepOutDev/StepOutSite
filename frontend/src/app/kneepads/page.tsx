@@ -8,6 +8,10 @@ import { Kneepads, User } from "../../../interface";
 import ProtectRoute from "@/components/protectRoute/protectRoute";
 import getUserMe from "@/libs/user/getUserMe";
 import Home from "../page";
+import AddIcon from '@mui/icons-material/Add';
+import { Button, Modal } from "@mui/material";
+import KneepadsAddPopup from "@/components/kneepadsComponent/addCard";
+
 
 export default function KneepadsPage() {
     const [cookie, setCookie] = useState<string | undefined>();
@@ -51,7 +55,7 @@ export default function KneepadsPage() {
             }
         })
         const [loading, setLoading] = useState(true);
-
+        const [open, setOpen] = useState(false);
         useEffect(() => {
             if(cookie && user){
                 setLoading(false);
@@ -69,6 +73,7 @@ export default function KneepadsPage() {
         if (loading) {
             return <div>Loading...</div>; // Show a loading message or spinner while fetching data
         }
+
     return (
         <ProtectRoute role={["member","admin","core"]} cookie={cookie} user={user}>
             <div className="min-h-screen bg-[#B1C1D8]">
@@ -78,7 +83,45 @@ export default function KneepadsPage() {
                 [text-shadow:_0_5px_4px_rgb(99_102_241_/_0.8)]">
                     Kneepads
                 </div>
+                {user?.role === "admin" || user?.role === "core" ? (
+                <div className="flex flex-row flex-wrap justify-end mr-[10%]">
+                <div>
+                    <Button sx={{
+                        borderRadius: '25px',
+                        border: '3px solid #5892CA',
+                        px: '30px',
+                        py: '8px',
+                        color: '#1A5AB8',
+                        backgroundColor: '#FFF',
+                        '&:hover': {
+                        backgroundColor: '#5892CA',
+                        color: '#FFF',
+                        },
+                        mx: '10px',
 
+                        // Responsive (for large screens and up)
+                        '@media (min-width: 1024px)': {
+                        px: '60px',
+                        py: '15px',
+                        borderRadius: '40px',
+                        },
+                    }}onClick={() => {setOpen(true);}}>
+                        <AddIcon/>
+                    </Button>
+                </div>
+                </div>) : null}
+                {open && cookie ? (
+                    <Modal open={open} onClose={() => {
+                        setOpen(false);
+                    }} 
+                    aria-labelledby="modal-modal-return"
+                    aria-describedby="modal-modal-description"
+                    disableScrollLock
+                    style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <KneepadsAddPopup cookie={cookie} setOpen={setOpen}/> 
+                    </Modal>
+                ) : null}
+                <hr className="mb-[20px] mt-[10px] mx-[10%] border-[1px] border-[#5892CA]"/>
                 {/* <div className="flex flex-row flex-wrap justify-center sm:justify-center 
                 md:justify-start lg:justify-start "> */}
                 <div className="grid sm:grid-cols-[repeat(auto-fit,minmax(400px,max-content))] gap-4 justify-center p-0">

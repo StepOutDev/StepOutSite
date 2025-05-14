@@ -1,6 +1,6 @@
 export default async function deleteKneepads(number: string, token?: string) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kneepads/delete/${number}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kneepads/delete?number=${number}`,
       {
         method: "DELETE",
         headers: {
