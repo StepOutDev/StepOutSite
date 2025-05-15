@@ -10,17 +10,20 @@ type HTTPGateway struct {
 	userService services.IUserService
 	kneepadsService services.IKneepadsService
 	eventService services.IEventService
+	bannerService services.IBannerService
 }
 
 func NewHTTPGateway(app *fiber.App, userService services.IUserService, 
-	kneepadsService services.IKneepadsService, eventService services.IEventService) {
+	kneepadsService services.IKneepadsService, eventService services.IEventService, bannerService services.IBannerService) {
 	gateway := &HTTPGateway{
 		userService: userService,
 		kneepadsService: kneepadsService,
 		eventService: eventService,
+		bannerService: bannerService,
 	}
 
 	GatewayUser(*gateway,app)
 	GatewayKneepads(*gateway,app)
 	GatewayEvent(*gateway,app)
+	GatewayBanner(*gateway,app)
 }

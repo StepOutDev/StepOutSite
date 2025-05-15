@@ -41,12 +41,14 @@ func main() {
 	userMongo := repositories.NewUserRepository(mongodb)
 	kneepadsMongo := repositories.NewKneepadsRepository(mongodb)
 	eventMongo := repositories.NewEventRepository(mongodb)
+	bannerMongo := repositories.NewBannerRepository(mongodb)
 
 	userService := services.NewUserService(userMongo)
 	kneepadsService := services.NewKneepadsService(kneepadsMongo, userService)
 	eventService := services.NewEventService(eventMongo,userService)
+	bannerService := services.NewBannerService(bannerMongo,userService)
 
-	gateways.NewHTTPGateway(app, userService, kneepadsService,eventService)
+	gateways.NewHTTPGateway(app, userService, kneepadsService,eventService, bannerService)
 
 	PORT := os.Getenv("DB_PORT_LOGIN")
 
