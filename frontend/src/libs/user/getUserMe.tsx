@@ -14,6 +14,6 @@ export default async function getUserMe(token: string) {
   };
   
   const responseJson = await response.json();
-  console.log("getUserMe Response:", responseJson); // Debug API response
+  // console.log("getUserMe Response:", responseJson); // Debug API response
   return await responseJson.data;
 }

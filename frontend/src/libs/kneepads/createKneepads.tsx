@@ -7,6 +7,7 @@ export default async function createKneepads(kneepad: Kneepads, token?: string) 
         method: "POST",
         headers: {
           authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(kneepad),
       }

@@ -204,7 +204,9 @@ export default function KneepadsData(props: {kneepads: Kneepads, cookie: string|
                                         color: "#FFFFFF",
                                     }
                                 }]
-                            } onClick={()=>{setApprove(true)}}><ClearIcon></ClearIcon></Button>
+                            } onClick={()=>{setApprove(true); props.kneepads.status = "available";
+                            updateKneepads(props.kneepads,props.kneepads.number,props.cookie); window.location.reload();}}>
+                            <ClearIcon></ClearIcon></Button>
                             <Button variant="contained" color="primary" size="small" sx={ 
                                 [{   
                                     bgcolor: "#FFFFFF",
@@ -225,7 +227,7 @@ export default function KneepadsData(props: {kneepads: Kneepads, cookie: string|
                                         color: "#FFFFFF",
                                     }
                                 }]
-                            } onClick={()=>{setApprove(true); console.log(approve);props.kneepads.status = "booked"; 
+                            } onClick={()=>{setApprove(true); props.kneepads.status = "booked"; 
                             updateKneepads(props.kneepads,props.kneepads.number,props.cookie); window.location.reload()}}><DoneIcon></DoneIcon></Button>
                         </div>}
                         </div>

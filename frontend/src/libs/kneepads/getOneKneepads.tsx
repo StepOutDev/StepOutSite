@@ -1,6 +1,6 @@
 export default async function getOneKneepads(number : string, token?: string) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kneepads/get_one/${number}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kneepads/get_one?number=${number}`,
       {
         method: "GET",
         headers: {

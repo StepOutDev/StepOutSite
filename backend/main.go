@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "fmt"
 	"log"
 	"os"
 	"stepoutsite/configuration"
@@ -48,11 +49,14 @@ func main() {
 
 	gateways.NewHTTPGateway(app, userService, kneepadsService,eventService)
 
-	PORT := os.Getenv("DB_PORT_LOGIN")
-
+	PORT := os.Getenv("PORT")
 	if PORT == "" {
 		PORT = "5000"
 	}
 
-	app.Listen(":" + PORT)
+	addr := "0.0.0.0:" + PORT
+	// fmt.Println("Server running on " + addr)
+
+	app.Listen(addr)
+	// app.Listen(":" + PORT)
 }
