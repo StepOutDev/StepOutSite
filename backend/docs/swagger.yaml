@@ -621,6 +621,91 @@ paths:
             application/json:
               example:
                 message: "Unauthorization Token."
+  /banner/create:
+    post:
+      tags:
+        - banner
+      security:
+        - bearerAuth: []
+      consumes:
+        - multipart/form-data
+      produces:
+        - multipart/form-data
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - banner_name
+              properties:
+                banner_name:
+                  type: string
+                  example: Freshy Game 2024
+                image:
+                  type: file
+                  example: "https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/$2a$04$Tjni/pUPDpwXPqRTMyhEI.5Hv494QzraFnpJS6XC.e73xC3js7KQG.webp"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully create banner"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /banner/get_all:
+    get:
+      tags:
+        - banner
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully get all banners"
+                data: []
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
+  /banner/delete:
+    delete:
+      tags:
+        - banner
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: banner_name
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                message: "successfully delete banner"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                message: "Unauthorization Token."
 components:
   schemas:
       UserInput:
@@ -777,6 +862,17 @@ components:
             example: https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/FreshyGame2024.webp
         xml:
           name: event
+      Banner:
+        type: object
+        properties:
+          banner_name:
+            type: string
+            example: Freshy Game 2024
+          image:
+            type: string
+            example: https://stepoutsite.s3.ap-southeast-1.amazonaws.com/image/$2a$04$Tjni/pUPDpwXPqRTMyhEI.5Hv494QzraFnpJS6XC.e73xC3js7KQG.webp
+        xml:
+          name: banner
   securitySchemes:
     bearerAuth:
       type: http
