@@ -121,7 +121,7 @@ export default function KneepadsPage() {
                         <KneepadsAddPopup cookie={cookie} setOpen={setOpen}/> 
                     </Modal>
                 ) : null}
-                <hr className="mb-[20px] mt-[10px] mx-[10%] border-[1px] border-[#5892CA]"/>
+                <hr className="mb-[20px] mt-[20px] mx-[10%] border-[2px] border-[#1A5AB8] rounded-[20px]"/>
                 {/* <div className="flex flex-row flex-wrap justify-center sm:justify-center 
                 md:justify-start lg:justify-start "> */}
                 <div className="grid sm:grid-cols-[repeat(auto-fit,minmax(400px,max-content))] gap-4 justify-center p-0">
