@@ -4,7 +4,7 @@ export default async function updateEvent(
     token?: string
 ){
     const response = await fetch(
-        `http://127.0.0.1:5000/api/v1/event/update?event_name_param=${event_name_param}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/event/update?event_name_param=${event_name_param}`,
         {
             method: "PUT",
             headers: {
