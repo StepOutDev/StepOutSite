@@ -74,7 +74,7 @@ export default function KneepadsAddPopup(props: {cookie: string, setOpen: Functi
                             min="0" max="99" value={formData["number"]} placeholder="00" onChange={handleChange} name="number" required
                             className="no-spinner border-[2px] border-[#1A5AB8] rounded-[40px]
                             pl-[15px] sm:pl-[20px] sm:py-[5px] w-[80%] sm:w-[80%] h-[35px] sm:h-[50px]
-                            mt-[17px] mb-[5px] sm:mt-[20px] sm:mb-[10px]
+                            mt-[17px] mb-[5px] sm:mt-[20px] sm:mb-[10px] font-[poppins] text-[#1A5AB8]
                             focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
                         </label>
                     </div>
@@ -83,7 +83,7 @@ export default function KneepadsAddPopup(props: {cookie: string, setOpen: Functi
                             <select onChange={handleChange} value={formData["size"]} name="size" required className="border-[2px] border-[#1A5AB8] rounded-[40px]
                             pl-[15px] sm:pl-[20px] sm:py-[5px] w-[80%] sm:w-[80%] h-[35px] sm:h-[50px] text-[#1A5AB8] 
                             mt-[19px] mb-[8px] sm:mt-[20px] sm:mb-[10px]
-                            font-[poppinsSemiBold] focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            font-[poppins] focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <option value="" disabled>Select an option</option>
                                 <option value="S">S</option>
                                 <option value="M">M</option>
@@ -98,7 +98,7 @@ export default function KneepadsAddPopup(props: {cookie: string, setOpen: Functi
                             <select onChange={handleChange} value={formData["status"]} name="status" required className="border-[2px] border-[#1A5AB8] rounded-[40px]
                             pl-[15px] sm:pl-[20px] sm:py-[5px] w-[80%] sm:w-[80%] h-[35px] sm:h-[50px] text-[#1A5AB8] 
                             mt-[17px] mb-[13px] sm:mt-[20px] sm:mb-[10px]
-                            font-[poppinsSemiBold] focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            font-[poppins] focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <option value="" disabled>Select an option</option>
                                 <option value="available">available</option>
                                 <option value="unavailable">unavailable</option>
