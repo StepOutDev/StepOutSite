@@ -48,3 +48,15 @@ func GatewayEvent(gateway HTTPGateway, app *fiber.App){
 	apiJWT.Put("/update",gateway.UpdateEvent)
 	apiJWT.Delete("/delete",gateway.DeleteEvent)
 }
+
+func GatewayBanner(gateway HTTPGateway, app *fiber.App){
+	api := app.Group("/api/v1/banner")
+
+	apiNoJWT := api.Group("")
+	apiNoJWT.Get("/get_all",gateway.GetAllBanners)
+
+	apiJWT := api.Group("")
+	apiJWT.Use(middlewares.SetJWtHeaderHandler())
+	apiJWT.Post("/create",gateway.CreateBanner)
+	apiJWT.Delete("/delete",gateway.DeleteBanner)
+}
