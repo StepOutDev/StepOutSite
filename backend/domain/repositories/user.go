@@ -25,6 +25,7 @@ type IUserRepository interface {
 	CreateUser(user entities.UserDataFormat) error
 	Login(req *entities.UserDataFormat) (string,error)
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
+	GetOneUserByEmail(email string) (entities.UserDataFormat, error)
 	UpdateUser(studentID string,user entities.UserDataFormat) error
 	DeleteUser(studentID string) error
 	GetMe(studentID string) (entities.UserResponseFormat, error)
@@ -88,6 +89,16 @@ func hashAndSalt(pwd string) (string,error) {
 func (repo userRepository) GetOneUser(studentID string) (entities.UserDataFormat, error){
 	var result entities.UserDataFormat
 	filter := bson.M{"student_id": studentID}
+	user := repo.Collection.FindOne(repo.Context, filter).Decode(&result)
+	if user == mongo.ErrNoDocuments {
+		return result, errors.New("user not found")
+	}
+	return result,nil
+}
+
+func (repo userRepository) GetOneUserByEmail(email string) (entities.UserDataFormat, error){
+	var result entities.UserDataFormat
+	filter := bson.M{"email": email}
 	user := repo.Collection.FindOne(repo.Context, filter).Decode(&result)
 	if user == mongo.ErrNoDocuments {
 		return result, errors.New("user not found")

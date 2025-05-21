@@ -1,6 +1,7 @@
 package gateways
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"stepoutsite/domain/entities"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"google.golang.org/api/oauth2/v2"
 )
 
 func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
@@ -31,6 +33,7 @@ func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
 	nickName := ctx.FormValue("nick_name")
 	instagram := ctx.FormValue("instagram")
 	line := ctx.FormValue("line")
+	email := ctx.FormValue("email")
 
 	imagefile, err := ctx.FormFile("image")
 	var imageByte []byte
@@ -63,6 +66,7 @@ func (h *HTTPGateway) CreateUser(ctx *fiber.Ctx) error {
 		Telephone:       phone,
 		Instagram:       instagram,
 		Line:            line,
+		Email:           email,
 	}
 
 	if err := h.userService.CreateUser(user,imageByte); err != nil {
@@ -171,6 +175,7 @@ func (h *HTTPGateway) UpdateUser(ctx *fiber.Ctx) error {
 	nickName := ctx.FormValue("nick_name")
 	instagram := ctx.FormValue("instagram")
 	line := ctx.FormValue("line")
+	email := ctx.FormValue("email")
 
 	imagefile, err := ctx.FormFile("image")
 	var imageByte []byte
@@ -202,6 +207,7 @@ func (h *HTTPGateway) UpdateUser(ctx *fiber.Ctx) error {
 		Telephone:       phone,
 		Instagram:       instagram,
 		Line:            line,
+		Email: 		 	email,
 	}
 	
 	if err := h.userService.UpdateUser(token.StudentID,targetID,user,imageByte); err != nil {
@@ -226,4 +232,63 @@ func (h *HTTPGateway) DeleteUser(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully delete user"})
+}
+
+func (h *HTTPGateway) GoogleLogin(ctx *fiber.Ctx) error {
+	url := h.oauth.AuthCodeURL("randomstate")
+
+	if url == "" {
+		return ctx.Status(fiber.StatusInternalServerError).SendString("Failed to generate URL")
+	}
+
+	return ctx.Redirect(url, fiber.StatusTemporaryRedirect)
+}
+
+func (h *HTTPGateway) GoogleCallback(ctx *fiber.Ctx) error {
+		params := ctx.Queries()
+		//Check state
+		if params["state"] != "randomstate" {
+			return ctx.Status(fiber.StatusBadRequest).SendString("Invalid OAuth state")
+		}
+
+		//Authorization code
+		code := params["code"]
+		token, err := h.oauth.Exchange(context.Background(), code)
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).SendString("Token exchange failed")
+		}
+
+		client := h.oauth.Client(context.Background(), token)
+		oauth2Service,err := oauth2.New(client)
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).SendString("OAuth2 client creation failed")
+		}
+
+		userinfo, err := oauth2Service.Userinfo.Get().Do()
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).SendString("Failed to get user info")
+		}
+
+		user, err := h.userService.GetOneUserByEmail(userinfo.Email)
+		if user == (entities.UserDataFormat{}) && err != nil {
+			h.userService.CreateUser(entities.UserDataFormat{
+				FirstName: userinfo.GivenName,
+				LastName: userinfo.FamilyName,
+				Email: userinfo.Email,
+			}, nil)
+			return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully create user"})
+		}else{
+			token, err := middlewares.GenerateJWTToken(user.StudentID)
+			if err != nil {
+				return ctx.Status(fiber.StatusInternalServerError).SendString("Token generation failed")
+			}
+			cookie := fiber.Cookie{
+				Name: "jwt", 
+				Value: *token.Token, 
+				Expires: time.Now().Add(time.Hour * 6),
+				HTTPOnly: true,
+			}
+			ctx.Cookie(&cookie)
+			return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login",Data: *token.Token})
+		}
 }

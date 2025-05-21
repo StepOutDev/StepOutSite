@@ -14,6 +14,7 @@ type UserDataFormat struct {
 	Telephone 		string `json:"telephone" bson:"telephone,omitempty"`
 	Instagram       string `json:"instagram" bson:"instagram,omitempty"`
 	Line          string `json:"line" bson:"line,omitempty"`
+	Email    		string `json:"email" bson:"email,omitempty"`
 }
 
 type UserResponseFormat struct {
@@ -27,5 +28,6 @@ type UserResponseFormat struct {
 	Image    		string `json:"image" bson:"image"`
 	Telephone 		string `json:"telephone" bson:"telephone"`
 	Instagram       string `json:"instagram" bson:"instagram"`
-	Line          string `json:"line" bson:"line"`
+	Line          	string `json:"line" bson:"line"`
+	Email   		string `json:"email" bson:"email"`
 }

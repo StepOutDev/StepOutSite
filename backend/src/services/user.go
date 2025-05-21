@@ -19,6 +19,7 @@ type IUserService interface {
 	GetAllUsers(filter bson.M , studentID string) (*[]entities.UserResponseFormat, error)
 	CreateUser(user entities.UserDataFormat,imageByte []byte) error
 	GetOneUser(studentID string) (entities.UserDataFormat, error)
+	GetOneUserByEmail(email string) (entities.UserDataFormat, error)
 	Login(req *entities.UserDataFormat) (string,error)
 	CheckPermissionCoreAndAdmin(studentID string) error
 	UpdateUser(userID string,targetID string,user entities.UserDataFormat, imageByte []byte) error
@@ -95,6 +96,16 @@ func checkPasswords(hashedPwd string, plainPwd string) error {
 
 func (sv userService) GetOneUser(studentID string) (entities.UserDataFormat, error) {
 	user,err := sv.UserRepository.GetOneUser(studentID)
+	
+	if err != nil {
+		return entities.UserDataFormat{},err
+	}
+
+	return user,nil
+}
+
+func (sv userService) GetOneUserByEmail(email string) (entities.UserDataFormat, error) {
+	user,err := sv.UserRepository.GetOneUser(email)
 	
 	if err != nil {
 		return entities.UserDataFormat{},err

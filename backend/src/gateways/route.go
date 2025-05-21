@@ -12,6 +12,8 @@ func GatewayUser(gateway HTTPGateway, app *fiber.App) {
 	apiNoJWT := api.Group("")
 	apiNoJWT.Post("/register", gateway.CreateUser)
 	apiNoJWT.Post("/login", gateway.Login)
+	apiNoJWT.Get("/google_login", gateway.GoogleLogin)
+	apiNoJWT.Get("/google_callback", gateway.GoogleCallback)
 
 	apiJWT := api.Group("")
 	apiJWT.Use(middlewares.SetJWtHeaderHandler())

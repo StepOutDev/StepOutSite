@@ -26,6 +26,7 @@ func main() {
 	}
 	// /// ############################################
 
+	oauth := configuration.NewGoogleOAuthConfiguration()
 	app := fiber.New(configuration.NewFiberConfiguration())
 	middlewares.Logger(app)
 	app.Use(swagger.New(swagger.Config{
@@ -46,7 +47,7 @@ func main() {
 	kneepadsService := services.NewKneepadsService(kneepadsMongo, userService)
 	eventService := services.NewEventService(eventMongo,userService)
 
-	gateways.NewHTTPGateway(app, userService, kneepadsService,eventService)
+	gateways.NewHTTPGateway(app, oauth, userService, kneepadsService,eventService)
 
 	PORT := os.Getenv("DB_PORT_LOGIN")
 
