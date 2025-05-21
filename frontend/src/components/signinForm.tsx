@@ -25,6 +25,21 @@ export default function SigninForm() {
 
   };
 
+  const handleSignInGoogle = async () => {
+    var url = process.env.NEXT_PUBLIC_BACKEND_URL;
+    url = url + "/api/v1/user/google_login";
+    window.location.href = url;
+    // console.log("result",result);
+    // SetCookie("jwt", result?.data);
+    // if(result?.error) {
+    //   setError("Invalid credentials");
+    // }else{
+    //   console.log("Sign-in successful", result);
+    //   window.location.href = "/";
+    // }
+
+  };
+
     return(
 
         <div className="flex bg-white rounded-lg shadow-lg">
@@ -67,6 +82,9 @@ export default function SigninForm() {
             </button>
             {error && <p className="text-red-500">{error}</p>}
           </form>
+          <button onClick={handleSignInGoogle}>
+            Google eiei
+          </button>
         </div>
 
     )
@@ -82,7 +100,6 @@ export function SetCookie(name: string, val: string){
 
   // Set it
   document.cookie = name+"="+value+"; expires="+date.toUTCString()+"; path=/";
-  
 }
 
 

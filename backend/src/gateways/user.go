@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"stepoutsite/domain/entities"
 	"stepoutsite/src/middlewares"
 	"time"
@@ -282,6 +283,9 @@ func (h *HTTPGateway) GoogleCallback(ctx *fiber.Ctx) error {
 			HTTPOnly: true,
 		}
 		ctx.Cookie(&cookie)
-		return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login", Data: tokenDetails})
+		url := os.Getenv("FRONTEND_URL")
+		url += "/redirect?token=" + tokenDetails
+		return ctx.Redirect(url, fiber.StatusTemporaryRedirect)
+		// return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login", Data: tokenDetails})
 
 }

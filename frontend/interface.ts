@@ -11,7 +11,7 @@ export interface User{
     telephone: string;
     instagram: string;
     line: string;
-
+    email: string;
 }
 
 export interface FormRegister{
