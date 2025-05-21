@@ -8,10 +8,11 @@ import (
 )
 
 func NewGoogleOAuthConfiguration() *oauth2.Config {
+	url := os.Getenv("BACKEND_URL") + "/api/v1/user/google_callback"
 	return &oauth2.Config{
 		ClientID: os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		RedirectURL: "http://localhost:5000/api/v1/user/google_callback",
+		RedirectURL: url,
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile",
