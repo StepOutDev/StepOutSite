@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"strings"
 
 	"stepoutsite/domain/entities"
 	"stepoutsite/domain/repositories"
@@ -9,6 +10,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/api/oauth2/v2"
 )
 
 type userService struct {
@@ -27,6 +29,7 @@ type IUserService interface {
 	GetMe(studentID string) (entities.UserResponseFormat, error)
 	CheckPermissionAdmin(studentID string) error
 	CheckPermissionMember(studentID string) error
+	GoogleCallback(userinfo *oauth2.Userinfo) (string, error)
 }
 
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
@@ -218,3 +221,41 @@ func (sv userService) CheckPermissionMember(studentID string) error {
 	}
 	return nil
 }
+
+func (sv userService) GoogleCallback(userinfo *oauth2.Userinfo) (string, error) {
+	
+		if !strings.HasSuffix(userinfo.Email, ".chula.ac.th") {
+			return "", errors.New("invalid email domain")
+		}
+
+		studentID := strings.Split(userinfo.Email, "@")[0]
+		user, err := sv.UserRepository.GetOneUser(studentID)
+		if user == (entities.UserDataFormat{}) && err != nil {
+			err = sv.UserRepository.CreateUser(entities.UserDataFormat{
+				StudentID: studentID,
+				FirstName: userinfo.GivenName,
+				LastName: userinfo.FamilyName,
+				Email: userinfo.Email,
+			})
+			if err != nil {
+				return "", errors.New("failed to create user")
+			}
+			token ,err := sv.UserRepository.Login(&entities.UserDataFormat{
+				StudentID: studentID,
+			})
+
+			if err != nil {
+				return "", errors.New("failed to login")
+			}
+			
+			return token,nil
+		}else{
+			token ,err := sv.UserRepository.Login(&entities.UserDataFormat{
+				StudentID: studentID,
+			})
+			if err != nil {
+				return "", errors.New("failed to login")
+			}
+			return token,nil
+		}
+}	

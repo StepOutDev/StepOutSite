@@ -236,6 +236,7 @@ func (h *HTTPGateway) DeleteUser(ctx *fiber.Ctx) error {
 
 func (h *HTTPGateway) GoogleLogin(ctx *fiber.Ctx) error {
 	url := h.oauth.AuthCodeURL("randomstate")
+	url += "&hd=chula.ac.th"
 
 	if url == "" {
 		return ctx.Status(fiber.StatusInternalServerError).SendString("Failed to generate URL")
@@ -248,47 +249,39 @@ func (h *HTTPGateway) GoogleCallback(ctx *fiber.Ctx) error {
 		params := ctx.Queries()
 		//Check state
 		if params["state"] != "randomstate" {
-			return ctx.Status(fiber.StatusBadRequest).SendString("Invalid OAuth state")
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Invalid state"})
 		}
 
 		//Authorization code
 		code := params["code"]
 		token, err := h.oauth.Exchange(context.Background(), code)
 		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).SendString("Token exchange failed")
+			return ctx.Status(fiber.StatusInternalServerError).JSON(entities.ResponseModel{Message: "Failed to exchange token"})
 		}
 
 		client := h.oauth.Client(context.Background(), token)
 		oauth2Service,err := oauth2.New(client)
 		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).SendString("OAuth2 client creation failed")
+			return ctx.Status(fiber.StatusInternalServerError).JSON(entities.ResponseModel{Message: "Failed to create oauth2 client"})
 		}
 
 		userinfo, err := oauth2Service.Userinfo.Get().Do()
 		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).SendString("Failed to get user info")
+			return ctx.Status(fiber.StatusInternalServerError).JSON(entities.ResponseModel{Message: "Failed to get user info"})
 		}
 
-		user, err := h.userService.GetOneUserByEmail(userinfo.Email)
-		if user == (entities.UserDataFormat{}) && err != nil {
-			h.userService.CreateUser(entities.UserDataFormat{
-				FirstName: userinfo.GivenName,
-				LastName: userinfo.FamilyName,
-				Email: userinfo.Email,
-			}, nil)
-			return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully create user"})
-		}else{
-			token, err := middlewares.GenerateJWTToken(user.StudentID)
-			if err != nil {
-				return ctx.Status(fiber.StatusInternalServerError).SendString("Token generation failed")
-			}
-			cookie := fiber.Cookie{
-				Name: "jwt", 
-				Value: *token.Token, 
-				Expires: time.Now().Add(time.Hour * 6),
-				HTTPOnly: true,
-			}
-			ctx.Cookie(&cookie)
-			return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login",Data: *token.Token})
+		tokenDetails, err := h.userService.GoogleCallback(userinfo)
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON(entities.ResponseModel{Message: err.Error()})
 		}
+
+		cookie := fiber.Cookie{
+			Name: "jwt", 
+			Value: tokenDetails, 
+			Expires: time.Now().Add(time.Hour * 6),
+			HTTPOnly: true,
+		}
+		ctx.Cookie(&cookie)
+		return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "successfully login", Data: tokenDetails})
+
 }
