@@ -225,7 +225,7 @@ func (sv userService) CheckPermissionMember(studentID string) error {
 func (sv userService) GoogleCallback(userinfo *oauth2.Userinfo) (string, error) {
 	
 		if !strings.HasSuffix(userinfo.Email, ".chula.ac.th") {
-			return "", errors.New("invalid email domain")
+			return "", errors.New("Please use your Chula email")
 		}
 
 		studentID := strings.Split(userinfo.Email, "@")[0]

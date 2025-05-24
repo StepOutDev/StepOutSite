@@ -273,7 +273,10 @@ func (h *HTTPGateway) GoogleCallback(ctx *fiber.Ctx) error {
 
 		tokenDetails, err := h.userService.GoogleCallback(userinfo)
 		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(entities.ResponseModel{Message: err.Error()})
+			url := os.Getenv("FRONTEND_URL")
+			url += "/error?message=" + err.Error()
+			return ctx.Redirect(url, fiber.StatusTemporaryRedirect)
+			// return ctx.Status(fiber.StatusInternalServerError).JSON(entities.ResponseModel{Message: err.Error()})
 		}
 
 		cookie := fiber.Cookie{

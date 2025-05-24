@@ -12,10 +12,11 @@ export default function Redirect() {
             SetCookie("jwt", token);
             // console.log(token);
         }
-        window.location.href = "/";
+        // window.location.href = "/";
     }, []);
     return (
-      <div className="min-h-screen bg-pink-50 flex items-center justify-center py-20">
+      <div className="min-h-screen bg-pink-50 flex items-center justify-center py-20
+      text-[#E799AC] text-[35px] sm:text-[70px] lg:text-[100px] font-extrabold">
         Redirecting...
       </div>
     );
