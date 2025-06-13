@@ -56,9 +56,12 @@ export default function EventCard(
     };
 
     return (
-        <div className="flex flex-col bg-white rounded-3xl shadow-md items-start my-4 md:min-w-[350px] min-w-[300px] md:max-w-[350px] max-w-[300px] overflow-hidden p-4">
+        <div className="flex md:flex-col flex-row bg-white rounded-lg shadow-xl items-start
+        md:w-[300px] w-full md:h-fit h-[150px] overflow-hidden"
+            onClick={() => setShowMore(!showMore)}
+        >
             {/* image */}        
-            <div className="flex rounded-xl overflow-hidden shadow-md w-full md:h-[200px] h-[175px]">
+            <div className="flex-shrink-0 overflow-hidden shadow-md md:w-full w-[40%] md:max-w-full max-w-[150px] md:h-[200px] h-[150px]">
                 <img 
                     src={image || "/images/logo/Logo1.png"} 
                     className="w-full h-full object-cover"
@@ -66,47 +69,28 @@ export default function EventCard(
                 ></img>
             </div>
             {/* Detail */}
-            <div className="flex flex-col mx-[5%] my-[5%]">
-                <div className="line-clamp-2 md:text-[32px] text-[30px] font-medium text-[#422A40]">
+            <div className="flex flex-col p-4 w-full h-full overflow-hidden">
+                <div className="text-[#777777] md:text-[16px] text-[12px] line-clamp-1">
+                    {day} — {time}
+                </div>
+                <div className="line-clamp-2 md:text-[20px] text-[16px] font-semibold text-[#422A40]">
                     {event_name}
                 </div>
-                <div className="flex mt-1 md:text-[14px] text-[12px] text-[#422A40] items-center">
-                    <CalendarIcon/>
-                    <span>: {day}</span>
-                </div>
-                <div className="flex mt-1 md:text-[14px] text-[12px] text-[#422A40] items-center">
-                    <ClockIcon/>
-                    <span>: {time}</span>
-                </div>
-                <div className="flex mt-1 md:text-[14px] text-[12px] text-[#422A40] items-center">
-                    <LocationIcon/>
-                    <span>: {place}</span>
-                </div>
-                <div className="mt-3 line-clamp-3 leading-relax md:text-[14px] text-[12px] text-[#422A40]">
-                    {description.split("\n").map((line, index) => (
-                        <span key={index}>{line}<br /></span>
-                    ))}        
+                <div className="flex-grow"></div>
+                <div className="flex items-center text-[#777777] md:text-[16px] text-[12px]">
+                    <LocationIcon /> <span className="pl-2 line-clamp-1">{place}</span>
                 </div>
             </div>
             {/* show more */}
-            {showMore && (
+            {showMore &&
                 <ShowMore
-                    event_name={event_name}
-                    day={day}
-                    time={time}
-                    place={place}
-                    image={image}
-                    description={description}
-                    onClose={()=> setShowMore(false)}
+                    event={{ event_name, day, time, place, description, image, song }}
+                    open={showMore}
+                    onClose={()=> setShowMore(showMore)}
                 />
-            )}
-            {/* Edit Profile */}
-            <div className="flex flex-grow justify-end items-end w-full space-x-2">
-                <button className="flex h-fit w-full py-2 justify-center bg-white shadow-md rounded-lg border-2 border-[#422A40] text-[#422A40] text-[14px] hover:bg-[#422A40] hover:text-white transition duration-150"
-                        onClick={()=> {setShowMore(true)}}
-                >
-                    More
-                </button>
+            }
+            {/* Edit Event */}
+            {/* <div className="flex flex-grow justify-end items-end w-full space-x-2">
                 {user?.role === "core"|| user?.role === "admin" ? (
                     <div className="flex flex-grow justify-end items-end w-full">
                         <button
@@ -117,7 +101,7 @@ export default function EventCard(
                         </button>
                     </div>
                 ) : null}
-            </div>
+            </div> */}
         </div>
     )
 }

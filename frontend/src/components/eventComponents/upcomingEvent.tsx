@@ -42,7 +42,7 @@ export default function UpcomingEvent(){
                 <div className="text-[#422A40] text-[32px] font-bold">
                     Upcoming Event 
                 </div>
-                {user?.role === "core" && (
+                {(user?.role === "core" || user?.role === "admin") && (
                     <Link
                         href={'/eventmanage'}
                         className="px-8 py-2 bg-white rounded-lg shadow-md border-2 border-[#ED79B7] text-[#ED79B7] text-[16px] hover:bg-[#ED79B7] hover:text-white duration-150">

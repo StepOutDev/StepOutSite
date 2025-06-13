@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import EventCard from "./eventCard"
 import { Event } from "../../../interface"
 import { useState, useEffect } from "react"
@@ -19,17 +18,16 @@ export default function EventPanel(){
             },[])
 
     return (
-        <div>
-            <div className="flex space-x-4 w-[80%] md:min-h-[600px] min-h-[550px] overflow-x-scroll mt-[10px] mx-auto px-4 text-black
-                custom-scrollbar shadow-xl">
-                {events.length > 0 ? (
-                    events.map((event, index) => {
-                        return <EventCard key={index} {...event} />;
-                    })
-                ) : (
-                    <p className="text-gray-500">Coming soon...</p>
-                )}
-            </div>
+        <div className="flex my-8 mx-[5%]">
+            <div className="flex flex-wrap justify-center gap-x-8 md:gap-y-16 gap-y-4">
+            {events.length > 0 ? (
+                events.map((event, index) => (
+                <EventCard key={index} {...event} />
+                ))
+            ) : (
+                <p className="text-gray-500">Coming soon...</p>
+            )}
+            </div>   
         </div>
     )
 }
