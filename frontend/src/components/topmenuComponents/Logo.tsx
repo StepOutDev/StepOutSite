@@ -8,8 +8,8 @@ export default function Logo(){
                 className="flex items-center space-x-2 text-black duration-150 ease-in-out hover:text-[#7A4E9A]"
             >
                 <img
-                    src={"/images/logo/Logo1.png"}
-                    className="filter invert w-[75px] h-[75px]"
+                    src={"/images/logo/logo_black.png"}
+                    className="w-[75px] h-[75px]"
                     alt="logo Icon"
                 ></img>
                 <span className="text-[28px] font-bold hidden md:flex">

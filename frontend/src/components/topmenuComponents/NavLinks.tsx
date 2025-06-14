@@ -81,7 +81,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
                 </a>
                 {cookie? 
                     (
-                        <div className="pr-4 pl-1" ref={menuRef}>
+                        <div className="pl-1" ref={menuRef}>
                             <button
                                 ref={buttonRef}
                                 onClick={toggleUserMenu}
@@ -128,7 +128,7 @@ export default function NavLinks({cookie, user}:NavLinksProps){
 
                         </div>
                     ):(
-                        <div className="flex space-x-2 mx-2">
+                        <div className="flex space-x-2 ml-2">
                             <Link
 
                                 href="/signin"

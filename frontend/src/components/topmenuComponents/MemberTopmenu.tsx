@@ -33,7 +33,7 @@ export default function MemberTopmenu(){
             <button
                 ref={buttonRef}
                 onClick={toggleUserMenu}
-                className="flex items-center justify-center space-x-2 h-full py-2 pr-4 pl-3 text-black duration-150 ease-in-out hover:bg-[#7A4E9A] hover:text-white hover:scale-110"
+                className="flex items-center space-x-2 h-full p-4 text-black duration-150 ease-in-out hover:bg-[#7A4E9A] hover:text-white hover:scale-110"
                 title="Member"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" 
@@ -44,7 +44,7 @@ export default function MemberTopmenu(){
                         className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
-                <span className="self-center font-sans hidden md:flex">Member</span>
+                <span className="flex">Member</span>
             </button>
             {userMenu && (
                 <div className="absolute bg-white rounded-lg shadow-lg w-48">

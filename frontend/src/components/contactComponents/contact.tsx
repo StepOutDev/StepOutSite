@@ -6,7 +6,7 @@ export default function Contact() {
             <div 
                 className="absolute top-0 right-0 w-1/2 h-full bg-cover bg-right opacity-50"
                 style={{
-                    backgroundImage: "url('/images/logo/Logo1.png')", // Change this to your actual image
+                    backgroundImage: "url('/images/logo/logo_white.png')", // Change this to your actual image
                     backgroundSize: "200% auto",
                     backgroundPosition: "left center",
                     backgroundRepeat: "no-repeat",

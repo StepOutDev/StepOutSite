@@ -57,7 +57,7 @@ export default function EventCard(
 
     return (
         <div className="flex md:flex-col flex-row bg-white rounded-lg shadow-xl items-start
-        md:w-[300px] w-full md:h-fit h-[150px] overflow-hidden"
+        md:w-[300px] w-full md:h-fit h-[150px] overflow-hidden hover:scale-110 duration-150"
             onClick={() => setShowMore(!showMore)}
         >
             {/* image */}        
