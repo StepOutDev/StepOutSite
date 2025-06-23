@@ -72,9 +72,9 @@ const [cookie, setCookie] = useState<string | undefined>();
 
         cookie && user ?
             <ProtectRoute role={["admin","core"]} cookie={cookie} user={user}>
-                <div className="flex flex-col bg-[#c596c2] min-h-screen">
+                <div className="flex flex-col bg-[#D2A8D0] min-h-screen">
                     <div className="flex md:flex-row flex-col mt-[120px] mx-[10%] space-x-7 md:space-y-0 space-y-3 items-center">
-                        <div className="flex text-[#7A4E9A] font-extrabold text-[32px]">
+                        <div className="flex text-[#7A4E9A] font-extrabold text-[36px]">
                             Manage Event
                         </div>
                         <Link

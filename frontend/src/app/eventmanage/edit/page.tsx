@@ -24,7 +24,7 @@ export default function EventEdit() {
         event_name: "",
         day: "", 
         time: "",
-        image: "/images/logo/Logo1.png",
+        image: "/images/logo/logo_black.png",
         place: "",
         description: ""
     })

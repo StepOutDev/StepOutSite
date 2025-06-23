@@ -6,6 +6,7 @@ import { User, Event } from "../../../interface";
 import getUserMe from "@/libs/user/getUserMe";
 import ShowMore from "./ShowMore";
 import { CalendarIcon, ClockIcon, LocationIcon } from "./ShowMore";
+import { usePathname } from "next/navigation";
 
 export default function EventCard(
     { 
@@ -20,6 +21,7 @@ export default function EventCard(
 ){
     const [showMore, setShowMore] = useState<boolean>(false);
     const [cookie, setCookie] = useState<string | undefined>();
+    const pathname = usePathname();
         useEffect(() => {
             function fetchCookie() {
                 const ck = GetCookie("jwt");
@@ -56,7 +58,7 @@ export default function EventCard(
     };
 
     return (
-        <div className="flex md:flex-col flex-row bg-white rounded-lg shadow-xl items-start
+        <div className="relative flex md:flex-col flex-row bg-white rounded-lg shadow-xl items-start
         md:w-[300px] w-full md:h-fit h-[150px] overflow-hidden hover:scale-110 duration-150"
             onClick={() => setShowMore(!showMore)}
         >
@@ -68,6 +70,18 @@ export default function EventCard(
                     alt="EventImage" 
                 ></img>
             </div>
+            {/* edit */} 
+            { (pathname === "/eventmanage") && (
+                <button 
+                    className="absolute m-2 p-2 top-0 right-0 rounded-full bg-[#777777] hover:scale-110 shadow-xl hover:border-2 duration-150"
+                    onClick={handleEditClick}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="md:size-6 size-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                    </svg>
+                </button>
+            )
+            }
             {/* Detail */}
             <div className="flex flex-col p-4 w-full h-full overflow-hidden">
                 <div className="text-[#777777] md:text-[16px] text-[12px] line-clamp-1">
@@ -89,19 +103,6 @@ export default function EventCard(
                     onClose={()=> setShowMore(showMore)}
                 />
             }
-            {/* Edit Event */}
-            {/* <div className="flex flex-grow justify-end items-end w-full space-x-2">
-                {user?.role === "core"|| user?.role === "admin" ? (
-                    <div className="flex flex-grow justify-end items-end w-full">
-                        <button
-                            onClick={handleEditClick}
-                            className="flex h-fit w-full py-2 justify-center bg-white shadow-md rounded-lg border-2 border-[#ED79B7] text-[#ED79B7] text-[14px] hover:bg-[#ED79B7] hover:text-white transition duration-150"
-                        >
-                            Edit
-                        </button>
-                    </div>
-                ) : null}
-            </div> */}
         </div>
     )
 }

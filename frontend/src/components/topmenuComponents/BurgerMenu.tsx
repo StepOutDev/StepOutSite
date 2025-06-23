@@ -85,7 +85,7 @@ export default function BurgerMenu({ cookie, user }: BurgerMenuProps) {
                                 />
                             </button>         
                             <div className="line-clamp-1 font-semibold">
-                                {user?.first_name}
+                                {user?.first_name || "Guest"}
                             </div>
                         </div>
                         <Link
